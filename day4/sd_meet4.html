@@ -1,0 +1,1182 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pertemuan 4: Operasi Penyelamatan: Waspada! Api Menyebar!</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        /* CSS Reset dan Global Styles */
+        body {
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            padding: 0;
+            /* Gambar Latar Belakang BODY diperbarui */
+            background: url('https://i.imgur.com/z221jXz.png') center/cover fixed no-repeat;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .presentation-container {
+            /* Ukuran container diperbarui */
+            width: 77vw;
+            height: 71.5vh;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5); 
+            border-radius: 12px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            background-color: transparent; 
+        }
+
+        /* Slide Styling Umum */
+        .slide {
+            width: 100%;
+            height: 100%;
+            padding: 40px 60px;
+            box-sizing: border-box;
+            color: #333;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            position: absolute;
+            top: 0;
+            left: 0;
+            /* Transisi diubah untuk transform dan opacity */
+            transition: transform 0.6s ease-in-out, opacity 0.6s ease-in-out;
+            /* Overlay Putih untuk Konten di Atas BG */
+            background-color: rgba(255, 255, 255, 0.95);
+            visibility: hidden; /* Sembunyikan slide yang tidak aktif */
+            overflow-y: auto; /* MEMBUAT SLIDE BISA DI-SCROLL JIKA KONTEN PANJANG */
+            opacity: 0;
+        }
+
+        .slide.active {
+            opacity: 1;
+            visibility: visible;
+            z-index: 10; /* Slide aktif selalu di atas */
+            transform: translateX(0);
+        }
+
+        /* State untuk animasi */
+        .slide.is-next {
+            /* Slide yang akan muncul dari kanan */
+            transform: translateX(100%);
+            visibility: visible;
+            opacity: 1;
+            z-index: 11; /* Muncul di atas slide aktif saat transisi */
+        }
+
+        .slide.is-exiting {
+            /* Slide saat ini yang akan keluar ke kanan */
+            transform: translateX(100%);
+            opacity: 1;
+            z-index: 11; /* Tetap di atas slide di bawahnya saat keluar */
+        }
+
+        /* Cover Slide (Slide 1) - Mempertahankan BG Gelap */
+        #slide1 {
+            /* Perbarui BG cover sesuai BG utama */
+            background: linear-gradient(rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0.75)), url('https://i.imgur.com/z221jXz.png') center/cover no-repeat;
+            background-color: transparent; 
+            color: white;
+            align-items: center;
+            text-align: center;
+            justify-content: center;
+        }
+        
+        /* Slide dengan warna solid */
+        .solid-teal-bg {
+            background-color: #008080; /* Teal */
+            color: white;
+        }
+        
+        /* Elemen dekoratif untuk slide sampul */
+        .starburst {
+            position: absolute;
+            width: 100px;
+            height: 100px;
+            z-index: 2; /* Di bawah teks tapi di atas background */
+        }
+        
+        /* LOGO KIRI ATAS - RUANGGURU, DHARMASRAYA, DISDIK (GLOBAL BODY) */
+        .slide-logo-left {
+            position: fixed; /* Fixed to viewport */
+            top: 0;
+            left: 0;
+            background-color: white;
+            padding: 10px 20px 10px 40px;
+            border-bottom-right-radius: 30px; 
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            display: flex;
+            align-items: center;
+            z-index: 99; /* Pastikan di foreground */
+            transition: opacity 0.3s ease;
+            gap: 15px; /* Jarak antar logo */
+        }
+        .slide-logo-left img {
+            height: 45px; 
+            width: auto;
+        }
+
+        /* LOGO KANAN ATAS - RG CODING (GLOBAL BODY) */
+        .slide-logo-right {
+            position: fixed; /* Fixed to viewport */
+            top: 0;
+            right: 0;
+            background-color: white;
+            padding: 10px 40px 10px 20px;
+            border-bottom-left-radius: 30px; 
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            display: flex;
+            align-items: center;
+            z-index: 99; /* Pastikan di foreground */
+            transition: opacity 0.3s ease;
+        }
+        .slide-logo-right img {
+            height: 45px; 
+            width: auto;
+        }
+
+        /* Gradient Class Sesuai Permintaan */
+        .highlight-gradient {
+            background: linear-gradient(
+                to right,
+                #008080, /* Deep teal/cyan */
+                #a8c368, /* Olive/lime green */
+                #f2c140  /* Golden yellow */
+            );
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            display: inline-block;
+        }
+
+        /* Navigasi BARU */
+        .nav-button {
+            background-color: rgba(0, 128, 128, 0.8); /* Teal Transparan */
+            color: white;
+            border: none;
+            position: fixed; /* Tombol diposisikan secara fixed terhadap jendela browser */
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 100;
+            width: 40px; /* Kecil */
+            height: 40px; /* Kecil */
+            border-radius: 50%; /* Bulat */
+            cursor: pointer;
+            font-size: 1.2rem;
+            font-weight: 900;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .nav-button:hover {
+            background-color: #f2c140; /* Kuning Hover */
+            color: #333;
+            transform: scale(1.1);
+        }
+        .nav-button:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+            transform: scale(1);
+        }
+        #prevBtn {
+            left: 20px; /* Jarak dari tepi kiri jendela browser */
+            /* Menghapus border-radius: 0 agar bulat sempurna */
+        }
+
+        #nextBtn {
+            right: 20px; /* Jarak dari tepi kanan jendela browser */
+            /* Menghapus border-radius: 0 agar bulat sempurna */
+        }
+
+        /* Slide Content kompensasi untuk logo agar tidak tertutup */
+        .slide h1, .slide h2, .slide .profile-content h2, 
+        .slide .rg-coding-header, .slide .schedule-title, .slide .thank-you-title {
+            margin-top: 50px; /* Kompensasi untuk logo global */
+        }
+        
+        /* Reset margin top di cover slide */
+        #slide1 h1, #slide1 h2, #slide1 .profile-content h2 {
+             margin-top: 0; 
+        }
+
+        .cover-title {
+            font-size: 4rem;
+            font-weight: 900;
+            margin-bottom: 20px;
+            line-height: 1.1;
+            z-index: 3;
+        }
+
+        .cover-subtitle {
+            font-size: 1.5rem;
+            font-weight: 400;
+            margin-bottom: 40px;
+            border-bottom: 3px solid #a8c368;
+            padding-bottom: 10px;
+            display: inline-block;
+            z-index: 3;
+        }
+
+        .presenter-info {
+            font-size: 1.2rem;
+            opacity: 0.8;
+            z-index: 3;
+        }
+        
+        /* Slide 2: Agenda */
+        .agenda-title {
+            font-size: 3rem;
+            font-weight: 800;
+            color: #008080;
+            /* Penyesuaian ukuran font agar tidak terlalu besar di mobile */
+            font-size: clamp(2rem, 5vw, 3rem);
+            line-height: 1.2;
+
+            margin-bottom: 40px;
+        }
+
+        /* --- Styling Baru untuk Agenda Cards --- */
+        .agenda-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 25px;
+            width: 100%;
+            max-width: 900px;
+            margin-top: -20px; /* Kompensasi margin bottom dari title */
+        }
+        .agenda-card {
+            background: white;
+            padding: 20px;
+            border-radius: 16px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+            text-align: center;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border: 1px solid #e5e7eb;
+        }
+        .agenda-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 15px 30px rgba(0, 128, 128, 0.15);
+        }
+        .agenda-card-icon {
+            font-size: 3rem;
+            line-height: 1;
+        }
+        .agenda-card-text {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #374151;
+            margin-top: 10px;
+        }
+
+        /* --- Styling untuk Slide Ice Breaking --- */
+        .ice-breaking-container {
+            display: flex;
+            gap: 25px;
+            width: 100%;
+            max-width: 800px;
+            justify-content: center;
+            margin-top: 20px;
+            margin-bottom: 20px;
+        }
+        .instruction-box {
+            background-color: rgba(255, 255, 255, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 16px;
+            padding: 25px;
+            flex: 1;
+            text-align: center;
+            backdrop-filter: blur(5px);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .instruction-box:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        }
+        .instruction-icon {
+            font-size: 3rem;
+            margin-bottom: 10px;
+        }
+        .instruction-text {
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        /* Slide 3: Profil RG - Card Size Reduced & New Style */
+        #slide3 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            align-items: center;
+        }
+        .profile-content h2 {
+            font-size: 2.2rem; 
+            font-weight: 800;
+            color: #008080;
+            margin-bottom: 15px; 
+        }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px; 
+        }
+        .stat-box {
+            background-color: white; /* Card background putih */
+            padding: 20px; 
+            border-radius: 12px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease; 
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Shadow lebih menonjol */
+            position: relative;
+            overflow: hidden; /* Penting untuk elemen pseudo */
+        }
+        .stat-box:hover {
+            transform: translateY(-5px); 
+            box-shadow: 0 12px 25px rgba(0, 0, 0, 0.2); 
+        }
+        /* Geometric accent for stat-box */
+        .stat-box::before {
+            content: '';
+            position: absolute;
+            top: -20px;
+            right: -20px;
+            width: 80px;
+            height: 80px;
+            background: rgba(0, 128, 128, 0.1); /* Semi-transparan teal */
+            border-radius: 50%;
+            transform: rotate(45deg);
+            z-index: 0;
+        }
+        .stat-box::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: -10px;
+            width: 40px;
+            height: 40px;
+            background: rgba(242, 193, 64, 0.15); /* Semi-transparan kuning */
+            transform: rotate(-30deg);
+            border-radius: 4px;
+            z-index: 0;
+        }
+        .stat-value {
+            font-size: 2rem; 
+            font-weight: 800;
+            color: #f2c140;
+            line-height: 1;
+            position: relative; /* Agar di atas pseudo-elements */
+            z-index: 1;
+        }
+        .stat-label {
+            font-size: 0.9rem; 
+            color: #008080;
+            margin-top: 5px;
+            position: relative; /* Agar di atas pseudo-elements */
+            z-index: 1;
+        }
+
+        /* Slide 4: Ruangguru Coding - Card Size Reduced & New Style */
+        .main-header {
+            font-size: 3.2rem; 
+        }
+        .main-body {
+            font-size: 1.3rem; 
+            margin-bottom: 40px; 
+        }
+        .key-stats {
+            display: flex;
+            justify-content: space-around;
+            width: 100%;
+            gap: 20px; /* Jarak antar card */
+        }
+        .key-stat-item {
+            background-color: white; /* Background putih */
+            border: none; /* Hapus border */
+            border-radius: 12px;
+            padding: 25px; 
+            width: 30%; 
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            position: relative;
+            overflow: hidden;
+            color: #333; /* Warna teks gelap */
+        }
+        .key-stat-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 8px; /* Garis di atas */
+            background: linear-gradient(to right, #008080, #f2c140); /* Gradient Line */
+            z-index: 1;
+        }
+        .key-stat-item h3 {
+            font-size: 2.5rem; 
+            color: #008080; /* Warna teal untuk angka utama */
+            margin-bottom: 10px;
+            position: relative;
+            z-index: 1;
+        }
+        .key-stat-item p {
+            font-size: 1rem; 
+            margin: 0;
+            color: #555; /* Warna teks deskripsi */
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Slide 5: Scratch */
+        .content-info h2 {
+            font-size: 2.5rem; 
+        }
+        .content-info p {
+            font-size: 1.1rem; 
+        }
+        .image-placeholder {
+            min-height: 250px; 
+            font-size: 1.2rem; 
+        }
+
+        /* Slide 6: Jadwal - Card Size Reduced & New Style */
+        .schedule-title {
+            font-size: 2.5rem; 
+            margin-bottom: 30px; 
+        }
+        .schedule-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr); /* 2 kolom */
+            gap: 20px; 
+        }
+        .schedule-box {
+            background-color: white; 
+            padding: 20px; 
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+            position: relative;
+            overflow: hidden;
+        }
+        .schedule-box h4 {
+            font-size: 1.2rem; 
+            color: #008080;
+            margin-bottom: 8px;
+            position: relative;
+            z-index: 1;
+        }
+        .schedule-box p {
+            font-size: 0.9rem; 
+            color: #555;
+            margin: 0;
+            position: relative;
+            z-index: 1;
+        }
+        /* Decorative element for schedule-box */
+        .schedule-box::before {
+            content: '';
+            position: absolute;
+            top: -15px;
+            left: -15px;
+            width: 50px;
+            height: 50px;
+            background-color: rgba(242, 193, 64, 0.2); /* Semi-transparan kuning */
+            border-radius: 8px;
+            transform: rotate(-45deg);
+            z-index: 0;
+        }
+        .full-span {
+            grid-column: span 2; /* Full width di grid 2 kolom */
+        }
+
+        /* Slide 7: Penutup */
+        .thank-you-title {
+            font-size: 4rem; 
+        }
+        .contact-info {
+            font-size: 1.2rem; 
+        }
+        
+        /* Styling untuk slide Pre-test */
+        .pretest-link {
+            font-size: 1.5rem;
+        }
+
+        /* --- Styling untuk Slide Pre-test (Slide 4) --- */
+        .pretest-container {
+            display: flex;
+            align-items: center;
+            gap: 40px;
+            background-color: white;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            border: 1px solid #eee;
+        }
+        .pretest-qr img {
+            width: 180px;
+            height: 180px;
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+        .pretest-timer-box {
+            text-align: center;
+        }
+        #timer-display {
+            font-size: 4rem;
+            font-weight: 900;
+            color: #008080;
+            margin: 10px 0;
+        }
+        .timer-buttons button {
+            background-color: #008080;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            margin: 0 5px;
+            transition: background-color 0.3s;
+        }
+        .timer-buttons button:hover {
+            background-color: #f2c140;
+            color: #333;
+        }
+        .timer-buttons button:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+
+
+        /* Media Queries untuk Responsif (Mobile View) */
+        @media (max-width: 768px) {
+            .presentation-container {
+                width: 100vw;
+                height: 100vh;
+                border-radius: 0;
+            }
+            .slide {
+                padding: 30px 20px;
+                background-color: rgba(255, 255, 255, 1); 
+            }
+            .slide-logo-left, .slide-logo-right {
+                padding: 5px 10px;
+                border-radius: 0;
+            }
+            .slide-logo-left img, .slide-logo-right img {
+                height: 30px;
+            }
+            #slide3, .content-grid, .ice-breaking-container, .pretest-container {
+                grid-template-columns: 1fr;
+                flex-direction: column;
+            }
+            /* Khusus untuk slide login scratch */
+            #slide12 > div {
+                flex-direction: column;
+            }
+            .agenda-grid {
+                grid-template-columns: 1fr;
+            }
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+            .key-stats {
+                flex-direction: column;
+                align-items: center;
+            }
+            .key-stat-item {
+                width: 90%;
+            }
+            .schedule-grid {
+                grid-template-columns: 1fr; 
+            }
+            .full-span {
+                grid-column: span 1;
+            }
+            .navigation {
+                right: 5px;
+            }
+            .nav-button {
+                width: 35px;
+                height: 35px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Definisi SVG untuk elemen dekoratif -->
+    <svg width="0" height="0" style="position:absolute;">
+      <defs>
+        <symbol id="starburst-svg" viewBox="0 0 100 100">
+          <path d="M50 0 L55.9 34.5 L85.35 14.65 L65.5 44.1 L100 50 L65.5 55.9 L85.35 85.35 L55.9 65.5 L50 100 L44.1 65.5 L14.65 85.35 L34.5 55.9 L0 50 L34.5 44.1 L14.65 14.65 L44.1 34.5 Z" fill="currentColor"/>
+        </symbol>
+      </defs>
+    </svg>
+    
+    <!-- LOGO DI LUAR CONTAINER (GLOBAL BODY) - Z-INDEX TERTINGGI -->
+    <!-- Logo Kiri Atas: Ruangguru, Dharmasraya, Disdik -->
+    <div class="slide-logo-left" id="globalLogoLeft">
+        <!-- Logo Ruangguru (Image) -->
+        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/6d/Ruangguru_logo.svg/2560px-Ruangguru_logo.svg.png" 
+             onerror="this.onerror=null; this.src='https://placehold.co/40x40/ffffff/0070c0?text=RG'"
+             alt="Logo Ruangguru">
+        <!-- Logo Kabupaten Dharmasraya -->
+        <img src="https://upload.wikimedia.org/wikipedia/commons/f/f9/Lambang_Kabupaten_Dharmasraya.png" 
+             onerror="this.onerror=null; this.src='https://placehold.co/40x40/ffffff/0070c0?text=DH'"
+             alt="Logo Kabupaten Dharmasraya">
+        <!-- Logo Disdik Dharmasraya -->
+        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQguI0U7hDXQP6UlNo24XCjT5nJKDttC7nSug&s" 
+             onerror="this.onerror=null; this.src='https://placehold.co/40x40/ffffff/0070c0?text=DS'"
+             alt="Logo Disdik Dharmasraya">
+    </div>
+    
+    <!-- Logo Kanan Atas: Ruangguru Coding -->
+    <div class="slide-logo-right" id="globalLogoRight">
+        <!-- Logo Ruangguru Coding -->
+        <img src="https://cdn-web-2.ruangguru.com/landing-pages/assets/e7d93748-818d-462d-be57-7db1e479cd62.png" 
+             onerror="this.onerror=null; this.src='https://placehold.co/80x40/ffffff/000000?text=RG+Coding'"
+             alt="Logo Ruangguru Coding">
+    </div>
+
+<div class="presentation-container">
+    
+    <!-- Slide 1: Cover Page -->
+    <div class="slide active" id="slide1">
+        <svg class="starburst" style="top: 15%; left: 10%; width:80px; height:80px; color: #a8c368; transform: rotate(20deg); opacity: 0.7;"><use xlink:href="#starburst-svg"></use></svg>
+        <svg class="starburst" style="bottom: 20%; right: 15%; transform: rotate(-15deg); color: #f2c140; opacity: 0.8;"><use xlink:href="#starburst-svg"></use></svg>
+        <img src="https://img1.picmix.com/output/stamp/normal/9/4/2/4/2474249_c00e8.gif" alt="Helikopter dan Api" style="width: 150px; margin-bottom: 20px; background: transparent; box-shadow: none;">
+        <h1 class="cover-title">
+            Operasi Penyelamatan:
+            <br>
+            <span class="highlight-gradient">Waspada! Api Menyebar!</span>
+        </h1>
+        <p class="cover-subtitle">Pertemuan 4</p>
+        <p class="presenter-info">Halo, Tim Penyelamat! Siap untuk misi hari ini?</p>
+    </div>
+
+    <!-- Slide 2: Tujuan Pembelajaran -->
+    <div class="slide" id="slide2">
+        <h2 class="agenda-title" style="text-align: center; width: 100%;">Misi Kita Hari Ini!</h2>
+        <img src="https://images2.imgbox.com/d2/31/r5feWiIz_o.gif" alt="Api menyebar" style="width: 300px; margin-bottom: 20px; background: transparent; box-shadow: none;">
+        <p style="font-size: 1.5rem; text-align: center; max-width: 800px; margin: 0 auto 20px auto;">
+            <strong>Misi Utama:</strong><br>
+            Api di hutan kita... tiba-tiba jadi <span class="highlight-gradient">BANYAK!</span>
+        </p>
+        <p style="font-size: 1.2rem; text-align: center; max-width: 800px; margin: 0 auto;">
+            Kita akan belajar cara membuat 1 api jadi 10, 20, atau bahkan 100!
+        </p>
+    </div>
+
+    <!-- Slide 3: Review & Showcase -->
+    <div class="slide" id="slide3">
+        <h2 class="agenda-title">Ingat Lagi <span class="highlight-gradient">(Review)</span></h2>
+        <img src="https://i.imgur.com/EXSGT4D.gif" alt="Animasi api" style="width: 250px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); margin-bottom: 20px;">
+        <p style="font-size: 1.5rem; text-align: center; max-width: 800px; margin: 0 auto;">
+            Bapak/Ibu Guru bertanya:<br>
+            <strong>"Ada yang masih ingat, apa gunanya blok `next costume`?"</strong>
+        </p>
+    </div>
+
+    <!-- Slide 4: Jawaban Review 1 -->
+    <div class="slide" id="slide4">
+        <h2 class="agenda-title">Jawaban!</h2>
+        <p style="font-size: 1.5rem; text-align: center; max-width: 800px; margin: 0 auto; background-color: #f0f9ff; padding: 20px; border-radius: 12px; border-left: 4px solid #008080;">
+            Betul! Gunanya untuk <strong>mengubah gambar sprite-nya</strong>, biar terlihat bergerak atau beranimasi!
+        </p>
+    </div>
+
+    <!-- Slide 5: Review 2 -->
+    <div class="slide" id="slide5">
+        <h2 class="agenda-title">Ingat Lagi <span class="highlight-gradient">(Review)</span></h2>
+        <img src="https://scratch.oneoffcoder.com/_images/00-wait.png" alt="Blok wait" style="height: 100px; margin-bottom: 20px; background: white; padding: 10px; border-radius: 8px;">
+        <p style="font-size: 1.5rem; text-align: center; max-width: 800px; margin: 0 auto;">
+            Bapak/Ibu Guru bertanya:<br>
+            <strong>"Lalu, apa gunanya blok `wait` (tunggu)?"</strong>
+        </p>
+    </div>
+
+    <!-- Slide 6: Jawaban Review 2 -->
+    <div class="slide" id="slide6">
+        <h2 class="agenda-title">Jawaban!</h2>
+        <p style="font-size: 1.5rem; text-align: center; max-width: 800px; margin: 0 auto; background-color: #f0f9ff; padding: 20px; border-radius: 12px; border-left: 4px solid #008080;">
+            Untuk <strong>memberi jeda!</strong> Biar animasinya tidak terlalu cepat, jadi mata kita bisa melihat perubahannya.
+        </p>
+    </div>
+
+    <!-- Slide 7: Pertanyaan Besar -->
+    <div class="slide" id="slide7">
+        <h2 class="agenda-title">Pertanyaan <span class="highlight-gradient">BESAR!</span></h2>
+        <img src="https://png.pngtree.com/png-clipart/20250210/original/pngtree-cartoon-image-of-flame-png-image_20411681.png" alt="100 api di layar" style="width: 400px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); margin-bottom: 20px;">
+        <p style="font-size: 1.3rem; text-align: center; max-width: 800px;">
+            "Tim Penyelamat, lihat gambar ini!"<br>
+            "Kalau kita mau membuat 100 api, apakah kita harus...":<br><br>
+            Upload 100 gambar api? <br>
+            Bikin 100 sprite baru?<br><br>
+            <strong>Kira-kira bagaimana ya caranya? Susah sekali!</strong>
+        </p>
+    </div>
+
+    <!-- Slide 8: Solusi -->
+    <div class="slide solid-teal-bg" id="slide8">
+        <h2 class="main-header" style="color: #f2c140;">Solusinya... Ajaib!</h2>
+        <img src="https://i.sstatic.net/J5K3D.jpg" alt="Mesin Fotokopi" style="width: 350px; margin-bottom: 20px; filter: invert(1);">
+        <p class="main-body" style="font-size: 1.3rem; text-align: center; max-width: 850px;">
+            Tentu saja tidak! Capek sekali kalau harus bikin 100 sprite.<br><br>
+            Di Scratch, kita punya alat canggih...<br>
+            Namanya: <strong>"MESIN FOTOKOPI"</strong>
+        </p>
+    </div>
+
+    <!-- Slide 9: Apa itu Mesin Fotokopi -->
+    <div class="slide" id="slide9">
+        <h2 class="agenda-title">Apa itu <span class="highlight-gradient">"Mesin Fotokopi"?</span></h2>
+        <img src="https://en.scratch-wiki.info/w/images/Clones.png" alt="Kloning Kucing" style="width: 400px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); margin-bottom: 20px;">
+        <p style="font-size: 1.3rem; text-align: center; max-width: 800px;">
+            Kita cukup punya <strong>1 Sprite Asli</strong> (kita sebut "Cetakan").<br>
+            Lalu kita bisa 'fotokopi' dia sebanyak yang kita mau!<br><br>
+            Hasil 'fotokopi'-nya ini namanya... <strong>KLONING (Clone)</strong>.
+        </p>
+    </div>
+
+    <!-- Slide 10: Kenalan Blok Kontrol -->
+    <div class="slide solid-teal-bg" id="slide10">
+        <h2 class="main-header" style="color: #f2c140;">Kenalan sama Blok KONTROL</h2>
+        <img src="https://cdn-learn.adafruit.com/assets/assets/000/069/475/medium640/force___flex_Screen_Shot_2019-01-16_at_3.37.44_PM.png?1547671999" alt="Kategori Kontrol" style="height: 350px; margin: 20px auto; background: white; padding: 10px; border-radius: 8px;">
+        <p class="main-body" style="font-size: 1.3rem; text-align: center; max-width: 850px;">
+            Hari ini, 'mesin fotokopi' kita ada di kategori <strong>KONTROL</strong> (Warna Oranye).<br>
+            Kita akan pakai 3 blok baru dari sini!
+        </p>
+    </div>
+
+    <!-- Slide 11: Blok Repeat -->
+    <div class="slide" id="slide11">
+        <h2 class="agenda-title">Blok Baru #1: <span class="highlight-gradient">Ulangi (Repeat)</span></h2>
+        <img src="https://scratch.oneoffcoder.com/_images/01-repeat.png" alt="Blok repeat 10" style="height: 100px; margin: 20px auto; background: white; padding: 10px; border-radius: 8px;">
+        <p style="font-size: 1.3rem; text-align: center; max-width: 800px;">
+            Ini adalah blok <strong>repeat 10</strong> atau "ULANGI 10 KALI".<br><br>
+            Semua kode yang kita masukkan ke 'mulut' C ini akan diulang sebanyak 10 kali. Sangat hemat waktu!
+        </p>
+    </div>
+
+    <!-- Slide 12: Blok Create Clone -->
+    <div class="slide" id="slide12">
+        <h2 class="agenda-title">Blok Baru #2: <span class="highlight-gradient">Buat Kloning</span></h2>
+        <img src="https://scratch.oneoffcoder.com/_images/11-clone.png" alt="Blok create clone of myself" style="height: 90px; margin: 20px auto; background: white; padding: 10px; border-radius: 8px;">
+        <p style="font-size: 1.3rem; text-align: center; max-width: 800px;">
+            Ini adalah blok <strong>create clone of myself</strong> atau "BUAT KLONING DARI DIRIKU".<br><br>
+            Inilah tombol "FOTOKOPI"-nya!<br>
+            Setiap kali kode ini jalan, DING! Satu kloning baru tercipta.
+        </p>
+    </div>
+
+    <!-- Slide 13: Blok When I start as a clone -->
+    <div class="slide" id="slide13">
+        <h2 class="agenda-title">Blok Baru #3: <span class="highlight-gradient">Saat Jadi Kloning</span></h2>
+        <img src="https://scratch.oneoffcoder.com/_images/10-when-i-start-as-clone.png" alt="Blok when I start as a clone" style="height: 90px; margin: 20px auto; background: white; padding: 10px; border-radius: 8px;">
+        <p style="font-size: 1.3rem; text-align: center; max-width: 800px;">
+            Ini adalah blok <strong>when I start as a clone</strong> atau "KETIKA AKU MULAI SEBAGAI KLONING".<br><br>
+            Ini adalah perintah KHUSUS untuk hasil fotokopinya (kloningnya).<br>
+            Sprite Asli TIDAK AKAN menjalankan kode ini.
+        </p>
+    </div>
+
+    <!-- Slide 14: Misi 1 -->
+    <div class="slide" id="slide14">
+        <h2 class="agenda-title">Misi 1: Ayo Membuat <span class="highlight-gradient">Kloning!</span></h2>
+        <p style="font-size: 1.3rem; text-align: center; max-width: 800px;">
+            Ayo kita mulai!<br>
+            Buka project helikopter kita.<br>
+            Sekarang, klik <strong>Sprite API</strong>.
+        </p>
+    </div>
+
+    <!-- Slide 15: Langkah 1 -->
+    <div class="slide" id="slide15">
+        <h2 class="agenda-title">Langkah 1: Sembunyikan <span class="highlight-gradient">'Cetakan'</span></h2>
+        <p style="font-size: 1.3rem; text-align: center; max-width: 800px; margin-bottom: 20px;">
+            Kita tidak mau 'cetakan' atau Sprite Aslinya terlihat.<br>
+            Kita hanya mau 'hasil fotokopi'-nya yang terlihat.
+        </p>
+        <p style="font-size: 1.2rem; text-align: center; max-width: 800px; margin-bottom: 20px;">
+            Di skrip `when green flag clicked` di Sprite API:<br>
+            Hapus blok `show` dan `forever` (animasi) yang lama. Kita pindahkan nanti.<br>
+            Tambahkan blok `hide`!
+        </p>
+        <img src="https://images2.imgbox.com/1a/df/PJcHEoen_o.png" alt="Kode hide sprite asli" style="height: 350px; background: white; padding: 10px; border-radius: 8px; margin-top: 10px;">
+    </div>
+
+    <!-- Slide 16: Langkah 2 -->
+    <div class="slide" id="slide16">
+        <h2 class="agenda-title">Langkah 2: Siapkan <span class="highlight-gradient">Mesin Fotokopi</span></h2>
+        <p style="font-size: 1.3rem; text-align: center; max-width: 800px; margin-bottom: 20px;">
+            Sekarang, kita tambahkan 'mesin fotokopi' kita!<br>
+            Tarik blok `repeat 10` (Ulangi 10 kali) dan taruh di bawah blok `hide`.
+
+        </p>
+        <img src="https://images2.imgbox.com/58/65/Gf0zRAC3_o.png" alt="Kode repeat 10" style="height: 350px; background: white; padding: 10px; border-radius: 8px; margin-top: 10px;">
+    </div>
+
+    <!-- Slide 17: Langkah 3 -->
+    <div class="slide" id="slide17">
+        <h2 class="agenda-title">Langkah 3: Tekan Tombol <span class="highlight-gradient">"Fotokopi"!</span></h2>
+        <p style="font-size: 1.3rem; text-align: center; max-width: 800px; margin-bottom: 20px;">
+            Di dalam 'mulut' `repeat 10`, masukkan tombol fotokopinya:<br>
+            `create clone of myself` (Buat kloning dari diriku)
+        </p>
+        <img src="https://scratch.oneoffcoder.com/_images/11-clone.png" alt="Kode create clone" style="height: 150px; background: white; padding: 10px; border-radius: 8px; margin-top: 10px;">
+    </div>
+
+    <!-- Slide 18: Kode di Cetakan -->
+    <div class="slide" id="slide18">
+        <h2 class="agenda-title">Kode di 'Cetakan' <span class="highlight-gradient">(Sprite Asli)</span></h2>
+        <p style="font-size: 1.2rem; text-align: center; max-width: 800px; margin-bottom: 20px;">
+            Skrip `when green flag clicked` di Sprite API sekarang jadi begini:
+        </p>
+        <img src="https://images2.imgbox.com/b2/98/jCbvmwYX_o.png" alt="Kode when green flag clicked hide repeat create clone" style="height: 350px; background: white; padding: 10px; border-radius: 8px;">
+    </div>
+
+    <!-- Slide 19: Tes 1 -->
+    <div class="slide" id="slide19">
+        <h2 class="agenda-title">Mari Kita <span class="highlight-gradient">Tes!</span></h2>
+        <p style="font-size: 1.3rem; text-align: center; max-width: 800px; margin-bottom: 20px;">
+            Coba tekan bendera hijau!<br>...<br>...<br>
+            Loh? Kok tidak terjadi apa-apa?<br>
+            Apinya malah hilang semua!
+        </p>
+        <p style="font-size: 1.5rem; text-align: center; max-width: 800px; font-weight: bold;">
+            Ada yang tahu kenapa? 🤔
+        </p>
+    </div>
+
+    <!-- Slide 20: Jawaban Tes 1 -->
+    <div class="slide" id="slide20">
+        <h2 class="agenda-title">Jawabannya...</h2>
+        <p style="font-size: 1.5rem; text-align: center; max-width: 800px; margin: 0 auto; background-color: #f0f9ff; padding: 20px; border-radius: 12px; border-left: 4px solid #008080;">
+            Karena... kita sudah mem-fotokopi 10 kali, TAPI...<br>
+            Hasil fotokopinya (kloningnya) juga ikut <strong>TERSEMBUNYI!</strong><br><br>
+            Kita belum memberi perintah pada kloningnya untuk `show` (muncul)!
+        </p>
+    </div>
+
+    <!-- Slide 21: Misi 2 -->
+    <div class="slide" id="slide21">
+        <h2 class="agenda-title">Misi 2: Perintah untuk <span class="highlight-gradient">Kloning!</span></h2>
+        <p style="font-size: 1.3rem; text-align: center; max-width: 800px;">
+            Sekarang, kita buat skrip baru di Sprite API.<br>
+            Ini adalah perintah KHUSUS untuk kloning.<br><br>
+            Tarik blok `when I start as a clone`.
+        </p>
+    </div>
+
+    <!-- Slide 22: Langkah 4 -->
+    <div class="slide" id="slide22">
+        <h2 class="agenda-title">Langkah 4: Kloningnya <span class="highlight-gradient">Muncul!</span></h2>
+        <p style="font-size: 1.3rem; text-align: center; max-width: 800px;">
+            Di bawah `when I start as a clone`, tambahkan blok:<br>
+            `show` (Tampilkan dirimu!)
+        </p>
+        <img src="https://images2.imgbox.com/56/1f/JhQ7gnM5_o.png" alt="Kode show kloning" style="height: 350px; background: white; padding: 10px; border-radius: 8px; margin-top: 10px;">
+    </div>
+
+    <!-- Slide 23: Langkah 5 -->
+    <div class="slide" id="slide23">
+        <h2 class="agenda-title">Langkah 5: Kloningnya <span class="highlight-gradient">Bergerak!</span></h2>
+        <p style="font-size: 1.3rem; text-align: center; max-width: 800px;">
+            Sekarang, kita pindahkan kode animasi dari pertemuan lalu ke sini.<br>
+            Taruh di bawah `show`.
+        </p>
+        <img src="https://images2.imgbox.com/86/3d/luoG9jr8_o.png" alt="Kode animasi kloning" style="height: 350px; background: white; padding: 10px; border-radius: 8px; margin-top: 10px;">
+    </div>
+
+    <!-- Slide 24: Kode di Kloning -->
+    <div class="slide" id="slide24">
+        <h2 class="agenda-title">Kode di 'Kloning' <span class="highlight-gradient">(Hasil Fotokopi)</span></h2>
+        <p style="font-size: 1.2rem; text-align: center; max-width: 800px; margin-bottom: 20px;">
+            Skrip baru di Sprite API sekarang jadi begini:
+        </p>
+        <img src="https://images2.imgbox.com/3a/ec/NSdDJh6w_o.png" alt="Kode lengkap kloning" style="height: 350px; background: white; padding: 10px; border-radius: 8px;">
+    </div>
+
+    <!-- Slide 25: Tes 2 -->
+    <div class="slide" id="slide25">
+        <h2 class="agenda-title">Mari Kita Tes <span class="highlight-gradient">(Lagi)!</span></h2>
+        <p style="font-size: 1.3rem; text-align: center; max-width: 800px; margin-bottom: 20px;">
+            Coba tekan bendera hijau!<br>...<br>...<br>
+            Apinya muncul! Dan beranimasi!<br>
+            <strong>TAPI... kok apinya menumpuk di satu tempat??</strong>
+        </p>
+        <img src="https://images2.imgbox.com/69/fb/KYNcC4x6_o.gif" alt="Api menumpuk" style="width: 350px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.2);">
+    </div>
+
+    <!-- Slide 26: Jawaban Tes 2 -->
+    <div class="slide" id="slide26">
+        <h2 class="agenda-title">Jawabannya...</h2>
+        <p style="font-size: 1.5rem; text-align: center; max-width: 800px; margin: 0 auto; background-color: #f0f9ff; padding: 20px; border-radius: 12px; border-left: 4px solid #008080;">
+            Karena kita mem-fotokopi 10 kali di tempat yang <strong>SAMA!</strong><br>
+            Kita tidak pindah tempat!<br><br>
+            Bayangkan fotokopi 10 lembar, tapi kertasnya tidak digeser. Ya, menumpuk!
+        </p>
+    </div>
+
+    <!-- Slide 27: Misi 3 -->
+    <div class="slide" id="slide27">
+        <h2 class="agenda-title">Misi 3: <span class="highlight-gradient">Menyebarkan Api!</span></h2>
+        <p style="font-size: 1.3rem; text-align: center; max-width: 800px;">
+            Kita harus menggeser 'cetakan' apinya setiap kali selesai 1 kali fotokopi.<br><br>
+            Ayo kembali ke Skrip 1 (`when green flag clicked`).
+        </p>
+    </div>
+
+    <!-- Slide 28: Langkah 6 -->
+    <div class="slide" id="slide28">
+        <h2 class="agenda-title">Langkah 6: <span class="highlight-gradient">Geser ke Kanan!</span></h2>
+        <p style="font-size: 1.3rem; text-align: center; max-width: 800px;">
+            Di dalam `repeat 10`, kita tambahkan 1 blok lagi:<br><br>
+            `create clone of myself`<br>
+            `change x by 40` (Geser ke kanan 40 langkah)
+        </p>
+        <img src="https://images2.imgbox.com/4c/93/TugSDVHN_o.png" alt="Kode geser ke kanan" style="height: 350px; background: white; padding: 10px; border-radius: 8px; margin-top: 10px;">
+    </div>
+
+    <!-- Slide 29: Cara Kerja -->
+    <div class="slide" id="slide29">
+        <h2 class="agenda-title">Cara Kerjanya...</h2>
+        <p style="font-size: 1.2rem; text-align: left; max-width: 700px; background-color: #f0f9ff; padding: 20px; border-radius: 12px; line-height: 1.8;">
+            Sekarang, komputer akan membaca ini 10 kali:<br>
+            <strong>Fotokopi!</strong> (Api 1 muncul di X: -200)<br>
+            <strong>Geser ke kanan 40 langkah.</strong> (Posisi jadi X: -160)<br>
+            <strong>Fotokopi!</strong> (Api 2 muncul di X: -160)<br>
+            <strong>Geser ke kanan 40 langkah.</strong> (Posisi jadi X: -120)<br>
+            <strong>Fotokopi!</strong> (Api 3 muncul di X: -120)<br>
+            ...dan seterusnya...
+        </p>
+    </div>
+
+    <!-- Slide 30: Kode Lengkap Skrip 1 -->
+    <div class="slide" id="slide30">
+        <h2 class="agenda-title">Kode Lengkap <span class="highlight-gradient">(Skrip 1 - Cetakan)</span></h2>
+        <img src="https://images2.imgbox.com/e2/b2/I4MTjknx_o.png" alt="Kode lengkap skrip 1" style="height: 350px; background: white; padding: 10px; border-radius: 8px;">
+    </div>
+
+    <!-- Slide 31: Kode Lengkap Skrip 2 -->
+    <div class="slide" id="slide31">
+        <h2 class="agenda-title">Kode Lengkap <span class="highlight-gradient">(Skrip 2 - Kloning)</span></h2>
+        <img src="https://images2.imgbox.com/a7/3a/dpcsLsC7_o.png" alt="Kode lengkap skrip 2" style="height: 350px; background: white; padding: 10px; border-radius: 8px;">
+    </div>
+
+    <!-- Slide 32: Tes Besar -->
+    <div class="slide solid-teal-bg" id="slide32">
+        <h2 class="main-header" style="color: #f2c140;">WAKTUNYA MAIN! (TES BESAR!)</h2>
+        <img src="https://images2.imgbox.com/2c/57/XdotpCB9_o.gif" alt="Api menyebar" style="width: 550px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); margin: 20px 0;">
+        <p class="main-body" style="font-size: 1.3rem; text-align: center; max-width: 850px;">
+            Ayo tekan bendera hijau!<br>
+            Bagaimana hasilnya?<br>
+            <strong>APINYA MENYEBAR! Keren!</strong>
+        </p>
+    </div>
+
+    <!-- Slide 33: Tantangan Bonus -->
+    <div class="slide" id="slide33">
+        <h2 class="agenda-title">Tantangan BONUS! <span class="highlight-gradient">(Inovasi)</span></h2>
+        <p style="font-size: 1.3rem; text-align: center; max-width: 800px; margin-bottom: 20px;">
+            Seru, kan? Sekarang giliran kamu berkreasi!<br>
+            Tantangan 5 menit!
+        </p>
+        <div style="display: flex; gap: 20px;">
+            <p style="font-size: 1.2rem; text-align: center;">Bagaimana caranya supaya apinya menyebar ke <strong>KIRI</strong>?</p>
+            <p style="font-size: 1.2rem; text-align: center;">Bagaimana caranya supaya apinya menyebar ke <strong>ATAS</strong>?</p>
+        </div>
+    </div>
+
+    <!-- Slide 34: Apa yang kita pelajari -->
+    <div class="slide" id="slide34">
+        <h2 class="agenda-title">Apa yang Kita Pelajari?</h2>
+        <p style="font-size: 1.3rem; text-align: center; max-width: 800px; margin-bottom: 30px;">
+            Hari ini kita belajar 3 blok SUPER PENTING:
+        </p>
+        <div class="agenda-grid" style="grid-template-columns: 1fr 1fr 1fr; max-width: 1000px;">
+            <div class="agenda-card"><p class="agenda-card-text">`repeat 10`:<br>Mengulang perintah biar hemat waktu.</p></div>
+            <div class="agenda-card"><p class="agenda-card-text">`create clone of myself`:<br>"Tombol Fotokopi" untuk membuat kloning.</p></div>
+            <div class="agenda-card"><p class="agenda-card-text">`when I start as a clone`:<br>Perintah khusus untuk kloning.</p></div>
+        </div>
+    </div>
+
+    <!-- Slide 35: Feedback Form -->
+    <div class="slide" id="slide35">
+        <h2 class="agenda-title">Bagaimana Kelas Hari Ini?</h2>
+        <p style="font-size: 1.2rem; margin-bottom: 20px; max-width: 800px; text-align: center;">Bantu kami menjadi lebih baik dengan mengisi form feedback singkat ya!</p>
+        <div class="pretest-container" style="gap: 20px; padding: 20px;">
+            <div class="pretest-qr">
+                <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=https://bit.ly/feedback_class_dms" alt="QR Code Feedback">
+            </div>
+            <div class.pretest-timer-box">
+                <p class="pretest-link" style="font-weight: bold;">Pindai QR Code atau buka link:</p>
+                <p class="pretest-link" style="background-color: #eee; padding: 10px 20px; border-radius: 8px; font-family: monospace; margin-top: 10px; font-size: 1.2rem;">bit.ly/feedback_class_dms</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 35: Penutup -->
+    <div class="slide solid-teal-bg" id="slide36">
+        <h1 class="main-header" style="color: #f2c140;">Sampai Jumpa, Tim Penyelamat!</h1>
+        <img src="https://lh5.googleusercontent.com/proxy/Qr6GHLiuaS8BqB7vJlc-cdW3RFSo4rZfQ_IGGnlQLuilxLFoTOII_3bJbfrwhh4to4OPKfKZrp2EP0RllX9rNCUxtJFTp3DAFojcvA4T_cWVFDTX7So_ADlNQujXeMuGU-b3w6jjY2xMP6TJ" alt="Helikopter panik" style="width: 350px; margin: 20px 0;">
+        <p style="font-size: 1.5rem; font-weight: 600; color: white; text-align: center;">
+            WAAAAH, BAHAYA! Hutan kita sekarang penuh dengan api!<br>
+            Bagaimana cara kita memadamkannya?
+        </p>
+        <p style="font-size: 1.2rem; color: white; opacity: 0.9; text-align: center; margin-top: 10px;">
+            Kita lanjutkan di pertemuan berikutnya! (Jangan lupa di-SAVE!)
+        </p>
+    </div>
+
+    <button class="nav-button" id="prevBtn" onclick="changeSlide(-1)">&#9664;</button>
+    <button class="nav-button" id="nextBtn" onclick="changeSlide(1)">&#9658;</button>
+</div>
+
+<script>
+    const slides = document.querySelectorAll('.slide');
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    const globalLogoLeft = document.getElementById('globalLogoLeft');
+    const globalLogoRight = document.getElementById('globalLogoRight');
+    let currentSlide = 0;
+
+    function showSlide(index, direction = 'next') {
+        if (index === currentSlide && slides[index].classList.contains('active')) {
+            return; // Jangan lakukan apa-apa jika slide sudah aktif
+        }
+
+        const oldSlide = slides[currentSlide];
+        const newSlide = slides[index];
+
+        // Hapus semua kelas animasi sebelumnya
+        slides.forEach((slide, i) => {
+            slide.classList.remove('active', 'is-next', 'is-exiting');
+            // Atur z-index dasar
+            slide.style.zIndex = 1;
+        });
+
+        if (direction === 'next') {
+            oldSlide.style.zIndex = 10;
+            newSlide.style.zIndex = 11;
+            newSlide.classList.add('is-next');
+            
+            // Trigger transisi
+            requestAnimationFrame(() => {
+                newSlide.classList.add('active');
+                newSlide.classList.remove('is-next');
+            });
+        } else { // Arah 'prev'
+            oldSlide.style.zIndex = 11;
+            newSlide.style.zIndex = 10;
+            newSlide.classList.add('active'); // Langsung aktifkan slide di bawahnya
+            oldSlide.classList.add('is-exiting'); // Geser slide saat ini keluar
+        }
+
+        currentSlide = index;
+        slides[index].classList.add('active');
+
+        // VISIBILITAS LOGO DI SEMUA SLIDE (TERMASUK SLIDE 1)
+        // Kita tidak menyembunyikan logo di slide 0 lagi
+        globalLogoLeft.style.opacity = 1;
+        globalLogoRight.style.opacity = 1;
+        globalLogoLeft.style.pointerEvents = 'auto';
+        globalLogoRight.style.pointerEvents = 'auto';
+        
+        // VISIBILITAS NAVIGASI DI SEMUA SLIDE (TERMASUK SLIDE 1)
+        prevBtn.style.opacity = 1;
+        nextBtn.style.opacity = 1;
+        
+        // Atur warna panah navigasi berdasarkan slide (untuk kontras di slide 1)
+        const isDarkSlide = slides[index].id === 'slide1' || slides[index].classList.contains('solid-teal-bg');
+        const navButtons = document.querySelectorAll('.nav-button');
+        navButtons.forEach(btn => {
+            if (isDarkSlide) {
+                btn.style.backgroundColor = 'rgba(255, 255, 255, 0.2)'; // Lebih terang di BG gelap
+                btn.style.color = 'white';
+            } else {
+                btn.style.backgroundColor = 'rgba(0, 128, 128, 0.8)'; // Teal di BG terang
+                btn.style.color = 'white';
+            }
+        });
+
+        // Update status tombol navigasi
+        prevBtn.disabled = currentSlide === 0;
+        nextBtn.disabled = currentSlide === slides.length - 1;
+    }
+
+    function changeSlide(direction) {
+        const newIndex = currentSlide + direction;
+
+        if (newIndex >= 0 && newIndex < slides.length) {
+            const moveDirection = direction === 1 ? 'next' : 'prev';
+            showSlide(newIndex, moveDirection);
+        }
+    }
+    
+    // FUNGSI KEYBOARD UNTUK NAVIGASI
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'ArrowRight') {
+            changeSlide(1);
+        } else if (e.key === 'ArrowLeft') {
+            changeSlide(-1);
+        }
+    });
+
+    document.addEventListener('DOMContentLoaded', () => {
+        showSlide(currentSlide);
+
+        // --- LOGIKA TIMER PRE-TEST ---
+        const timerDisplay = document.getElementById('timer-display');
+        const startBtn = document.getElementById('start-timer-btn');
+        const restartBtn = document.getElementById('restart-timer-btn');
+        
+        let timerInterval = null;
+        let timeLeft = 10 * 60; // 10 menit dalam detik
+
+        function updateTimerDisplay() {
+            if (!timerDisplay) return;
+            const minutes = Math.floor(timeLeft / 60);
+            const seconds = timeLeft % 60;
+            timerDisplay.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        }
+
+        function startTimer() {
+            if (timerInterval) return; // Mencegah interval ganda
+
+            startBtn.disabled = true;
+
+            timerInterval = setInterval(() => {
+                timeLeft--;
+                updateTimerDisplay();
+
+                if (timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    timerDisplay.textContent = "WAKTU HABIS";
+                }
+            }, 1000);
+        }
+
+        function restartTimer() {
+            clearInterval(timerInterval);
+            timerInterval = null;
+            timeLeft = 10 * 60;
+            updateTimerDisplay();
+            startBtn.disabled = false;
+        }
+
+        if (startBtn && restartBtn) {
+            startBtn.addEventListener('click', startTimer);
+            restartBtn.addEventListener('click', restartTimer);
+        }
+    });
+</script>
+
+</body>
+</html>
