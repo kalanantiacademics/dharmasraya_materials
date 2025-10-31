@@ -188,12 +188,12 @@
         .nav-button:hover {
             background-color: #f2c140; /* Kuning Hover */
             color: #333;
-            transform: scale(1.1);
+            transform: translateY(-50%) scale(1.1); /* Gabungkan transform */
         }
         .nav-button:disabled {
             background-color: #ccc;
             cursor: not-allowed;
-            transform: scale(1);
+            transform: translateY(-50%) scale(1); /* Gabungkan transform */
         }
 
         /* Slide Content kompensasi untuk logo agar tidak tertutup */
@@ -777,7 +777,7 @@
                 <p class="pretest-link" style="font-weight: bold;">Pindai QR Code atau buka link:</p>
                 <p class="pretest-link" style="background-color: #eee; padding: 10px 20px; border-radius: 8px; font-family: monospace; margin-top: 10px; font-size: 1.2rem;">bit.ly/kumpul_tugas_dms</p>
             </div>
-        </p>
+        </div> <!-- Tag </p> yang salah sudah dihapus dari sini -->
     </div>
 
     <!-- Slide 8: Penutup -->
@@ -794,15 +794,24 @@
     </div>
 </div>
 
+<!-- === PERBAIKAN JAVASCRIPT === -->
 <script>
-    const slides = document.querySelectorAll('.slide');
-    const prevBtn = document.getElementById('prevBtn');
-    const nextBtn = document.getElementById('nextBtn');
-    const globalLogoLeft = document.getElementById('globalLogoLeft');
-    const globalLogoRight = document.getElementById('globalLogoRight');
+    // Deklarasikan variabel di scope global
+    let slides;
+    let prevBtn;
+    let nextBtn;
+    let globalLogoLeft;
+    let globalLogoRight;
     let currentSlide = 0;
-
+    
+    // Definisikan fungsi di scope global (karena dipanggil oleh onclick)
     function showSlide(index, direction = 'next') {
+        // Tambahkan pengecekan untuk memastikan elemen sudah dimuat
+        if (!slides || !prevBtn || !nextBtn || !globalLogoLeft || !globalLogoRight) {
+            console.error("Elemen navigasi/slide belum dimuat. Fungsi showSlide() dibatalkan.");
+            return; 
+        }
+
         if (index === currentSlide && slides[index].classList.contains('active')) {
             return; // Jangan lakukan apa-apa jika slide sudah aktif
         }
@@ -838,7 +847,6 @@
         slides[index].classList.add('active');
 
         // VISIBILITAS LOGO DI SEMUA SLIDE (TERMASUK SLIDE 1)
-        // Kita tidak menyembunyikan logo di slide 0 lagi
         globalLogoLeft.style.opacity = 1;
         globalLogoRight.style.opacity = 1;
         globalLogoLeft.style.pointerEvents = 'auto';
@@ -884,57 +892,26 @@
         }
     });
 
+    // Tunggu DOM dimuat, BARU inisialisasi variabel dan panggil showSlide
     document.addEventListener('DOMContentLoaded', () => {
+        // Inisialisasi variabel elemen di sini
+        slides = document.querySelectorAll('.slide');
+        prevBtn = document.getElementById('prevBtn');
+        nextBtn = document.getElementById('nextBtn');
+        globalLogoLeft = document.getElementById('globalLogoLeft');
+        globalLogoRight = document.getElementById('globalLogoRight');
+
+        // Panggil showSlide pertama kali
         showSlide(currentSlide);
 
-        // --- LOGIKA TIMER PRE-TEST ---
-        const timerDisplay = document.getElementById('timer-display');
-        const startBtn = document.getElementById('start-timer-btn');
-        const restartBtn = document.getElementById('restart-timer-btn');
-        
-        let timerInterval = null;
-        let timeLeft = 10 * 60; // 10 menit dalam detik
-
-        function updateTimerDisplay() {
-            if (!timerDisplay) return;
-            const minutes = Math.floor(timeLeft / 60);
-            const seconds = timeLeft % 60;
-            timerDisplay.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-        }
-
-        function startTimer() {
-            if (timerInterval) return; // Mencegah interval ganda
-
-            startBtn.disabled = true;
-
-            timerInterval = setInterval(() => {
-                timeLeft--;
-                updateTimerDisplay();
-
-                if (timeLeft <= 0) {
-                    clearInterval(timerInterval);
-                    timerDisplay.textContent = "WAKTU HABIS";
-                }
-            }, 1000);
-        }
-
-        function restartTimer() {
-            clearInterval(timerInterval);
-            timerInterval = null;
-            timeLeft = 10 * 60;
-            updateTimerDisplay();
-            startBtn.disabled = false;
-        }
-
-        if (startBtn && restartBtn) {
-            startBtn.addEventListener('click', startTimer);
-            restartBtn.addEventListener('click', restartTimer);
-        }
+        // --- LOGIKA TIMER YANG TIDAK RELEVAN SUDAH DIHAPUS ---
     });
 </script>
+<!-- === AKHIR PERBAIKAN JAVASCRIPT === -->
 
 <button class="nav-button" id="prevBtn" onclick="changeSlide(-1)">&#9664;</button>
 <button class="nav-button" id="nextBtn" onclick="changeSlide(1)">&#9658;</button>
 
 </body>
 </html>
+
