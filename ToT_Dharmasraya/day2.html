@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ToT Scratch Dharmasraya - HARI 2</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Custom styles */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f2f5;
+            overflow: hidden; /* Hide scrollbars */
+        }
+
+        :root {
+            --brand-lime: #D4FF44;
+            --brand-blue: #302DE4;
+            --brand-dark: #1F1F1F;
+        }
+        
+        /* Background pattern styling */
+        .bg-pattern {
+            position: relative;
+            background: linear-gradient(135deg, #eef7ff 0%, #ffffff 100%);
+            isolation: isolate;
+        }
+
+        /* Starburst SVG for background elements */
+        .starburst {
+            position: absolute;
+            width: 100px;
+            height: 100px;
+            color: var(--brand-blue);
+            z-index: 0;
+            opacity: 0.8;
+        }
+
+        /* Full-screen presentation container */
+        #presentation-wrapper {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+        }
+
+        /* Styles for each slide */
+        .slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 5%;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.6s ease-in-out, transform 0.6s ease-in-out, visibility 0.6s;
+            transform: scale(0.95);
+            background-color: white;
+            overflow: hidden;
+            text-align: center;
+        }
+
+        .slide.active {
+            opacity: 1;
+            visibility: visible;
+            transform: scale(1);
+            z-index: 10;
+        }
+
+        /* Animation for slides moving out to the left */
+        .slide.exit-left {
+            transform: translateX(-100%) scale(0.95);
+            opacity: 0;
+        }
+        
+        /* Animation for slides moving out to the right */
+        .slide.exit-right {
+            transform: translateX(100%) scale(0.95);
+            opacity: 0;
+        }
+        
+        /* Animation for slides entering from the right */
+        .slide.enter-right {
+             transform: translateX(100%) scale(0.95);
+        }
+        
+        /* Animation for slides entering from the left */
+        .slide.enter-left {
+            transform: translateX(-100%) scale(0.95);
+        }
+
+        /* Navigation buttons styling */
+        .nav-arrow {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 20;
+            background-color: rgba(0, 0, 0, 0.3);
+            color: white;
+            border-radius: 50%;
+            width: 48px;
+            height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .nav-arrow:hover {
+            background-color: var(--brand-blue);
+            transform: translateY(-50%) scale(1.1);
+        }
+        #prev-slide { left: 20px; }
+        #next-slide { right: 20px; }
+
+        /* Slide indicator dots styling */
+        #slide-indicators {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 20;
+            display: flex;
+            gap: 12px;
+            background-color: rgba(0,0,0,0.2);
+            padding: 8px 16px;
+            border-radius: 99px;
+        }
+        .indicator-dot {
+            width: 12px;
+            height: 12px;
+            background-color: rgba(255, 255, 255, 0.5);
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .indicator-dot.active {
+            background-color: var(--brand-lime);
+            transform: scale(1.2);
+        }
+        
+        /* Simple Animation for Cards */
+        @keyframes card-fade-in-up {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .slide.active .animate-card {
+            animation: card-fade-in-up 0.7s ease-out forwards;
+            opacity: 0; /* Start as invisible */
+        }
+        .slide.active .animate-card-delay-1 { animation-delay: 0.15s; }
+        .slide.active .animate-card-delay-2 { animation-delay: 0.3s; }
+        .slide.active .animate-card-delay-3 { animation-delay: 0.45s; }
+    </style>
+</head>
+<body>
+    <!-- Starburst SVG Definition -->
+    <svg width="0" height="0" class="absolute">
+      <defs>
+        <symbol id="starburst-svg" viewBox="0 0 100 100">
+          <path d="M50 0 L55.9 34.5 L85.35 14.65 L65.5 44.1 L100 50 L65.5 55.9 L85.35 85.35 L55.9 65.5 L50 100 L44.1 65.5 L14.65 85.35 L34.5 55.9 L0 50 L34.5 44.1 L14.65 14.65 L44.1 34.5 Z" fill="currentColor"/>
+        </symbol>
+      </defs>
+    </svg>
+
+    <div id="presentation-container" class="relative w-full">
+        <header class="absolute top-0 left-0 right-0 p-6 flex justify-between items-center z-30">
+            <!-- Logo Ruangguru (placeholder) -->
+            <img src="https://cdn-web-2.ruangguru.com/landing-pages/assets/e7d93748-818d-462d-be57-7db1e479cd62.png" alt="Ruangguru Logo" class="h-10">
+            <!-- Logo Kabupaten Dharmasraya -->
+            <img src="https://upload.wikimedia.org/wikipedia/commons/f/f9/Lambang_Kabupaten_Dharmasraya.png" alt="Dharmasraya Logo" class="h-12">
+        </header>
+
+        <div id="presentation-wrapper">
+            <!-- BAGIAN 1: PEMBUKAAN HARI 2 (120 Menit) -->
+
+            <!-- Slide 1: Judul Utama -->
+            <div id="slide-0" class="slide active" style="background-color: var(--brand-lime);">
+                <svg class="starburst" style="top: 15%; left: 10%; width:80px; height:80px; color: white; transform: rotate(20deg); opacity: 0.7;"><use xlink:href="#starburst-svg"></use></svg>
+                <svg class="starburst" style="bottom: 20%; right: 15%; transform: rotate(-15deg); color: var(--brand-blue);"><use xlink:href="#starburst-svg"></use></svg>
+                <div class="z-10">
+                    <h2 class="text-xl font-semibold text-gray-700">Training of Trainers (ToT) | HARI 2</h2>
+                    <h1 class="text-6xl lg:text-7xl font-black text-[var(--brand-dark)] tracking-tighter leading-tight mt-2">Membuat Proyek Interaktif</h1>
+                    <p class="text-3xl lg:text-4xl font-bold text-[var(--brand-blue)] mt-3">Kontrol, Sensor, dan Ide Proyek</p>
+                </div>
+            </div>
+
+            <!-- Slide 2: Apersepsi (Review) -->
+            <div id="slide-1" class="slide bg-pattern">
+                 <h2 class="text-4xl font-black text-gray-800 mb-4">Ingat Animasi Kita Kemarin?</h2>
+                 <p class="text-2xl text-gray-600 mb-8">Kita harus klik-klik terus agar karakternya bergerak.</p>
+                 <div class="bg-white p-8 rounded-2xl shadow-xl border-2 border-gray-100 max-w-3xl">
+                    <p class="text-2xl font-bold text-gray-700">Pertanyaan Hari Ini...</p>
+                    <p class="text-3xl text-[var(--brand-blue)] font-bold mt-4">"Bagaimana caranya agar animasi berjalan OTOMATIS dan bisa merespon INPUT dari kita?"</p>
+                 </div>
+            </div>
+
+            <!-- Slide 3: Tujuan Hari Ini -->
+            <div id="slide-2" class="slide bg-pattern">
+                <h2 class="text-4xl font-black text-gray-800 mb-8">Tujuan Sesi Hari 2 (120 Menit)</h2>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8 w-full max-w-6xl">
+                    <div class="bg-white p-6 rounded-2xl text-center border-2 border-gray-100 shadow-xl animate-card animate-card-delay-1">
+                        <p class="text-7xl">🔄</p>
+                        <p class="text-2xl font-semibold mt-4 text-gray-800">Menggunakan blok <strong class="text-orange-500">Kontrol</strong> (misal: 'selamanya') untuk membuat animasi otomatis.</p>
+                    </div>
+                    <div class="bg-white p-6 rounded-2xl text-center border-2 border-gray-100 shadow-xl animate-card animate-card-delay-2">
+                        <p class="text-7xl">🖱️</p>
+                        <p class="text-2xl font-semibold mt-4 text-gray-800">Menggunakan blok <strong class="text-cyan-500">Sensor</strong> (misal: 'tanya') untuk menerima input pengguna.</p>
+                    </div>
+                    <div class="bg-white p-6 rounded-2xl text-center border-2 border-gray-100 shadow-xl animate-card animate-card-delay-3">
+                        <p class="text-7xl">💡</p>
+                        <p class="text-2xl font-semibold mt-4 text-gray-800">Merancang ide proyek Scratch untuk mata pelajaran (PPKn, MTK, Fisika, dll).</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- BAGIAN 2: BLOK KONTROL (40 Menit) -->
+            
+            <!-- Slide 4: Blok Kontrol (Control) -->
+            <div id="slide-3" class="slide bg-pattern">
+                <h2 class="text-4xl font-black text-gray-800 mb-8">Sang Pengatur Alur: Blok Kontrol (Control)</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 w-full max-w-5xl">
+                    <div class="bg-orange-500 text-white p-6 rounded-2xl shadow-xl flex flex-col items-center justify-start">
+                        <img src="https://user-images.githubusercontent.com/46141631/104115638-48447d00-534c-11eb-8bad-c9312cdd5d8a.gif" alt="Forever block" class="h-[350px]">
+                        <h3 class="text-2xl font-bold mt-2">Selamanya (Forever)</h3>
+                        <p class="mt-2 text-lg font-semibold">Menjalankan perintah di dalamnya berulang-ulang tanpa henti.</p>
+                    </div>
+                    <div class="bg-orange-500 text-white p-6 rounded-2xl shadow-xl flex flex-col items-center justify-start">
+                        <img src="https://images2.imgbox.com/43/ce/lkSukg2g_o.gif" alt="Repeat block" class="h-[350px]">
+                        <h3 class="text-2xl font-bold mt-2">Ulangi (Repeat)</h3>
+                        <p class="mt-2 text-lg font-semibold">Menjalankan perintah sejumlah kali yang kita tentukan.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Slide 5: Praktik Terbimbing 1 - Selamanya -->
+            <div id="slide-4" class="slide bg-pattern">
+                 <h2 class="text-4xl font-black text-gray-800 mb-2">Praktik #1: Kucing Berjalan Otomatis</h2>
+                 <p class="text-xl text-gray-600 mb-6">Ambil skrip kita kemarin, lalu 'bungkus' dengan blok <strong class="text-orange-500">'selamanya'</strong>.</p>
+                 <div class="bg-gray-100 p-8 rounded-2xl shadow-lg border-2 border-gray-200 max-w-4xl">
+                     <img src="https://user-images.githubusercontent.com/2855464/34061756-9803e268-e1b7-11e7-8fdf-70cca622a1a3.gif" alt="Kode Blok Jalan Otomatis" class="rounded-lg">
+                     <p class="mt-4 text-lg">Jangan lupa tambahkan <strong class="text-orange-500">'tunggu'</strong> dan <strong class="text-blue-500">'jika di tepi, pantulkan'</strong>!</p>
+                 </div>
+            </div>
+            
+            <!-- BAGIAN 3: BLOK SENSOR (40 Menit) -->
+
+            <!-- Slide 6: Blok Sensor (Sensing) -->
+            <div id="slide-5" class="slide bg-pattern">
+                <h2 class="text-4xl font-black text-gray-800 mb-8">Membuat Sprite 'Merasa': Blok Sensor (Sensing)</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 w-full max-w-5xl">
+                    <div class="bg-cyan-500 text-white p-6 rounded-2xl shadow-xl flex flex-col items-center justify-start">
+                        <img src="https://scratch.oneoffcoder.com/_images/04-ask-name-wait.png" alt="Ask block" class="h-14 rounded">
+                        <h3 class="text-2xl font-bold mt-2">Tanya (Ask)</h3>
+                        <p class="mt-2 text-lg font-semibold">Memunculkan kotak input agar pengguna bisa mengetik jawaban.</p>
+                    </div>
+                    <div class="bg-cyan-500 text-white p-6 rounded-2xl shadow-xl flex flex-col items-center justify-start">
+                        <img src="https://scratch.oneoffcoder.com/_images/05-key-space-pressed.png" alt="Key pressed block" class="h-14 rounded">
+                        <h3 class="text-2xl font-bold mt-2">Tombol Ditekan (Key Pressed)</h3>
+                        <p class="mt-2 text-lg font-semibold">Memicu aksi ketika kita menekan tombol di keyboard (dari kategori Kejadian/Events).</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Slide 7: Praktik Terbimbing 2 - Kuis -->
+            <div id="slide-6" class="slide bg-pattern">
+                 <h2 class="text-4xl font-black text-gray-800 mb-2">Praktik #2: Kuis Sederhana (Interaktif)</h2>
+                 <p class="text-xl text-gray-600 mb-6">Mari buat si Kucing bertanya nama kita!</p>
+                 <div class="bg-gray-100 p-8 rounded-2xl shadow-lg border-2 border-gray-200 max-w-4xl">
+                     <img src="https://miro.medium.com/v2/resize:fit:1400/1*cjerqN_VS7-u_EdezqQj8w.png" alt="Kode Blok Kuis" class="rounded-lg">
+                     <p class="mt-4 text-lg">Blok <strong class="text-cyan-500">'jawaban'</strong> (answer) ada di Sensor. Blok <strong class="text-green-500">'gabungkan'</strong> (join) ada di Operator.</p>
+                 </div>
+            </div>
+
+            <!-- Slide 8: Praktik Mandiri -->
+            <div id="slide-7" class="slide" style="background-color: var(--brand-blue); color: white;">
+                <h2 class="text-5xl font-black mb-4">Waktunya Proyek Mandiri! (20 Menit)</h2>
+                <p class="text-2xl opacity-80 mb-8">Pilih satu tantangan ini, atau buat idemu sendiri.</p>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 w-full max-w-5xl text-gray-800">
+                    <div class="bg-white p-6 rounded-2xl shadow-lg">
+                        <h3 class="text-2xl font-bold text-[var(--brand-blue)]">Tantangan #1: Kuis</h3>
+                        <p class="mt-2 text-lg">Buat kuis 1 pertanyaan (Contoh: "Apa ibukota Sumatera Barat?").</p>
+                    </div>
+                    <div class="bg-white p-6 rounded-2xl shadow-lg">
+                        <h3 class="text-2xl font-bold text-[var(--brand-blue)]">Tantangan #2: Gerak Keyboard</h3>
+                        <p class="mt-2 text-lg">Buat sprite bergerak ke kanan saat <strong class="uppercase">tombol panah kanan</strong> ditekan.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- BAGIAN 4: IDE PROYEK & PENUTUP (30 Menit) -->
+
+            <!-- Slide 9: Sesi Berbagi -->
+            <div id="slide-8" class="slide bg-pattern">
+                <h2 class="text-6xl font-black text-gray-800">Panggung Apresiasi</h2>
+                <p class="text-3xl text-gray-600 mt-4">Waktunya berbagi hasil karya Kuis atau Gerak!</p>
+                <p class="text-8xl mt-8">💡</p>
+            </div>
+
+            <!-- Slide 10: Ide Proyek di Kelas -->
+            <div id="slide-9" class="slide bg-pattern">
+                <h2 class="text-5xl font-black text-gray-800 mb-8">Saran: Menggunakan Scratch untuk Mengajar</h2>
+                <div class="bg-white p-12 rounded-3xl shadow-2xl border-2 border-gray-200 max-w-4xl text-center animate-card">
+                    <h3 class="text-3xl font-bold text-gray-800">Scratch bisa digunakan untuk berbagai mata pelajaran!</h3>
+                    <p class="text-xl mt-4 text-gray-600">Mari kita lihat beberapa contoh proyek yang bisa menjadi inspirasi untuk di kelas.</p>
+                </div>
+            </div>
+
+            <!-- Slide 11: Contoh Kuis PPKn -->
+            <div id="slide-10" class="slide bg-pattern">
+                <h2 class="text-4xl font-black text-gray-800 mb-6">Contoh Proyek: Kuis PPKn</h2>
+                <div class="bg-white p-6 rounded-2xl shadow-2xl border-2 border-gray-200">
+                    <iframe src="https://scratch.mit.edu/projects/1188622870/embed" allowtransparency="true" width="485" height="402" frameborder="0" scrolling="no" allowfullscreen></iframe>
+                </div>
+                <p class="mt-6 text-xl text-gray-700 max-w-2xl">Buat kuis interaktif tentang pahlawan, sila Pancasila, atau sejarah lokal Dharmasraya.</p>
+            </div>
+
+            <!-- Slide 12: Contoh Kuis Fisika -->
+            <div id="slide-11" class="slide bg-pattern">
+                <h2 class="text-4xl font-black text-gray-800 mb-6">Contoh Proyek: Kuis Fisika</h2>
+                <div class="bg-white p-6 rounded-2xl shadow-2xl border-2 border-gray-200">
+                    <iframe src="https://scratch.mit.edu/projects/910237753/embed" allowtransparency="true" width="485" height="402" frameborder="0" scrolling="no" allowfullscreen></iframe>
+                </div>
+                <p class="mt-6 text-xl text-gray-700 max-w-2xl">Buat soal cerita atau kuis hitung cepat (rumus luas, kecepatan, dll).</p>
+            </div>
+
+            <!-- Slide 13: Contoh Cerita Interaktif -->
+            <div id="slide-12" class="slide bg-pattern">
+                <h2 class="text-4xl font-black text-gray-800 mb-6">Contoh Proyek: Cerita Interaktif (B. Indo)</h2>
+                <div class="bg-white p-6 rounded-2xl shadow-2xl border-2 border-gray-200">
+                    <iframe src="https://scratch.mit.edu/projects/583797871/embed" allowtransparency="true" width="485" height="402" frameborder="0" scrolling="no" allowfullscreen></iframe>
+                </div>
+                <p class="mt-6 text-xl text-gray-700 max-w-2xl">Siswa dapat membuat dialog antar 2 sprite, atau cerita "pilih petualanganmu sendiri".</p>
+            </div>
+
+            <!-- Slide 14: Post-Test -->
+            <div id="slide-13" class="slide bg-pattern">
+                <div class="text-center mb-8">
+                    <h2 class="text-5xl font-black text-gray-800">Cek Akhir: Post-Test (10 Menit)</h2>
+                    <p class="text-xl text-gray-600 mt-2">Mari kita lihat sejauh mana pemahaman kita setelah 2 hari ini.</p>
+                </div>
+                <div class="flex items-center gap-12 bg-white p-10 rounded-3xl shadow-2xl border-2 border-gray-200 animate-card">
+                    <img src="https://api.qrserver.com/v1/create-qr-code/?size=256x256&data=https://bit.ly/posttest_tot_dms" alt="QR Code Post-test" class="rounded-2xl shadow-lg w-64 hidden md:block">
+                    <div class="text-center">
+                        <p class="text-2xl font-bold text-gray-700">Waktu Pengerjaan</p>
+                        <p id="timer-display-post" class="text-8xl font-black text-[var(--brand-blue)] my-2">10:00</p>
+                        <div class="flex justify-center gap-3 mb-6">
+                            <button id="start-timer-btn-post" class="bg-[var(--brand-blue)] hover:bg-blue-800 text-white font-bold py-3 px-6 rounded-xl transition-all shadow-lg hover:shadow-xl">Mulai</button>
+                            <button id="restart-timer-btn-post" class="bg-gray-500 hover:bg-gray-600 text-white font-bold py-3 px-6 rounded-xl transition-all shadow-lg hover:shadow-xl">Ulangi</button>
+                        </div>
+                        <p class="text-xl font-mono bg-gray-100 p-4 rounded-lg tracking-widest">bit.ly/posttest_tot_dms</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Slide 15: Feedback -->
+            <div id="slide-14" class="slide bg-pattern">
+                <div class="text-center w-full max-w-3xl">
+                    <h2 class="text-5xl font-black text-gray-800 mb-2">Mohon Isi Form Feedback</h2>
+                    <p class="text-xl mb-8 text-gray-600">Masukan Anda sangat berharga untuk perbaikan kami ke depannya.</p>
+                    <div class="bg-white p-8 rounded-2xl shadow-xl border-2 border-gray-200 flex flex-col md:flex-row items-center gap-8 animate-card">
+                        <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=https://bit.ly/feedback_tot_dms" alt="QR Code Feedback" class="w-48 h-48 rounded-lg">
+                        <div class="text-left">
+                            <p class="text-lg text-gray-700">Pindai QR code di samping atau kunjungi tautan di bawah ini untuk mengisi form feedback.</p>
+                            <p class="mt-4 font-mono bg-gray-100 p-4 rounded-lg text-center text-lg tracking-wider">bit.ly/feedback_tot_dms</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Slide 16: Terima Kasih -->
+            <div id="slide-15" class="slide" style="background-color: var(--brand-blue); color: white;">
+                 <svg class="starburst" style="top: 10%; left: 10%; width:120px; height:120px; color: var(--brand-lime); transform: rotate(20deg); opacity: 0.5;"><use xlink:href="#starburst-svg"></use></svg>
+                 <svg class="starburst" style="bottom: 15%; right: 10%; transform: rotate(-15deg); color: white;"><use xlink:href="#starburst-svg"></use></svg>
+                <div class="text-center z-10">
+                    <h1 class="text-8xl font-black">Terima Kasih!</h1>
+                    <p class="text-2xl mt-4 opacity-80">Selamat Mengajar Kreatif, Guru Hebat Dharmasraya!</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Navigation -->
+        <div id="prev-slide" class="nav-arrow">
+             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+        </div>
+        <div id="next-slide" class="nav-arrow">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+        </div>
+
+        <!-- Indicators -->
+        <div id="slide-indicators"></div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const slides = document.querySelectorAll('.slide');
+            const nextBtn = document.getElementById('next-slide');
+            const prevBtn = document.getElementById('prev-slide');
+            const indicatorsContainer = document.getElementById('slide-indicators');
+            let currentSlide = 0;
+            const slideCount = slides.length;
+            let isAnimating = false;
+
+            // Create indicator dots
+            for (let i = 0; i < slideCount; i++) {
+                const dot = document.createElement('div');
+                dot.classList.add('indicator-dot');
+                dot.dataset.slide = i;
+                if (i === 0) dot.classList.add('active');
+                dot.addEventListener('click', () => goToSlide(parseInt(dot.dataset.slide, 10)));
+                indicatorsContainer.appendChild(dot);
+            }
+            const dots = document.querySelectorAll('.indicator-dot');
+
+            function updateIndicators() {
+                dots.forEach(dot => dot.classList.remove('active'));
+                if (dots[currentSlide]) {
+                    dots[currentSlide].classList.add('active');
+                }
+            }
+
+            function goToSlide(slideIndex, direction) {
+                if (isAnimating || slideIndex < 0 || slideIndex >= slideCount || slideIndex === currentSlide) return;
+                isAnimating = true;
+
+                const newSlide = slides[slideIndex];
+                const oldSlide = slides[currentSlide];
+                
+                const slideDirection = direction || (slideIndex > currentSlide ? 'next' : 'prev');
+                
+                if (slideDirection === 'next') {
+                    newSlide.classList.add('enter-right');
+                    oldSlide.classList.add('exit-left');
+                } else {
+                    newSlide.classList.add('enter-left');
+                    oldSlide.classList.add('exit-right');
+                }
+                
+                newSlide.classList.add('active');
+                
+                requestAnimationFrame(() => {
+                    requestAnimationFrame(() => {
+                        newSlide.classList.remove('enter-right', 'enter-left');
+                    });
+                });
+
+                currentSlide = slideIndex;
+                updateIndicators();
+                
+                setTimeout(() => {
+                    oldSlide.classList.remove('active', 'exit-left', 'exit-right');
+                    isAnimating = false;
+                }, 600);
+            }
+
+            nextBtn.addEventListener('click', () => {
+                const nextSlideIndex = (currentSlide + 1) % slideCount;
+                goToSlide(nextSlideIndex, 'next');
+            });
+
+            prevBtn.addEventListener('click', () => {
+                const prevSlideIndex = (currentSlide - 1 + slideCount) % slideCount;
+                goToSlide(prevSlideIndex, 'prev');
+            });
+            
+            document.addEventListener('keydown', (e) => {
+                if(e.key === 'ArrowRight') {
+                    nextBtn.click();
+                } else if (e.key === 'ArrowLeft') {
+                    prevBtn.click();
+                }
+            });
+
+            updateIndicators();
+
+            // --- LOGIKA TIMER POST-TEST ---
+            const timerDisplayPost = document.getElementById('timer-display-post');
+            const startBtnPost = document.getElementById('start-timer-btn-post');
+            const restartBtnPost = document.getElementById('restart-timer-btn-post');
+            
+            let timerIntervalPost = null;
+            let timeLeftPost = 10 * 60; // 10 menit dalam detik
+
+            function updateTimerDisplayPost() {
+                const minutes = Math.floor(timeLeftPost / 60);
+                const seconds = timeLeftPost % 60;
+                if (timerDisplayPost) {
+                    timerDisplayPost.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                }
+            }
+
+            function startTimerPost() {
+                if (timerIntervalPost) return; // Mencegah interval ganda
+
+                if (startBtnPost) {
+                    startBtnPost.disabled = true;
+                    startBtnPost.classList.add('opacity-50', 'cursor-not-allowed');
+                }
+
+                timerIntervalPost = setInterval(() => {
+                    timeLeftPost--;
+                    updateTimerDisplayPost();
+
+                    if (timeLeftPost <= 0) {
+                        clearInterval(timerIntervalPost);
+                        if (timerDisplayPost) {
+                            timerDisplayPost.textContent = "WAKTU HABIS";
+                        }
+                    }
+                }, 1000);
+            }
+
+            function restartTimerPost() {
+                clearInterval(timerIntervalPost);
+                timerIntervalPost = null;
+                timeLeftPost = 10 * 60;
+                updateTimerDisplayPost();
+                if (startBtnPost) {
+                    startBtnPost.disabled = false;
+                    startBtnPost.classList.remove('opacity-50', 'cursor-not-allowed');
+                }
+            }
+
+            if (startBtnPost) startBtnPost.addEventListener('click', startTimerPost);
+            if (restartBtnPost) restartBtnPost.addEventListener('click', restartTimerPost);
+            // --- AKHIR LOGIKA TIMER ---
+            
+            // Panggil updateTimerDisplayPost sekali di awal untuk slide post-test
+            updateTimerDisplayPost();
+        });
+    </script>
+</body>
+</html>

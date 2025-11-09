@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ToT Scratch Dharmasraya - HARI 1</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Custom styles */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f2f5;
+            overflow: hidden; /* Hide scrollbars */
+        }
+
+        :root {
+            --brand-lime: #D4FF44;
+            --brand-blue: #302DE4;
+            --brand-dark: #1F1F1F;
+        }
+        
+        /* Background pattern styling */
+        .bg-pattern {
+            position: relative;
+            background: linear-gradient(135deg, #eef7ff 0%, #ffffff 100%);
+            isolation: isolate;
+        }
+
+        /* Starburst SVG for background elements */
+        .starburst {
+            position: absolute;
+            width: 100px;
+            height: 100px;
+            color: var(--brand-blue);
+            z-index: 0;
+            opacity: 0.8;
+        }
+
+        /* Full-screen presentation container */
+        #presentation-wrapper {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+        }
+
+        /* Styles for each slide */
+        .slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 5%;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.6s ease-in-out, transform 0.6s ease-in-out, visibility 0.6s;
+            transform: scale(0.95);
+            background-color: white;
+            overflow: hidden;
+        }
+
+        .slide.active {
+            opacity: 1;
+            visibility: visible;
+            transform: scale(1);
+            z-index: 10;
+        }
+
+        /* Animation for slides moving out to the left */
+        .slide.exit-left {
+            transform: translateX(-100%) scale(0.95);
+            opacity: 0;
+        }
+        
+        /* Animation for slides moving out to the right */
+        .slide.exit-right {
+            transform: translateX(100%) scale(0.95);
+            opacity: 0;
+        }
+        
+        /* Animation for slides entering from the right */
+        .slide.enter-right {
+             transform: translateX(100%) scale(0.95);
+        }
+        
+        /* Animation for slides entering from the left */
+        .slide.enter-left {
+            transform: translateX(-100%) scale(0.95);
+        }
+
+        /* Navigation buttons styling */
+        .nav-arrow {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 20;
+            background-color: rgba(0, 0, 0, 0.3);
+            color: white;
+            border-radius: 50%;
+            width: 48px;
+            height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .nav-arrow:hover {
+            background-color: var(--brand-blue);
+            transform: translateY(-50%) scale(1.1);
+        }
+        #prev-slide { left: 20px; }
+        #next-slide { right: 20px; }
+
+        /* Slide indicator dots styling */
+        #slide-indicators {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 20;
+            display: flex;
+            gap: 12px;
+            background-color: rgba(0,0,0,0.2);
+            padding: 8px 16px;
+            border-radius: 99px;
+        }
+        .indicator-dot {
+            width: 12px;
+            height: 12px;
+            background-color: rgba(255, 255, 255, 0.5);
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .indicator-dot.active {
+            background-color: var(--brand-lime);
+            transform: scale(1.2);
+        }
+
+        /* Simple Animation for Cards */
+        @keyframes card-fade-in-up {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .slide.active .animate-card {
+            animation: card-fade-in-up 0.7s ease-out forwards;
+            opacity: 0; /* Start as invisible */
+        }
+        .slide.active .animate-card-delay-1 { animation-delay: 0.15s; }
+        .slide.active .animate-card-delay-2 { animation-delay: 0.3s; }
+        .slide.active .animate-card-delay-3 { animation-delay: 0.45s; }
+
+    </style>
+</head>
+<body>
+    <!-- Starburst SVG Definition -->
+    <svg width="0" height="0" class="absolute">
+      <defs>
+        <symbol id="starburst-svg" viewBox="0 0 100 100">
+          <path d="M50 0 L55.9 34.5 L85.35 14.65 L65.5 44.1 L100 50 L65.5 55.9 L85.35 85.35 L55.9 65.5 L50 100 L44.1 65.5 L14.65 85.35 L34.5 55.9 L0 50 L34.5 44.1 L14.65 14.65 L44.1 34.5 Z" fill="currentColor"/>
+        </symbol>
+      </defs>
+    </svg>
+
+    <div id="presentation-container" class="relative w-full">
+        <header class="absolute top-0 left-0 right-0 p-6 flex justify-between items-center z-30">
+            <!-- Logo Ruangguru (placeholder) -->
+            <img src="https://cdn-web-2.ruangguru.com/landing-pages/assets/e7d93748-818d-462d-be57-7db1e479cd62.png" alt="Ruangguru Logo" class="h-10">
+            <!-- Logo Kabupaten Dharmasraya -->
+            <img src="https://upload.wikimedia.org/wikipedia/commons/f/f9/Lambang_Kabupaten_Dharmasraya.png" alt="Dharmasraya Logo" class="h-12">
+        </header>
+
+        <div id="presentation-wrapper">
+            <!-- BAGIAN 1: PEMBUKAAN (120 Menit) -->
+
+            <!-- Slide 1: Judul Utama -->
+            <div id="slide-0" class="slide active items-center justify-center" style="background-color: var(--brand-lime);">
+                 <svg class="starburst" style="top: 15%; left: 10%; width:80px; height:80px; color: white; transform: rotate(20deg); opacity: 0.7;"><use xlink:href="#starburst-svg"></use></svg>
+                 <svg class="starburst" style="bottom: 20%; right: 15%; transform: rotate(-15deg); color: white;"><use xlink:href="#starburst-svg"></use></svg>
+                <div class="w-full max-w-4xl text-center z-10">
+                    <div class="p-10 bg-white rounded-2xl shadow-2xl border-2 border-gray-100 animate-card">
+                        <h1 class="text-5xl lg:text-6xl font-black text-[var(--brand-dark)] tracking-tighter leading-tight">Mengajar Kreatif dengan Scratch</h1>
+                        <p class="text-2xl lg:text-3xl font-bold text-[var(--brand-blue)] mt-3">Membekali Guru Kabupaten Dharmasraya dengan Keterampilan Digital</p>
+                        <div class="h-2 w-28 bg-[var(--brand-blue)] my-8 rounded-full mx-auto"></div>
+                        <h2 class="text-xl font-semibold text-gray-700">Training of Trainers (ToT) | HARI 1</h2>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Slide 2: Tujuan Kita Hari Ini -->
+            <div id="slide-1" class="slide bg-pattern">
+                <h2 class="text-4xl font-black text-gray-800 mb-8 text-center">Tujuan Sesi Hari 1 (120 Menit)</h2>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8 w-full max-w-6xl">
+                    <div class="bg-white p-6 rounded-2xl text-center border-2 border-gray-200 shadow-xl transform hover:scale-105 transition-transform duration-300 animate-card animate-card-delay-1">
+                        <p class="text-7xl">🧩</p>
+                        <p class="text-xl font-semibold mt-4 text-gray-800">Memahami 4 pilar Berpikir Komputasional (Computational Thinking) sebagai dasar pemecahan masalah.</p>
+                    </div>
+                    <div class="bg-white p-6 rounded-2xl text-center border-2 border-gray-200 shadow-xl transform hover:scale-105 transition-transform duration-300 animate-card animate-card-delay-2">
+                        <p class="text-7xl">🐱</p>
+                        <p class="text-xl font-semibold mt-4 text-gray-800">Mengenal antarmuka dan area kerja Scratch sebagai alat bantu ajar yang kreatif.</p>
+                    </div>
+                    <div class="bg-white p-6 rounded-2xl text-center border-2 border-gray-200 shadow-xl transform hover:scale-105 transition-transform duration-300 animate-card animate-card-delay-3">
+                        <p class="text-7xl">🏃‍♂️</p>
+                        <p class="text-xl font-semibold mt-4 text-gray-800">Membuat animasi sederhana: menggerakkan kucing, mengganti kostum, dan menambah suara.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Slide 3: Pre-Test -->
+            <div id="slide-2" class="slide bg-pattern">
+                <div class="text-center mb-8">
+                    <h2 class="text-5xl font-black text-gray-800">Cek Ombak Dulu: Pre-Test (10 Menit)</h2>
+                    <p class="text-xl text-gray-600 mt-2">Tidak ada nilai benar atau salah, ini hanya untuk pemetaan.</p>
+                </div>
+                <div class="flex items-center gap-12 bg-white p-10 rounded-3xl shadow-2xl border-2 border-gray-200 animate-card">
+                    <img src="https://api.qrserver.com/v1/create-qr-code/?size=256x256&data=https://bit.ly/pretest_tot_dms" alt="QR Code Pre-test" class="rounded-2xl shadow-lg w-64 hidden md:block">
+                    <div class="text-center">
+                        <p class="text-2xl font-bold text-gray-700">Waktu Pengerjaan</p>
+                        <p id="timer-display" class="text-8xl font-black text-[var(--brand-blue)] my-2">10:00</p>
+                        <div class="flex justify-center gap-3 mb-6">
+                            <button id="start-timer-btn" class="bg-[var(--brand-blue)] hover:bg-blue-800 text-white font-bold py-3 px-6 rounded-xl transition-all shadow-lg hover:shadow-xl">Mulai</button>
+                            <button id="restart-timer-btn" class="bg-gray-500 hover:bg-gray-600 text-white font-bold py-3 px-6 rounded-xl transition-all shadow-lg hover:shadow-xl">Ulangi</button>
+                        </div>
+                        <p class="text-xl font-mono bg-gray-100 p-4 rounded-lg tracking-widest">bit.ly/pretest_tot_dms</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- BAGIAN 2: BERPIKIR KOMPUTASIONAL (40 Menit) -->
+
+            <!-- Slide 4: Jembatan Topik -->
+            <div id="slide-3" class="slide text-center bg-pattern">
+                 <svg class="starburst" style="top: 15%; left: 10%; color: var(--brand-lime);"><use xlink:href="#starburst-svg"></use></svg>
+                 <svg class="starburst" style="bottom: 20%; right: 15%; transform: rotate(15deg); width: 60px; height: 60px; color: var(--brand-blue);"><use xlink:href="#starburst-svg"></use></svg>
+                <div class="bg-white p-12 rounded-3xl shadow-2xl border-2 border-gray-200 max-w-4xl z-10 animate-card">
+                    <p class="text-xl text-gray-600 mb-4">Sebelum kita 'coding' dengan Scratch...</p>
+                    <p class="text-xl text-gray-600 mb-8">Kita perlu melatih cara berpikir yang sistematis untuk memecahkan masalah.</p>
+                    <h1 class="text-5xl font-black text-white bg-[var(--brand-blue)] py-4 px-8 rounded-2xl shadow-2xl inline-block transform -rotate-2">BERPIKIR KOMPUTASIONAL</h1>
+                    <p class="text-lg mt-2 font-bold text-gray-500">(COMPUTATIONAL THINKING)</p>
+                </div>
+            </div>
+
+            <!-- Slide 5: Studi Kasus -->
+            <div id="slide-4" class="slide bg-pattern">
+                <div class="bg-white p-12 rounded-3xl shadow-2xl border-2 border-gray-200 max-w-4xl text-center animate-card">
+                    <h2 class="text-4xl font-black text-gray-800">Studi Kasus Sederhana:</h2>
+                    <p class="text-4xl font-bold text-white bg-[var(--brand-blue)] mt-4 p-4 rounded-xl inline-block">"Membuat Nasi Goreng Spesial"</p>
+                    <p class="text-xl mt-6 text-gray-600">Mari kita bedah masalah ini menggunakan 4 pilar Berpikir Komputasional.</p>
+                </div>
+            </div>
+
+            <!-- Slide 6: Pilar #1: DEKOMPOSISI -->
+            <div id="slide-5" class="slide bg-pattern text-center">
+                <div class="w-full max-w-4xl animate-card">
+                    <h2 class="text-5xl font-black text-gray-800 mb-2">Pilar #1: DEKOMPOSISI</h2>
+                    <p class="text-2xl text-gray-600 mb-8">Memecah masalah 'gajah' (Nasi Goreng) menjadi potongan 'ayam' (tugas-tugas kecil).</p>
+                    <div class="bg-white border-4 border-[var(--brand-lime)] text-gray-800 p-8 rounded-2xl w-full shadow-2xl">
+                        <h3 class="font-black text-2xl text-[var(--brand-dark)]">Contoh Dekomposisi:</h3>
+                        <ul class="list-disc list-inside text-left mt-4 text-lg space-y-1">
+                            <li>Menyiapkan bahan (nasi, bumbu, telur, ayam)</li>
+                            <li>Mengulek/memotong bumbu</li>
+                            <li>Menggoreng telur</li>
+                            <li>Menumis bumbu</li>
+                            <li>Memasukkan nasi dan bahan lain</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Slide 7: Pilar #2: PENGENALAN POLA -->
+            <div id="slide-6" class="slide bg-pattern text-center">
+                 <div class="w-full max-w-4xl animate-card">
+                    <h2 class="text-5xl font-black text-gray-800 mb-2">Pilar #2: PENGENALAN POLA</h2>
+                    <p class="text-2xl text-gray-600 mb-8">Mencari kesamaan (pola) agar lebih efisien.</p>
+                    <div class="bg-white border-4 border-[var(--brand-blue)] text-gray-800 p-8 rounded-2xl w-full shadow-2xl">
+                        <h3 class="font-black text-2xl text-[var(--brand-dark)]">Contoh Pola:</h3>
+                        <p class="mt-2 text-lg">Proses 'menumis' (memanaskan minyak, masukkan bahan, aduk) digunakan saat menggoreng telur, menumis bumbu, dan bahkan saat memasukkan nasi.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Slide 8: Pilar #3: ABSTRAKSI -->
+            <div id="slide-7" class="slide bg-pattern text-center">
+                <div class="w-full max-w-4xl animate-card">
+                    <h2 class="text-5xl font-black text-gray-800 mb-2">Pilar #3: ABSTRAKSI</h2>
+                    <p class="text-2xl text-gray-600 mb-8">Fokus pada informasi yang PENTING saja, abaikan detail yang tidak relevan.</p>
+                     <div class="bg-white border-4 border-[var(--brand-lime)] text-gray-800 p-8 rounded-2xl w-full shadow-2xl">
+                        <h3 class="font-black text-2xl text-[var(--brand-dark)]">Contoh Abstraksi:</h3>
+                        <p class="mt-2 text-lg">Saat menumis, yang penting adalah 'bahan matang'. Kita tidak perlu peduli detail merk wajan, jenis spatula, atau berapa kali adukan per detik.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Slide 9: Pilar #4: ALGORITMA -->
+            <div id="slide-8" class="slide bg-pattern text-center">
+                <div class="w-full max-w-4xl animate-card">
+                    <h2 class="text-5xl font-black text-gray-800 mb-2">Pilar #4: ALGORITMA</h2>
+                    <p class="text-2xl text-gray-600 mb-8">Membuat urutan langkah-demi-langkah (resep) yang jelas untuk menyelesaikan masalah.</p>
+                     <div class="bg-white border-4 border-[var(--brand-blue)] text-gray-800 p-8 rounded-2xl w-full shadow-2xl">
+                        <h3 class="font-black text-2xl text-[var(--brand-dark)]">Algoritma Nasi Goreng (Contoh):</h3>
+                        <ol class="list-decimal list-inside text-left mt-4 text-lg space-y-1">
+                            <li>Panaskan minyak.</li>
+                            <li>Goreng telur, angkat, sisihkan.</li>
+                            <li>Tumis bumbu halus hingga wangi.</li>
+                            <li>Masukkan nasi, aduk rata.</li>
+                            <li>Masukkan telur, kecap, garam. Aduk lagi.</li>
+                            <li>Selesai (Sajikan).</li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- BAGIAN 3: ISTIRAHAT & TRANSISI (10 Menit) -->
+
+            <!-- Slide 10: Transisi ke Scratch -->
+            <div id="slide-9" class="slide" style="background-color: var(--brand-dark);">
+                <div class="text-center w-full max-w-4xl">
+                    <h2 class="text-4xl font-black text-white mb-8 animate-card">Hubungannya dengan Scratch?</h2>
+                     <div class="text-center bg-gray-700 p-8 rounded-2xl border-2 border-gray-600">
+                        <h3 class="text-3xl font-bold text-[var(--brand-lime)]">Berpikir Komputasional adalah 'RESEP'-nya.</h3>
+                        <p class="text-6xl my-4 text-white">⬇️</p>
+                        <h3 class="text-3xl font-bold text-[var(--brand-lime)]">Scratch adalah 'DAPUR'-nya.</h3>
+                        <p class="mt-6 text-xl text-white/80">Sekarang, mari kita ubah 'Resep' (Algoritma) kita menjadi 'Aksi' (Program) di Scratch!</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- BAGIAN 4: PENGENALAN SCRATCH (50 Menit) -->
+
+            <!-- Slide 11: Persiapan -->
+            <div id="slide-10" class="slide" style="background-color: var(--brand-lime);">
+                <h2 class="text-5xl font-black text-gray-900 mb-8">Ayo Siapkan Arena Kreasi Kita!</h2>
+                <div class="bg-white p-10 rounded-2xl shadow-2xl text-left max-w-2xl text-2xl space-y-4">
+                    <p>1. Buka browser Anda (Chrome/Firefox).</p>
+                    <p>2. Kunjungi situs: <strong class="bg-gray-200 p-2 rounded-lg font-mono">scratch.mit.edu</strong></p>
+                    <p>3. Klik <strong class="text-[var(--brand-blue)]">"Mulai Membuat"</strong> (Start Creating).</p>
+                </div>
+                 <img src="https://images2.imgbox.com/6d/77/YTSNbNtU_o.gif" alt="Scratch Website" class="mt-8 rounded-lg shadow-lg border-4 border-white">
+            </div>
+
+            <!-- Slide 12: Pengenalan Antarmuka -->
+            <div id="slide-11" class="slide bg-pattern">
+                 <div class="bg-white p-8 rounded-2xl shadow-xl border-2 border-gray-100 max-w-6xl w-full">
+                     <h2 class="text-4xl font-black text-gray-800 mb-6">Tur Singkat Area Kerja Scratch</h2>
+                     <p class="text-xl text-gray-600 mb-6 max-w-4xl mx-auto">Mari kita kenali area utama di layar Anda. Anggap saja ini seperti studio film mini!</p>
+                     <div class="w-full">
+                        <img src="https://images2.imgbox.com/da/90/7wxsAOvf_o.png" alt="Antarmuka Scratch" class="rounded-lg shadow-lg border-4 border-white">
+                        <!-- Ganti placeholder ini dengan screenshot antarmuka Scratch yang sudah diberi label area (Blok, Kode, Panggung, Sprite) -->
+                     </div>
+                 </div>
+            </div>
+
+            <!-- Slide 13: Blok Perintah Dasar -->
+            <div id="slide-12" class="slide bg-pattern">
+                <h2 class="text-4xl font-black text-gray-800 mb-8">3 Blok Ajaib untuk Memulai</h2>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8 w-full max-w-6xl">
+                    <div class="bg-blue-500 text-white p-8 rounded-2xl shadow-xl text-center">
+                        <h3 class="text-3xl font-black">Gerakan (Motion)</h3>
+                        <p class="mt-2 text-xl">Mengatur posisi dan pergerakan karakter (sprite).</p>
+                        <img src="https://scratch.oneoffcoder.com/_images/00-move_10_steps.png" alt="Move 10 steps block" class="mt-4 h-15 mx-auto">
+                    </div>
+                    <div class="bg-purple-500 text-white p-8 rounded-2xl shadow-xl text-center">
+                        <h3 class="text-3xl font-black">Tampilan (Looks)</h3>
+                        <p class="mt-2 text-xl">Mengubah kostum, latar, dan menampilkan teks.</p>
+                        <img src="https://scratch.oneoffcoder.com/_images/06-next-costume.png" alt="Next costume block" class="mt-4 h-15 mx-auto">
+                    </div>
+                    <div class="bg-pink-500 text-white p-8 rounded-2xl shadow-xl text-center">
+                        <h3 class="text-3xl font-black">Suara (Sound)</h3>
+                        <p class="mt-2 text-xl">Memainkan musik atau efek suara.</p>
+                        <img src="https://scratch.oneoffcoder.com/_images/01-start-sound-meow.png" alt="Start sound meow block" class="mt-4 h-15 mx-auto">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Slide 14: Praktik Terbimbing 1 -->
+            <div id="slide-13" class="slide bg-pattern">
+                 <h2 class="text-4xl font-black text-gray-800 mb-2">Praktik Terbimbing #1: Membuat Kucing Bergerak</h2>
+                 <p class="text-xl text-gray-600 mb-6">Ayo susun blok ini. Coba klik bloknya!</p>
+                 <div class="bg-gray-100 p-8 rounded-2xl shadow-lg border-2 border-gray-200 max-w-4xl text-center">
+                     <img src="https://images2.imgbox.com/39/8a/yyv7z1dm_o.png" alt="Kode Blok Gerakan" class="rounded-lg">
+                     <p class="mt-4 text-lg">Kita juga butuh 'pemicu'. Ambil blok <strong class="text-yellow-500">"ketika bendera hijau diklik"</strong> dari kategori <strong>Kejadian (Events)</strong>.</p>
+                 </div>
+            </div>
+
+            <!-- Slide 15: Praktik Terbimbing 2 -->
+             <div id="slide-14" class="slide bg-pattern">
+                 <h2 class="text-4xl font-black text-gray-800 mb-2">Praktik Terbimbing #2: Animasi & Suara</h2>
+                 <p class="text-xl text-gray-600 mb-6">Sekarang, tambahkan blok ini agar gerakannya terlihat hidup dan bersuara!</p>
+                 <div class="bg-gray-100 p-8 rounded-2xl shadow-lg border-2 border-gray-200 max-w-4xl text-center">
+                     <img src="https://images2.imgbox.com/1a/43/o32npCjT_o.png" alt="Kode Blok Lengkap" class="rounded-lg">
+                     <p class="mt-4 text-lg">Klik bendera hijau berulang-ulang. Apa yang terjadi?</p>
+                 </div>
+            </div>
+
+            <!-- Slide 16: Praktik Mandiri -->
+            <div id="slide-15" class="slide" style="background-color: var(--brand-lime);">
+                <h2 class="text-5xl font-black text-gray-900 mb-4">Waktunya Berkreasi! (15 Menit)</h2>
+                <p class="text-2xl text-gray-800 mb-8">Silakan modifikasi proyek tadi atau buat yang baru!</p>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 w-full max-w-5xl">
+                    <div class="bg-white p-6 rounded-2xl shadow-lg">
+                        <h3 class="text-2xl font-bold text-[var(--brand-blue)]">Tantangan #1</h3>
+                        <p class="mt-2 text-lg">Ganti karakter (sprite) dan latar belakang (backdrop) panggung!</p>
+                    </div>
+                    <div class="bg-white p-6 rounded-2xl shadow-lg">
+                        <h3 class="text-2xl font-bold text-[var(--brand-blue)]">Tantangan #2</h3>
+                        <p class="mt-2 text-lg">Buat kucing 'berpikir' atau 'berbicara' menggunakan blok Tampilan.</p>
+                    </div>
+                    <div class="bg-white p-6 rounded-2xl shadow-lg">
+                        <h3 class="text-2xl font-bold text-[var(--brand-blue)]">Tantangan #3</h3>
+                        <p class="mt-2 text-lg">Jelajahi blok 'ubah efek warna' untuk efek ajaib!</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- BAGIAN 5: PENUTUP HARI 1 (10 Menit) -->
+
+            <!-- Slide 17: Sesi Berbagi -->
+            <div id="slide-16" class="slide bg-pattern">
+                <h2 class="text-6xl font-black text-gray-800">Panggung Apresiasi</h2>
+                <p class="text-3xl text-gray-600 mt-4">Siapa yang mau berbagi hasil karyanya?</p>
+                <p class="text-8xl mt-8">🎬</p>
+            </div>
+            
+            <!-- Slide 18: Refleksi -->
+            <div id="slide-17" class="slide bg-pattern">
+                <h2 class="text-5xl font-black text-gray-800 mb-8">Refleksi Singkat Hari 1</h2>
+                <div class="text-left w-full max-w-3xl bg-white p-8 rounded-2xl border-2 border-gray-100 space-y-6 shadow-xl text-xl">
+                    <p>1. Apa itu <strong class="text-[var(--brand-blue)]">Algoritma</strong> dalam Berpikir Komputasional?</p>
+                    <p>2. Blok apa yang digunakan untuk membuat sprite <strong class="text-blue-600">bergerak</strong>?</p>
+                    <p>3. Blok apa yang digunakan untuk <strong class="text-purple-600">mengganti kostum</strong>?</p>
+                </div>
+            </div>
+
+            <div id="slide-14" class="slide bg-pattern">
+                <div class="text-center w-full max-w-3xl">
+                    <h2 class="text-5xl font-black text-gray-800 mb-2">Mohon Isi Form Feedback</h2>
+                    <p class="text-xl mb-8 text-gray-600">Masukan Anda sangat berharga untuk perbaikan kami ke depannya.</p>
+                    <div class="bg-white p-8 rounded-2xl shadow-xl border-2 border-gray-200 flex flex-col md:flex-row items-center gap-8 animate-card">
+                        <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=https://bit.ly/feedback_tot_dms" alt="QR Code Feedback" class="w-48 h-48 rounded-lg">
+                        <div class="text-left">
+                            <p class="text-lg text-gray-700">Pindai QR code di samping atau kunjungi tautan di bawah ini untuk mengisi form feedback.</p>
+                            <p class="mt-4 font-mono bg-gray-100 p-4 rounded-lg text-center text-lg tracking-wider">bit.ly/feedback_tot_dms</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Slide 19: Terima Kasih -->
+            <div id="slide-18" class="slide" style="background-color: var(--brand-blue); color: white;">
+                 <svg class="starburst" style="top: 10%; left: 10%; width:120px; height:120px; color: var(--brand-lime); transform: rotate(20deg); opacity: 0.5;"><use xlink:href="#starburst-svg"></use></svg>
+                 <svg class="starburst" style="bottom: 15%; right: 10%; transform: rotate(-15deg); color: white;"><use xlink:href="#starburst-svg"></use></svg>
+                <div class="text-center z-10">
+                    <h1 class="text-8xl font-black">Luar Biasa!</h1>
+                    <p class="text-2xl mt-4 opacity-80">Terima kasih atas semangat dan kreativitas Bapak/Ibu!</p>
+                    <div class="mt-12 bg-white/20 p-4 rounded-xl text-center backdrop-blur-sm border border-white/30">
+                        <h3 class="text-xl font-bold">Sampai Jumpa Besok!</h3>
+                        <p class="opacity-80 mt-1">Kita akan membuat proyek yang lebih interaktif!</p>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Navigation -->
+        <div id="prev-slide" class="nav-arrow">
+             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+        </div>
+        <div id="next-slide" class="nav-arrow">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+        </div>
+
+        <!-- Indicators -->
+        <div id="slide-indicators"></div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const slides = document.querySelectorAll('.slide');
+            const nextBtn = document.getElementById('next-slide');
+            const prevBtn = document.getElementById('prev-slide');
+            const indicatorsContainer = document.getElementById('slide-indicators');
+            let currentSlide = 0;
+            const slideCount = slides.length;
+            let isAnimating = false;
+
+            // Create indicator dots
+            for (let i = 0; i < slideCount; i++) {
+                const dot = document.createElement('div');
+                dot.classList.add('indicator-dot');
+                dot.dataset.slide = i;
+                if (i === 0) dot.classList.add('active');
+                dot.addEventListener('click', () => goToSlide(parseInt(dot.dataset.slide, 10)));
+                indicatorsContainer.appendChild(dot);
+            }
+            const dots = document.querySelectorAll('.indicator-dot');
+
+            function updateIndicators() {
+                dots.forEach(dot => dot.classList.remove('active'));
+                if (dots[currentSlide]) {
+                    dots[currentSlide].classList.add('active');
+                }
+            }
+
+            function goToSlide(slideIndex, direction) {
+                if (isAnimating || slideIndex < 0 || slideIndex >= slideCount || slideIndex === currentSlide) return;
+                isAnimating = true;
+
+                const newSlide = slides[slideIndex];
+                const oldSlide = slides[currentSlide];
+                
+                const slideDirection = direction || (slideIndex > currentSlide ? 'next' : 'prev');
+                
+                // Set initial positions for animation
+                if (slideDirection === 'next') {
+                    newSlide.classList.add('enter-right');
+                    oldSlide.classList.add('exit-left');
+                } else {
+                    newSlide.classList.add('enter-left');
+                    oldSlide.classList.add('exit-right');
+                }
+                
+                // Make the new slide visible
+                newSlide.classList.add('active');
+                
+                // Force a reflow to apply the initial state before transitioning
+                requestAnimationFrame(() => {
+                    requestAnimationFrame(() => {
+                        newSlide.classList.remove('enter-right', 'enter-left');
+                    });
+                });
+
+                currentSlide = slideIndex;
+                updateIndicators();
+                
+                // Clean up classes after animation ends
+                setTimeout(() => {
+                    oldSlide.classList.remove('active', 'exit-left', 'exit-right');
+                    isAnimating = false;
+                }, 600); // Must match CSS transition duration
+            }
+
+            nextBtn.addEventListener('click', () => {
+                const nextSlideIndex = (currentSlide + 1) % slideCount;
+                goToSlide(nextSlideIndex, 'next');
+            });
+
+            prevBtn.addEventListener('click', () => {
+                const prevSlideIndex = (currentSlide - 1 + slideCount) % slideCount;
+                goToSlide(prevSlideIndex, 'prev');
+            });
+            
+            document.addEventListener('keydown', (e) => {
+                if(e.key === 'ArrowRight') {
+                    nextBtn.click();
+                } else if (e.key === 'ArrowLeft') {
+                    prevBtn.click();
+                }
+            });
+
+            updateIndicators();
+
+            // --- LOGIKA TIMER PRE-TEST ---
+            const timerDisplay = document.getElementById('timer-display');
+            const startBtn = document.getElementById('start-timer-btn');
+            const restartBtn = document.getElementById('restart-timer-btn');
+            
+            let timerInterval = null;
+            let timeLeft = 10 * 60; // 10 menit dalam detik
+
+            function updateTimerDisplay() {
+                const minutes = Math.floor(timeLeft / 60);
+                const seconds = timeLeft % 60;
+                if (timerDisplay) {
+                    timerDisplay.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                }
+            }
+
+            function startTimer() {
+                if (timerInterval) return; // Mencegah interval ganda
+
+                if (startBtn) {
+                    startBtn.disabled = true;
+                    startBtn.classList.add('opacity-50', 'cursor-not-allowed');
+                }
+
+                timerInterval = setInterval(() => {
+                    timeLeft--;
+                    updateTimerDisplay();
+
+                    if (timeLeft <= 0) {
+                        clearInterval(timerInterval);
+                        if (timerDisplay) {
+                            timerDisplay.textContent = "WAKTU HABIS";
+                        }
+                    }
+                }, 1000);
+            }
+
+            function restartTimer() {
+                clearInterval(timerInterval);
+                timerInterval = null;
+                timeLeft = 10 * 60;
+                updateTimerDisplay();
+                if (startBtn) {
+                    startBtn.disabled = false;
+                    startBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+                }
+            }
+
+            if (startBtn) startBtn.addEventListener('click', startTimer);
+            if (restartBtn) restartBtn.addEventListener('click', restartTimer);
+            // --- AKHIR LOGIKA TIMER ---
+            
+            // Panggil updateTimerDisplay sekali di awal untuk slide pre-test
+            updateTimerDisplay();
+        });
+    </script>
+</body>
+</html>
