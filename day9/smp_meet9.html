@@ -1,0 +1,966 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Judul diperbarui ke Pertemuan 9 -->
+    <title>Pertemuan 9: Membuat Room 1 Interaktif!</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        /* CSS Reset dan Global Styles */
+        body {
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            padding: 0;
+            /* Gambar Latar Belakang BODY diperbarui */
+            background: url('https://i.imgur.com/z221jXz.png') center/cover fixed no-repeat;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .presentation-container {
+            /* Ukuran container diperbarui */
+            width: 77vw;
+            height: 71.5vh;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5); 
+            border-radius: 12px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            background-color: transparent; 
+        }
+
+        /* Slide Styling Umum */
+        .slide {
+            width: 100%;
+            height: 100%;
+            padding: 40px 60px;
+            box-sizing: border-box;
+            color: #333;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            position: absolute;
+            top: 0;
+            left: 0;
+            /* Transisi diubah untuk transform dan opacity */
+            transition: transform 0.6s ease-in-out, opacity 0.6s ease-in-out;
+            /* Overlay Putih untuk Konten di Atas BG */
+            background-color: rgba(255, 255, 255, 0.95);
+            visibility: hidden; /* Sembunyikan slide yang tidak aktif */
+            overflow-y: auto; /* MEMBUAT SLIDE BISA DI-SCROLL JIKA KONTEN PANJANG */
+            opacity: 0;
+        }
+
+        .slide.active {
+            opacity: 1;
+            visibility: visible;
+            z-index: 10; /* Slide aktif selalu di atas */
+            transform: translateX(0);
+        }
+
+        /* State untuk animasi */
+        .slide.is-next {
+            /* Slide yang akan muncul dari kanan */
+            transform: translateX(100%);
+            visibility: visible;
+            opacity: 1;
+            z-index: 11; /* Muncul di atas slide aktif saat transisi */
+        }
+
+        .slide.is-exiting {
+            /* Slide saat ini yang akan keluar ke kanan */
+            transform: translateX(100%);
+            opacity: 1;
+            z-index: 11; /* Tetap di atas slide di bawahnya saat keluar */
+        }
+
+        /* Cover Slide (Slide 1) - Mempertahankan BG Gelap */
+        #slide1 {
+            /* Perbarui BG cover sesuai BG utama */
+            background: linear-gradient(rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0.75)), url('https://i.imgur.com/z221jXz.png') center/cover no-repeat;
+            background-color: transparent; 
+            color: white;
+            align-items: center;
+            text-align: center;
+            justify-content: center;
+        }
+        
+        /* Slide dengan warna solid */
+        .solid-teal-bg {
+            background-color: #008080; /* Teal */
+            color: white;
+        }
+        
+        /* Elemen dekoratif untuk slide sampul */
+        .starburst {
+            position: absolute;
+            width: 100px;
+            height: 100px;
+            z-index: 2; /* Di bawah teks tapi di atas background */
+        }
+        
+        /* LOGO KIRI ATAS - RUANGGURU, DHARMASRAYA, DISDIK (GLOBAL BODY) */
+        .slide-logo-left {
+            position: fixed; /* Fixed to viewport */
+            top: 0;
+            left: 0;
+            background-color: white;
+            padding: 10px 20px 10px 40px;
+            border-bottom-right-radius: 30px; 
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            display: flex;
+            align-items: center;
+            z-index: 99; /* Pastikan di foreground */
+            transition: opacity 0.3s ease;
+            gap: 15px; /* Jarak antar logo */
+        }
+        .slide-logo-left img {
+            height: 45px; 
+            width: auto;
+        }
+
+        /* LOGO KANAN ATAS - RG CODING (GLOBAL BODY) */
+        .slide-logo-right {
+            position: fixed; /* Fixed to viewport */
+            top: 0;
+            right: 0;
+            background-color: white;
+            padding: 10px 40px 10px 20px;
+            border-bottom-left-radius: 30px; 
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            display: flex;
+            align-items: center;
+            z-index: 99; /* Pastikan di foreground */
+            transition: opacity 0.3s ease;
+        }
+        .slide-logo-right img {
+            height: 45px; 
+            width: auto;
+        }
+
+        /* Gradient Class Sesuai Permintaan */
+        .highlight-gradient {
+            background: linear-gradient(
+                to right,
+                #008080, /* Deep teal/cyan */
+                #a8c368, /* Olive/lime green */
+                #f2c140  /* Golden yellow */
+            );
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            display: inline-block;
+        }
+
+        /* Navigasi BARU */
+        .nav-button {
+            background-color: rgba(0, 128, 128, 0.8); /* Teal Transparan */
+            color: white;
+            border: none; 
+            position: fixed; /* Tombol diposisikan secara fixed terhadap jendela browser */
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 200; /* Pastikan di atas semua elemen lain */
+            width: 40px; /* Kecil */
+            height: 40px; /* Kecil */
+            border-radius: 50%; /* Bulat */
+            cursor: pointer;
+            font-size: 1.2rem;
+            font-weight: 900;
+            line-height: 1;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        #prevBtn {
+            left: 10vw; /* Jarak dari tepi kiri, disesuaikan dengan posisi container */
+        }
+
+        #nextBtn {
+            right: 10vw; /* Jarak dari tepi kanan, disesuaikan dengan posisi container */
+        }
+        .nav-button:hover {
+            background-color: #f2c140; /* Kuning Hover */
+            color: #333;
+            transform: scale(1.1);
+        }
+        .nav-button:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+            transform: scale(1);
+        }
+
+        /* Slide Content kompensasi untuk logo agar tidak tertutup */
+        .slide h1, .slide h2, .slide .profile-content h2, 
+        .slide .rg-coding-header, .slide .schedule-title, .slide .thank-you-title, .slide .agenda-title, .slide .main-header {
+            margin-top: 50px; /* Kompensasi untuk logo global */
+        }
+        
+        /* Reset margin top di cover slide */
+        #slide1 h1, #slide1 h2, #slide1 .profile-content h2 {
+             margin-top: 0; 
+        }
+
+        .cover-title {
+            font-size: 4rem;
+            font-weight: 900;
+            margin-bottom: 20px;
+            line-height: 1.1;
+            z-index: 3;
+        }
+
+        .cover-subtitle {
+            font-size: 1.5rem;
+            font-weight: 400;
+            margin-bottom: 40px;
+            border-bottom: 3px solid #a8c368;
+            padding-bottom: 10px;
+            display: inline-block;
+            z-index: 3;
+        }
+
+        .presenter-info {
+            font-size: 1.2rem;
+            opacity: 0.8;
+            z-index: 3;
+        }
+        
+        .agenda-title {
+            font-size: 3rem;
+            font-weight: 800;
+            color: #008080;
+            /* Penyesuaian ukuran font agar tidak terlalu besar di mobile */
+            font-size: clamp(2rem, 5vw, 3rem);
+            line-height: 1.2;
+            margin-bottom: 40px;
+        }
+
+        /* --- Styling Baru untuk Agenda Cards --- */
+        .agenda-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr); /* 3 Kolom */
+            gap: 25px;
+            width: 100%;
+            max-width: 900px;
+            margin-top: -20px; /* Kompensasi margin bottom dari title */
+        }
+        .agenda-card {
+            background: white;
+            padding: 20px;
+            border-radius: 16px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+            text-align: center;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border: 1px solid #e5e7eb;
+        }
+        .agenda-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 15px 30px rgba(0, 128, 128, 0.15);
+        }
+        .agenda-card-icon {
+            font-size: 3rem;
+            line-height: 1;
+        }
+        .agenda-card-text {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #374151;
+            margin-top: 10px;
+        }
+        
+        /* Box Penjelasan Blok (BARU) */
+        .block-expl {
+            background: #e0f7fa;
+            border-left: 5px solid #008080;
+            padding: 15px;
+            margin-top: 15px;
+            border-radius: 4px;
+        }
+        .block-expl code {
+            font-weight: 700;
+            color: #005662;
+            background: #ccecf2;
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+        
+        .main-header {
+            font-size: 3.2rem; 
+        }
+        .main-body {
+            font-size: 1.3rem; 
+            margin-bottom: 40px; 
+        }
+
+        /* Styling untuk slide Pre-test */
+        .pretest-link {
+            font-size: 1.5rem;
+        }
+
+        .pretest-container {
+            display: flex;
+            align-items: center;
+            gap: 40px;
+            background-color: white;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            border: 1px solid #eee;
+        }
+        .pretest-qr img {
+            width: 180px;
+            height: 180px;
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+
+        .scratch-code {
+            width: 100%;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            background: white;
+            padding: 10px;
+            box-sizing: border-box; /* Pastikan padding tidak merusak layout */
+        }
+        
+        /* Layout 2 kolom untuk slide misi */
+        .mission-layout {
+            display: flex;
+            align-items: flex-start;
+            gap: 30px;
+            width: 100%;
+            max-width: 900px;
+        }
+        .mission-code {
+            flex: 1.2;
+        }
+        .mission-expl {
+            flex: 0.8;
+            text-align: left;
+            background-color: #f9f9f9;
+            padding: 20px;
+            border-radius: 12px;
+        }
+         .mission-expl ul, .mission-expl ol {
+             font-size: 1rem;
+             padding-left: 20px;
+             line-height: 1.7;
+         }
+         
+        /* Styling untuk Flowchart */
+        .flowchart {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            font-size: 1rem;
+            width: 100%;
+        }
+        .flow-step {
+            background-color: white;
+            border: 2px solid #008080;
+            padding: 10px 15px;
+            border-radius: 8px;
+            font-weight: 600;
+            text-align: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            width: 80%;
+            max-width: 400px;
+        }
+        .flow-arrow {
+            font-size: 1.5rem;
+            font-weight: 900;
+            color: #f2c140;
+        }
+        .flow-step code {
+            background: #eee;
+            padding: 2px 5px;
+            border-radius: 4px;
+        }
+
+        /* Styling untuk kostum */
+        .costume-layout {
+             display: flex;
+             gap: 20px;
+             justify-content: center;
+             align-items: center;
+             margin-top: 20px;
+        }
+        .costume-box {
+            text-align: center;
+        }
+        .costume-box img {
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            background: #f9f9f9;
+            width: 150px;
+            height: 120px;
+            object-fit: contain;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .costume-box p {
+            font-weight: 600;
+            color: #555;
+            margin-top: 5px;
+        }
+        
+        /* Styling untuk Variabel */
+        .variable-box {
+            background: #fffbe6;
+            border: 2px solid #f2c140;
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            max-width: 700px;
+        }
+        .variable-box h3 {
+            font-size: 1.5rem;
+            color: #d9a000;
+            margin-top: 0;
+            margin-bottom: 10px;
+        }
+        .variable-box code {
+            background: #fff;
+            padding: 5px 10px;
+            border-radius: 6px;
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #c78a00;
+            border: 1px solid #ffeeba;
+        }
+        
+        .contact-info {
+            font-size: 1.2rem; 
+        }
+        .thank-you-title {
+            font-size: 4rem; 
+        }
+
+        /* Media Queries untuk Responsif (Mobile View) */
+        @media (max-width: 768px) {
+            .presentation-container {
+                width: 100vw;
+                height: 100vh;
+                border-radius: 0;
+            }
+            .slide {
+                padding: 30px 20px;
+                background-color: rgba(255, 255, 255, 1); 
+            }
+            .slide-logo-left, .slide-logo-right {
+                padding: 5px 10px;
+                border-radius: 0;
+            }
+            .slide-logo-left img, .slide-logo-right img {
+                height: 30px;
+            }
+            #slide3, .content-grid, .ice-breaking-container, .pretest-container, .mission-layout, .costume-layout, .agenda-grid {
+                grid-template-columns: 1fr;
+                flex-direction: column;
+            }
+            
+            .navigation {
+                right: 5px;
+            }
+            .nav-button {
+                width: 35px;
+                height: 35px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Definisi SVG untuk elemen dekoratif -->
+    <svg width="0" height="0" style="position:absolute;">
+      <defs>
+        <symbol id="starburst-svg" viewBox="0 0 100 100">
+          <path d="M50 0 L55.9 34.5 L85.35 14.65 L65.5 44.1 L100 50 L65.5 55.9 L85.35 85.35 L55.9 65.5 L50 100 L44.1 65.5 L14.65 85.35 L34.5 55.9 L0 50 L34.5 44.1 L14.65 14.65 L44.1 34.5 Z" fill="currentColor"/>
+        </symbol>
+      </defs>
+    </svg>
+    
+    <!-- LOGO DI LUAR CONTAINER (GLOBAL BODY) - Z-INDEX TERTINGGI -->
+    <div class="slide-logo-left" id="globalLogoLeft">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/6d/Ruangguru_logo.svg/2560px-Ruangguru_logo.svg.png" 
+             onerror="this.onerror=null; this.src='https://placehold.co/40x40/ffffff/0070c0?text=RG'"
+             alt="Logo Ruangguru">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/f/f9/Lambang_Kabupaten_Dharmasraya.png" 
+             onerror="this.onerror=null; this.src='https://placehold.co/40x40/ffffff/0070c0?text=DH'"
+             alt="Logo Kabupaten Dharmasraya">
+        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQguI0U7hDXQP6UlNo24XCjT5nJKDttC7nSug&s" 
+             onerror="this.onerror=null; this.src='https://placehold.co/40x40/ffffff/0070c0?text=DS'"
+             alt="Logo Disdik Dharmasraya">
+    </div>
+    
+    <div class="slide-logo-right" id="globalLogoRight">
+        <img src="https://cdn-web-2.ruangguru.com/landing-pages/assets/e7d93748-818d-462d-be57-7db1e479cd62.png" 
+             onerror="this.onerror=null; this.src='https://placehold.co/80x40/ffffff/000000?text=RG+Coding'"
+             alt="Logo Ruangguru Coding">
+    </div>
+
+<div class="presentation-container">
+    
+    <!-- === KONTEN SLIDE PERTEMUAN 9 DIMULAI DI SINI === -->
+
+    <!-- Slide 1: Cover Page -->
+    <div class="slide active" id="slide1">
+        <svg class="starburst" style="top: 15%; left: 10%; width:80px; height:80px; color: #a8c368; transform: rotate(20deg); opacity: 0.7;"><use xlink:href="#starburst-svg"></use></svg>
+        <svg class="starburst" style="bottom: 20%; right: 15%; transform: rotate(-15deg); color: #f2c140; opacity: 0.8;"><use xlink:href="#starburst-svg"></use></svg>
+        <h1 class="cover-title">
+            Modul 2: <span class="highlight-gradient">Escape Room!</span>
+            <br>
+            Pertemuan 9: Membuat Room 1 Interaktif!
+        </h1>
+        <p class="cover-subtitle">Saatnya membuat puzzle kita bekerja!</p>
+        <p class="presenter-info" style="max-width: 700px; font-size: 1.3rem; opacity: 0.9; margin-top: 20px;">
+            Hari ini, kita akan selesaikan semua tantangan di Ruangan 1!
+        </p>
+    </div>
+
+    <!-- Slide 2: Misi Kita Hari Ini -->
+    <div class="slide" id="slide2">
+        <h2 class="agenda-title" style="text-align: center; width: 100%;">Misi Kita Hari Ini! (Interaksi)</h2>
+        <div class="agenda-grid" style="grid-template-columns: repeat(3, 1fr);">
+            <div class="agenda-card">
+                <div class="agenda-card-icon">🖱️</div>
+                <p class="agenda-card-text">Membuat Karpet bergeser & Frame Foto memberi clue saat di-klik.</p>
+            </div>
+            <div class="agenda-card">
+                <div class="agenda-card-icon">🔨</div>
+                <!-- Teks diperbarui -->
+                <p class="agenda-card-text">Membuat `Palu` bisa di-drag & memecahkan `TV` saat disentuhkan.</p>
+            </div>
+            <div class="agenda-card">
+                <div class="agenda-card-icon">🔑</div>
+                <!-- Teks diperbarui -->
+                <p class="agenda-card-text">Membuat `Kunci` bisa di-drag untuk membuka `Pintu`.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 3: Konsep Kunci: Variabel (DIGANTI) -->
+    <div class="slide solid-teal-bg" id="slide3">
+        <h2 class="main-header" style="color: #f2c140;">Konsep: Interaksi Fisik (Drag & Touch)</h2>
+        <p class="main-body" style="font-size: 1.3rem; text-align: center; max-width: 850px; margin-bottom: 20px;">
+            Daripada "menyimpan" barang di memori, kita akan buat barangnya bisa digeser (Drag) dan kita akan cek apakah barang itu "menyentuh" (Touching) benda lain.
+        </p>
+        <div class="variable-box" style="background: #e0f7fa; border-color: #008080;">
+            <h3 style="color: #005662;">Blok Sensor Kunci #1:</h3>
+            <p style="font-size: 1.1rem; color: #333;">
+                <code style="background: #ccecf2; color: #005662; border-color: #a6e0e9; font-size: 1rem;">set drag mode [draggable]</code>
+                <br>
+                Blok ini ada di kategori <strong style="color: #007B9A;">Sensing</strong> (Sensor). Fungsinya agar sprite bisa di-klik dan digeser-geser oleh pemain!
+            </p>
+        </div>
+    </div>
+
+    <!-- Slide 3b: Penjelasan Blok Touching (BARU) -->
+    <div class="slide solid-teal-bg" id="slide3b">
+        <h2 class="main-header" style="color: #f2c140;">Konsep: Interaksi Fisik (Drag & Touch)</h2>
+        <div class="variable-box" style="background: #e0f7fa; border-color: #008080;">
+            <h3 style="color: #005662;">Blok Sensor Kunci #2:</h3>
+             <p style="font-size: 1.1rem; color: #333;">
+                 <code style="background: #ccecf2; color: #005662; border-color: #a6e0e9; font-size: 1rem; padding: 10px 15px;">touching [ ... ] ?</code>
+                 <br>
+                 Blok <strong style="color: #007B9A;">Sensing</strong> berbentuk hexagonal ini adalah sebuah 'Kondisi'. Dia akan bernilai 'Benar' jika sprite ini menyentuh sprite lain yang kita pilih.
+             </p>
+        </div>
+    </div>
+
+    <!-- Slide 4: Misi 1 - Menggeser `Karpet` -->
+    <div class="slide" id="slide4">
+        <h2 class="agenda-title">Misi 1: Menggeser <span class="highlight-gradient">`Karpet`</span></h2>
+        <p style="font-size: 1.2rem; margin-bottom: 20px; max-width: 800px; text-align: center;">
+            Ini adalah puzzle pertama. Saat `Karpet` di-klik, dia harus bergeser.
+        </p>
+        <div class="mission-layout">
+            <div class="mission-code">
+                 <!-- Gambar kode karpet di-klik lalu glide -->
+                 <img src="https://images2.imgbox.com/a5/d1/T9o3vLpG_o.png" alt="Kode Karpet glide saat di-klik" class="scratch-code">
+            </div>
+            <div class="mission-expl">
+                <p style="font-size: 1.1rem; font-weight: 600; margin-bottom: 15px;">Kode di sprite `Karpet`:</p>
+                <ol>
+                    <li>Gunakan <code style="color: #E1A91A;">when this sprite clicked</code>.</li>
+                    <li>Tambahkan <code style="color: #4C97FF;">glide 1 secs to x: [posisi baru] y: [posisi baru]</code>.</li>
+                    <li>Pindahkan karpet di stage ke posisi baru, lalu catat angka X dan Y nya.</li>
+                </ol>
+                
+                <!-- Penjelasan Blok (BARU) -->
+                <div class="block-expl">
+                    <strong>Fungsi Blok:</strong>
+                    <br>
+                    <code>when this sprite clicked</code> (Events): Kartu 'event' ini akan memulai kode HANYA saat sprite ini di-klik.
+                    <br><br>
+                    <code>glide 1 secs to...</code> (Motion): Blok 'motion' (gerakan) ini akan menggerakkan sprite secara perlahan ke posisi baru, bukan instan (teleport).
+                </div>
+                
+                <p style="font-size: 1rem; line-height: 1.8; margin-top: 10px; background: #fffbe6; padding: 10px; border-radius: 8px;">
+                    <strong>PENTING:</strong> Pastikan kode "Reset" dari Pertemuan 8 (<code>when backdrop switches to Room 1</code> -> <code>go to [posisi awal]</code>) masih ada!
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 5: Misi 2 - Clue di `Frame Foto` -->
+    <div class="slide" id="slide5">
+        <h2 class="agenda-title">Misi 2: Clue di <span class="highlight-gradient">`Frame Foto`</span></h2>
+        <p style="font-size: 1.2rem; margin-bottom: 20px; max-width: 800px; text-align: center;">
+            Saat `Frame Foto` di-klik, kita akan beri petunjuk kepada pemain.
+        </p>
+        <div class="mission-layout">
+            <div class="mission-code">
+                 <!-- Gambar kode frame foto di-klik lalu say -->
+                 <img src="https://images2.imgbox.com/3c/6e/fO7sYkPq_o.png" alt="Kode Frame Foto say saat di-klik" class="scratch-code">
+            </div>
+            <div class="mission-expl">
+                <p style="font-size: 1.1rem; font-weight: 600; margin-bottom: 15px;">Kode di sprite `Frame Foto`:</p>
+                <ol>
+                    <li>Gunakan <code style="color: #E1A91A;">when this sprite clicked</code>.</li>
+                    <li>Tambahkan <code style="color: #8A55D7;">say [ketik petunjukmu di sini...] for 3 secs</code>.</li>
+                    <li>Contoh petunjuk: "Alat itu sepertinya bisa memecahkan sesuatu..." (Hint untuk Palu & TV)</li>
+                </ol>
+                
+                <!-- Penjelasan Blok (BARU) -->
+                <div class="block-expl">
+                    <strong>Fungsi Blok:</strong>
+                    <br>
+                    <code>when this sprite clicked</code> (Events): Sama seperti karpet, kode ini berjalan saat frame di-klik.
+                    <br><br>
+                    <code>say ... for ... secs</code> (Looks): Blok 'looks' (tampilan) ini akan memunculkan gelembung teks di atas sprite selama beberapa detik.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 6: Misi 3 - Mengambil `Palu` (DIGANTI) -->
+    <div class="slide" id="slide6">
+        <h2 class="agenda-title">Misi 3: Membuat <span class="highlight-gradient">`Palu`</span> Bisa Di-Drag</h2>
+        <p style="font-size: 1.2rem; margin-bottom: 20px; max-width: 800px; text-align: center;">
+            Kita akan buat `Palu` bisa digeser-geser oleh pemain.
+        </p>
+        <div class="mission-layout">
+            <div class="mission-code">
+                 <!-- Gambar kode Palu: set 'punyaPalu' to 1, hide. Dan kode reset: set 'punyaPalu' to 0, show (DIGANTI) -->
+                 <img src="https://placehold.co/500x350/f0f0f0/000.png?text=Kode+Palu+(BARU)\nwhen+backdrop+switches+to+Room+1\n-show\n-go+to+x:y:(posisi+awal)\n-set+drag+mode+[draggable]\n\nwhen+backdrop+switches+to+Room+2\n-hide\n\nwhen+backdrop+switches+to+Room+3\n-hide" alt="Kode Palu untuk di-drag" class="scratch-code">
+            </div>
+            <div class="mission-expl">
+                <p style="font-size: 1.1rem; font-weight: 600; margin-bottom: 15px;">Kode di sprite `Palu`:</p>
+                <p style="font-size: 1rem; line-height: 1.7;">
+                    <strong>1. Kode "Reset" (PENTING):</strong>
+                    <br>Saat <code style="color: #E1A91A;">when backdrop switches to Room 1</code>:
+                    <ul>
+                        <li><code style="color: #8A55D7;">show</code> (Palu muncul)</li>
+                        <li><code style="color: #4C97FF;">go to x: [posisi awal] y: [posisi awal]</code></li>
+                        <li><code style="color: #4CBFE6;">set drag mode [draggable]</code> (Biar bisa di-drag!)</li>
+                    </ul>
+                </p>
+                 <p style="font-size: 1rem; line-height: 1.7; margin-top: 10px;">
+                    <strong>2. Kode "Sembunyi":</strong>
+                    <br>Saat <code style="color: #E1A91A;">when backdrop switches to Room 2</code> (dan 3):
+                    <ul>
+                        <li><code style="color: #8A55D7;">hide</code> (Sembunyi di ruangan lain)</li>
+                    </ul>
+                </p>
+                
+                <!-- Penjelasan Blok (BARU) -->
+                <div class="block-expl" style="margin-top: 10px;">
+                    <strong>Fungsi Blok:</strong>
+                    <br>
+                    <code>go to x: y:</code> (Motion): Blok 'reset' yang penting. Memastikan Palu kembali ke tempatnya setiap masuk Room 1.
+                    <br><br>
+                    <code>set drag mode [draggable]</code> (Sensing): BLOK BARU! Ini adalah blok 'sensor' yang mengizinkan pemain meng-klik dan menahan sprite ini untuk digeser-geser.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 7: Misi 4 - Memecahkan `TV` (DIGANTI) -->
+    <div class="slide" id="slide7">
+        <h2 class="agenda-title">Misi 4: Memecahkan <span class="highlight-gradient">`TV`</span></h2>
+        <p style="font-size: 1.2rem; margin-bottom: 20px; max-width: 800px; text-align: center;">
+            Saat `TV` di-klik, kita cek: "Apakah `Palu` sedang menyentuh TV?"
+        </p>
+        <div class="mission-layout">
+            <div class="mission-code">
+                 <!-- Gambar kode TV: if 'punyaPalu' = 1 then... (DIGANTI) -->
+                 <img src="https://placehold.co/500x350/f0f0f0/000.png?text=Kode+TV+(BARU)\nwhen+this+sprite+clicked\n-if+<touching+[Palu]?>+then\n--switch+costume+to+[tv-pecah]\n--broadcast+[tvPecah]\n-else\n--say+"Butuh+alat!"+for+2+secs" alt="Kode TV untuk dipecahkan" class="scratch-code">
+            </div>
+            <div class="mission-expl">
+                <p style="font-size: 1.1rem; font-weight: 600; margin-bottom: 15px;">Kode di sprite `TV`:</p>
+                <ol>
+                    <li>Gunakan <code style="color: #E1A91A;">when this sprite clicked</code>.</li>
+                    <li>Tambahkan blok <code style="color: #FFAB19;">if ... then ... else</code>.</li>
+                    <li>Di dalam <code style="color: #FFAB19;">if</code>, masukkan kondisi <code style="color: #4CBFE6;">touching [Palu] ?</code>.</li>
+                    <li><strong>Jika YA (Menyentuh Palu):</strong>
+                        <ul>
+                            <li><code style="color: #8A55D7;">switch costume to [tv-pecah]</code></li>
+                            <li><code style="color: #E1A91A;">broadcast [tvPecah]</code> (Untuk memunculkan kunci!)</li>
+                        </ul>
+                    </li>
+                    <li><strong>Jika TIDAK (else):</strong>
+                        <ul>
+                            <li><code style="color: #8A55D7;">say "Butuh alat untuk ini!" for 2 secs</code></li>
+                        </ul>
+                    </li>
+                </ol>
+                
+                <!-- Penjelasan Blok (BARU) -->
+                <div class="block-expl" style="margin-top: 10px;">
+                    <strong>Fungsi Blok:</strong>
+                    <br>
+                    <code>if...then...else</code> (Control): Blok 'kontrol' ini adalah 'persimpangan'. JIKA kondisinya benar, jalankan 'then'. JIKA salah, jalankan 'else'.
+                    <br><br>
+                    <code>touching [Palu]?</code> (Sensing): Kondisi 'sensor' ini akan bernilai 'benar' JIKA sprite TV sedang bersentuhan dengan sprite Palu.
+                    <br><br>
+                    <code>broadcast [tvPecah]</code> (Events): Mengirim 'sinyal' rahasia ke semua sprite lain (terutama ke Kunci).
+                </div>
+                
+                <p style="font-size: 1rem; line-height: 1.8; margin-top: 10px; background: #fffbe6; padding: 10px; border-radius: 8px;">
+                    <strong>Reset:</strong> Pastikan kode reset <code style="color: #8A55D7;">switch costume to [tv-normal]</code> dari Meet 8 still ada (di <code>when backdrop switches to Room 1</code>)!
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 8: Misi 5 - `Kunci` Muncul & Diambil (DIGANTI) -->
+    <div class="slide" id="slide8">
+        <h2 class="agenda-title">Misi 5: <span class="highlight-gradient">`Kunci`</span> Muncul & Di-Drag</h2>
+        <p style="font-size: 1.2rem; margin-bottom: 20px; max-width: 800px; text-align: center;">
+            `Kunci` akan merespon `broadcast` dari TV, lalu bisa kita geser juga.
+        </p>
+        <div class="mission-layout">
+            <div class="mission-code">
+                 <!-- Gambar kode Kunci: receive 'tvPecah', show. clicked, set 'punyaKunci' to 1, hide (DIGANTI) -->
+                 <img src="https://placehold.co/500x400/f0f0f0/000.png?text=Kode+Kunci+(BARU)\nwhen+backdrop+switches+to+Room+1\n-hide\n(dan+room+2,+room+3...)\n\nwhen+I+receive+[tvPecah]\n-show\n-go+to+x:y:+(posisi+di+TV)\n-set+drag+mode+[draggable]" alt="Kode Kunci untuk muncul dan diambil" class="scratch-code">
+            </div>
+            <div class="mission-expl">
+                <p style="font-size: 1.1rem; font-weight: 600; margin-bottom: 15px;">Kode di sprite `Kunci`:</p>
+                <p style="font-size: 1rem; line-height: 1.7;">
+                    <strong>1. Kode "Reset" (PENTING):</strong>
+                    <br>Saat <code style="color: #E1A91A;">when backdrop switches to Room 1</code> (dan 2, 3):
+                    <ul>
+                        <li><code style="color: #8A55D7;">hide</code> (Kunci harus selalu sembunyi di awal)</li>
+                    </ul>
+                </p>
+                 <p style="font-size: 1rem; line-height: 1.7; margin-top: 10px;">
+                    <strong>2. Kode "Muncul":</strong>
+                    <br>Saat <code style="color: #E1A91A;">when I receive [tvPecah]</code>:
+                    <ul>
+                        <li><code style="color: #8A55D7;">show</code></li>
+                        <li><code style="color: #4C97FF;">go to x: [posisi TV] y: [posisi TV]</code></li>
+                        <li><code style="color: #4CBFE6;">set drag mode [draggable]</code></li>
+                    </ul>
+                </p>
+                
+                <!-- Penjelasan Blok (BARU) -->
+                <div class="block-expl" style="margin-top: 10px;">
+                    <strong>Fungsi Blok:</strong>
+                    <br>
+                    <code>when I receive [tvPecah]</code> (Events): Event ini 'mendengar' sinyal dari TV. Saat TV pecah, kode ini berjalan.
+                    <br><br>
+                    <code>show</code> / <code>hide</code> (Looks): Memunculkan atau menyembunyikan kunci.
+                    <br><br>
+                    <code>set drag mode [draggable]</code> (Sensing): Agar kuncinya juga bisa kita ambil dan geser!
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Slide 9: Misi 6 - Membuka `Pintu` (DIGANTI) -->
+    <div class="slide" id="slide9">
+        <h2 class="agenda-title">Misi 6: Membuka <span class="highlight-gradient">`Pintu`!</span></h2>
+        <p style="font-size: 1.2rem; margin-bottom: 20px; max-width: 800px; text-align: center;">
+            Misi Terakhir! Saat `Pintu` di-klik, kita cek: "Apakah `Kunci` menyentuh Pintu?"
+        </p>
+        <div class="mission-layout">
+            <div class="mission-code">
+                 <!-- Gambar kode Pintu: if 'punyaKunci' = 1 then broadcast 'bukaPintu' (DIGANTI) -->
+                 <img src="https://placehold.co/500x350/f0f0f0/000.png?text=Kode+Pintu+(BARU)\nwhen+this+sprite+clicked\n-if+<touching+[Kunci]?>+then\n--broadcast+[bukaPintu]\n-else\n--say+"Terkunci!"+for+2+secs" alt="Kode Pintu untuk dibuka dengan kunci" class="scratch-code">
+            </div>
+            <div class="mission-expl">
+                <p style="font-size: 1.1rem; font-weight: 600; margin-bottom: 15px;">Kode di sprite `Pintu`:</p>
+                <ol>
+                    <li>Gunakan <code style="color: #E1A91A;">when this sprite clicked</code>.</li>
+                    <li>Tambahkan blok <code style="color: #FFAB19;">if ... then ... else</code>.</li>
+                    <li>Di dalam <code style="color: #FFAB19;">if</code>, masukkan kondisi <code style="color: #4CBFE6;">touching [Kunci] ?</code>.</li>
+                    <li><strong>Jika YA (Menyentuh Kunci):</strong>
+                        <ul>
+                            <li><code style="color: #E1A91A;">broadcast [bukaPintu]</code> (Sinyal dari Meet 7!)</li>
+                        </ul>
+                    </li>
+                    <li><strong>Jika TIDAK (else):</strong>
+                        <ul>
+                            <li><code style="color: #8A55D7;">say "Terkunci!" for 2 secs</code></li>
+                        </ul>
+                    </li>
+                </ol>
+                
+                <!-- Penjelasan Blok (BARU) -->
+                <div class="block-expl" style="margin-top: 10px;">
+                    <strong>Fungsi Blok:</strong>
+                    <br>
+                    <code>if <touching [Kunci]?></code> (Sensing/Control): Logika yang sama dengan TV! Pintu akan cek, 'Apakah Kunci menyentuhku?'
+                    <br><br>
+                    <code>broadcast [bukaPintu]</code> (Events): Jika ya, kirim sinyal 'bukaPintu' yang sudah kita buat di Meet 7 untuk pindah ruangan.
+                    <br><br>
+                    <code>say "Terkunci!"</code> (Looks): Pesan jika kita klik pintu tanpa membawa kunci.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 10: Rangkuman (BARU) -->
+    <div class="slide" id="slide10">
+        <h1 class="main-header" style="color: #008080;">ROOM 1 SELESAI!</h1>
+        <div style="font-size: 8rem; margin: 10px 0;">🏆</div>
+        <p style="font-size: 1.8rem; font-weight: 600; color: #333; margin-bottom: 5px;">Kerja bagus, Detektif! Kalian berhasil kabur dari Ruangan 1!</p>
+        <p style="font-size: 1.2rem; color: #555; opacity: 0.9; max-width: 700px; text-align: center;">
+            Kita sudah belajar:
+            <br>
+            <code style="background: #eee; padding: 3px 6px; border-radius: 4px; margin: 2px;">when clicked</code> untuk interaksi dasar.
+            <br>
+            <code style="background: #eee; padding: 3px 6px; border-radius: 4px; margin: 2px;">set drag mode [draggable]</code> untuk mengambil barang.
+            <br>
+            <code style="background: #eee; padding: 3px 6px; border-radius: 4px; margin: 2px;">if <touching [ ... ]?></code> untuk memakai barang.
+            <br>
+            <code style="background: #eee; padding: 3px 6px; border-radius: 4px; margin: 2px;">Broadcast</code> untuk mengirim sinyal (TV -> Kunci).
+        </p>
+        <div class="contact-info" style="margin-top: 30px; padding: 15px; background-color: #f0f9ff; border-radius: 12px; border-left: 4px solid #008080;">
+            <p style="font-size: 1.3rem; color: #333; font-weight: bold; margin:0;">Minggu depan (Meet 10), kita akan mulai tantangan di <span class="highlight-gradient">RUANGAN 2!</span></p>
+        </div>
+    </div>
+
+    <!-- Slide 11: Feedback Form (Copy dari Meet 8) -->
+    <div class="slide" id="slide11">
+        <h2 class="agenda-title">Bagaimana Kelas Hari Ini?</h2>
+        <p style="font-size: 1.2rem; margin-bottom: 20px; max-width: 800px; text-align: center;">Bantu kami menjadi lebih baik dengan mengisi form feedback singkat ya!</p>
+        <div class="pretest-container" style="gap: 20px; padding: 20px;">
+            <div class="pretest-qr">
+                <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=https://bit.ly/feedback_class_dms" alt="QR Code Feedback">
+            </div>
+            <div class="pretest-timer-box" style="text-align: center;">
+                <p class="pretest-link" style="font-weight: bold;">Pindai QR Code atau buka link:</p>
+                <p class="pretest-link" style="background-color: #eee; padding: 10px 20px; border-radius: 8px; font-family: monospace; margin-top: 10px; font-size: 1.2rem;">bit.ly/feedback_class_dms</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 12: Penutup (Copy dari Meet 8) -->
+    <div class="slide" id="slide12">
+        <h1 class="main-header" style="color: #008080;">KERJA BAGUS, DETEKTIF!</h1>
+        <div style="font-size: 8rem; margin: 10px 0;">👋</div>
+        <p style="font-size: 1.8rem; font-weight: 600; color: #333; margin-bottom: 5px;">Sampai jumpa di pertemuan selanjutnya!</p>
+        <p style="font-size: 1.2rem; color: #555; opacity: 0.9;">Jangan lupa simpan proyekmu!</p>
+    </div>
+
+    <!-- === KONTEN SLIDE BARU BERAKHIR DI SINI === -->
+
+</div>
+
+    <button class="nav-button" id="prevBtn" onclick="changeSlide(-1)">&#9664;</button>
+    <button class="nav-button" id="nextBtn" onclick="changeSlide(1)">&#9658;</button>
+
+<script>
+    // SCRIPT NAVIGASI (Sama seperti Pertemuan 8)
+    const slides = document.querySelectorAll('.slide');
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    const globalLogoLeft = document.getElementById('globalLogoLeft');
+    const globalLogoRight = document.getElementById('globalLogoRight');
+    let currentSlide = 0;
+
+    function showSlide(index, direction = 'next') {
+        if (index === currentSlide && slides[index].classList.contains('active')) {
+            return; 
+        }
+
+        if (index < 0) {
+            index = 0;
+        } else if (index >= slides.length) {
+            index = slides.length - 1;
+        }
+
+        const oldSlide = slides[currentSlide];
+        const newSlide = slides[index];
+
+        slides.forEach((slide, i) => {
+            slide.classList.remove('active', 'is-next', 'is-exiting');
+            slide.style.zIndex = 1;
+        });
+
+        if (direction === 'next') {
+            oldSlide.style.zIndex = 10;
+            newSlide.style.zIndex = 11;
+            newSlide.classList.add('is-next');
+            
+            requestAnimationFrame(() => {
+                newSlide.classList.add('active');
+                newSlide.classList.remove('is-next');
+            });
+        } else { 
+            oldSlide.style.zIndex = 11;
+            newSlide.style.zIndex = 10;
+            newSlide.classList.add('active'); 
+            oldSlide.classList.add('is-exiting'); 
+        }
+
+        currentSlide = index;
+        slides[index].classList.add('active');
+
+        globalLogoLeft.style.opacity = 1;
+        globalLogoRight.style.opacity = 1;
+        globalLogoLeft.style.pointerEvents = 'auto';
+        globalLogoRight.style.pointerEvents = 'auto';
+        
+        prevBtn.style.opacity = 1;
+        nextBtn.style.opacity = 1;
+        
+        const isDarkSlide = slides[index].id === 'slide1' || slides[index].classList.contains('solid-teal-bg');
+        const navButtons = document.querySelectorAll('.nav-button');
+        navButtons.forEach(btn => {
+            if (isDarkSlide) {
+                btn.style.backgroundColor = 'rgba(255, 255, 255, 0.2)'; 
+                btn.style.color = 'white';
+            } else {
+                btn.style.backgroundColor = 'rgba(0, 128, 128, 0.8)'; 
+                btn.style.color = 'white';
+            }
+        });
+
+        prevBtn.disabled = currentSlide === 0;
+        nextBtn.disabled = currentSlide === slides.length - 1;
+    }
+
+    function changeSlide(direction) {
+        const newIndex = currentSlide + direction;
+
+        if (newIndex >= 0 && newIndex < slides.length) {
+            const moveDirection = direction === 1 ? 'next' : 'prev';
+            showSlide(newIndex, moveDirection);
+        }
+    }
+    
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'ArrowRight') {
+            changeSlide(1);
+        } else if (e.key === 'ArrowLeft') {
+            changeSlide(-1);
+        }
+    });
+
+    document.addEventListener('DOMContentLoaded', () => {
+        showSlide(currentSlide);
+    });
+</script>
+
+</body>
+</html>
