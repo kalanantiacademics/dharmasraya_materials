@@ -531,17 +531,17 @@
         <div class="agenda-grid" style="grid-template-columns: repeat(3, 1fr);">
             <div class="agenda-card">
                 <div class="agenda-card-icon">🖱️</div>
-                <p class="agenda-card-text">Membuat Karpet bergeser & Frame Foto memberi clue saat di-klik.</p>
+                <p class="agenda-card-text"><strong>Misi 1:</strong> Membuat `Karpet` bergeser untuk menemukan petunjuk.</p>
             </div>
             <div class="agenda-card">
                 <div class="agenda-card-icon">🔨</div>
                 <!-- Teks diperbarui -->
-                <p class="agenda-card-text">Membuat `Palu` bisa di-drag & memecahkan `TV` saat disentuhkan.</p>
+                <p class="agenda-card-text"><strong>Misi 2 & 3:</strong> Mengambil `Palu` dan memecahkan `TV`.</p>
             </div>
             <div class="agenda-card">
                 <div class="agenda-card-icon">🔑</div>
                 <!-- Teks diperbarui -->
-                <p class="agenda-card-text">Membuat `Kunci` bisa di-drag untuk membuka `Pintu`.</p>
+                <p class="agenda-card-text"><strong>Misi 4 & 5:</strong> Mengambil `Kunci` untuk membuka `Pintu`.</p>
             </div>
         </div>
     </div>
@@ -555,7 +555,8 @@
         <div class="variable-box" style="background: #e0f7fa; border-color: #008080;">
             <h3 style="color: #005662;">Blok Sensor Kunci #1:</h3>
             <p style="font-size: 1.1rem; color: #333;">
-                <code style="background: #ccecf2; color: #005662; border-color: #a6e0e9; font-size: 1rem;">set drag mode [draggable]</code>
+                <img src="https://scratch.oneoffcoder.com/_images/19-set-drag-mode.png" alt="set drag mode draggable block" style="height: 100px; vertical-align: middle; background: white; padding: 2px 5px; border-radius: 8px;">
+                <br>
                 <br>
                 Blok ini ada di kategori <strong style="color: #007B9A;">Sensing</strong> (Sensor). Fungsinya agar sprite bisa di-klik dan digeser-geser oleh pemain!
             </p>
@@ -568,256 +569,384 @@
         <div class="variable-box" style="background: #e0f7fa; border-color: #008080;">
             <h3 style="color: #005662;">Blok Sensor Kunci #2:</h3>
              <p style="font-size: 1.1rem; color: #333;">
-                 <code style="background: #ccecf2; color: #005662; border-color: #a6e0e9; font-size: 1rem; padding: 10px 15px;">touching [ ... ] ?</code>
-                 <br>
+                <img src="https://scratch.oneoffcoder.com/_images/00-touching-mouse-pointer.png" alt="sensing touched" style="height: 100px; vertical-align: middle; background: white; padding: 2px 5px; border-radius: 8px;">
+                 <br><br>
                  Blok <strong style="color: #007B9A;">Sensing</strong> berbentuk hexagonal ini adalah sebuah 'Kondisi'. Dia akan bernilai 'Benar' jika sprite ini menyentuh sprite lain yang kita pilih.
              </p>
         </div>
     </div>
 
     <!-- Slide 4: Misi 1 - Menggeser `Karpet` -->
-    <div class="slide" id="slide4">
-        <h2 class="agenda-title">Misi 1: Menggeser <span class="highlight-gradient">`Karpet`</span></h2>
+    <div class="slide" id="slide4-1">
+        <h2 class="agenda-title">Misi 1.1: <span class="highlight-gradient">Pemicu Karpet (Event)</span></h2>
         <p style="font-size: 1.2rem; margin-bottom: 20px; max-width: 800px; text-align: center;">
-            Ini adalah puzzle pertama. Saat `Karpet` di-klik, dia harus bergeser.
+            Kita ingin karpet bergeser saat di-klik. Langkah pertama adalah memberitahu komputer untuk "mendengarkan" kapan karpet itu di-klik.
         </p>
         <div class="mission-layout">
             <div class="mission-code">
-                 <!-- Gambar kode karpet di-klik lalu glide -->
-                 <img src="https://images2.imgbox.com/a5/d1/T9o3vLpG_o.png" alt="Kode Karpet glide saat di-klik" class="scratch-code">
+                 <img src="https://scratch.oneoffcoder.com/_images/06-when-sprite-clicked.png" alt="Blok when this sprite clicked" class="scratch-code" style="height: 150px; width: auto; object-fit: contain;">
             </div>
             <div class="mission-expl">
-                <p style="font-size: 1.1rem; font-weight: 600; margin-bottom: 15px;">Kode di sprite `Karpet`:</p>
-                <ol>
-                    <li>Gunakan <code style="color: #E1A91A;">when this sprite clicked</code>.</li>
-                    <li>Tambahkan <code style="color: #4C97FF;">glide 1 secs to x: [posisi baru] y: [posisi baru]</code>.</li>
-                    <li>Pindahkan karpet di stage ke posisi baru, lalu catat angka X dan Y nya.</li>
-                </ol>
-                
-                <!-- Penjelasan Blok (BARU) -->
+                <p style="font-size: 1.1rem; font-weight: 600; margin-bottom: 15px;">Blok yang Digunakan:</p>
+                <p>Gunakan blok <code style="color: #E1A91A;">when this sprite clicked</code> dari kategori <strong>Events</strong> (Kejadian).</p>
                 <div class="block-expl">
-                    <strong>Fungsi Blok:</strong>
+                    <strong>Analogi Sederhana:</strong>
                     <br>
-                    <code>when this sprite clicked</code> (Events): Kartu 'event' ini akan memulai kode HANYA saat sprite ini di-klik.
-                    <br><br>
-                    <code>glide 1 secs to...</code> (Motion): Blok 'motion' (gerakan) ini akan menggerakkan sprite secara perlahan ke posisi baru, bukan instan (teleport).
+                    Ini seperti tombol bel di pintu. Tidak akan terjadi apa-apa sampai ada yang menekannya. Blok ini adalah "tombol" untuk sprite kita.
                 </div>
-                
-                <p style="font-size: 1rem; line-height: 1.8; margin-top: 10px; background: #fffbe6; padding: 10px; border-radius: 8px;">
-                    <strong>PENTING:</strong> Pastikan kode "Reset" dari Pertemuan 8 (<code>when backdrop switches to Room 1</code> -> <code>go to [posisi awal]</code>) masih ada!
-                </p>
+                <p style="font-size: 1.1rem; font-weight: 600; margin-top: 20px;">Latihan Siswa:</p>
+                <p>"Coba tambahkan blok <code>when this sprite clicked</code> ke area kode karpetmu."</p>
             </div>
         </div>
     </div>
 
-    <!-- Slide 5: Misi 2 - Clue di `Frame Foto` -->
-    <div class="slide" id="slide5">
-        <h2 class="agenda-title">Misi 2: Clue di <span class="highlight-gradient">`Frame Foto`</span></h2>
+    <!-- Slide 4.2: Logika -->
+    <div class="slide" id="slide4-2">
+        <h2 class="agenda-title">Misi 1.2: <span class="highlight-gradient">Logika Karpet (Kondisi)</span></h2>
         <p style="font-size: 1.2rem; margin-bottom: 20px; max-width: 800px; text-align: center;">
-            Saat `Frame Foto` di-klik, kita akan beri petunjuk kepada pemain.
+            Kita ingin karpet bergerak bolak-balik. Karpet perlu "berpikir" untuk tahu posisinya sekarang.
         </p>
         <div class="mission-layout">
             <div class="mission-code">
-                 <!-- Gambar kode frame foto di-klik lalu say -->
-                 <img src="https://images2.imgbox.com/3c/6e/fO7sYkPq_o.png" alt="Kode Frame Foto say saat di-klik" class="scratch-code">
+                 <img src="https://images2.imgbox.com/31/fd/PKsZtPVu_o.png" alt="Kode if x position = -102" class="scratch-code">
             </div>
             <div class="mission-expl">
-                <p style="font-size: 1.1rem; font-weight: 600; margin-bottom: 15px;">Kode di sprite `Frame Foto`:</p>
+                <p style="font-size: 1.1rem; font-weight: 600; margin-bottom: 15px;">Blok yang Digunakan:</p>
                 <ol>
-                    <li>Gunakan <code style="color: #E1A91A;">when this sprite clicked</code>.</li>
-                    <li>Tambahkan <code style="color: #8A55D7;">say [ketik petunjukmu di sini...] for 3 secs</code>.</li>
-                    <li>Contoh petunjuk: "Alat itu sepertinya bisa memecahkan sesuatu..." (Hint untuk Palu & TV)</li>
+                    <li><code style="color: #FFAB19;">if... then... else...</code> (dari Control)</li>
+                    <li><code style="color: #4C97FF;">x position</code> (dari Motion)</li>
+                    <li><code style="color: #59C059;">... = ...</code> (dari Operators)</li>
                 </ol>
-                
-                <!-- Penjelasan Blok (BARU) -->
                 <div class="block-expl">
-                    <strong>Fungsi Blok:</strong>
+                    <strong>Penjelasan:</strong>
                     <br>
-                    <code>when this sprite clicked</code> (Events): Sama seperti karpet, kode ini berjalan saat frame di-klik.
+                    Pertanyaan kita adalah: "Apakah karpet saat ini ada di posisi awal (kiri)?"
                     <br><br>
-                    <code>say ... for ... secs</code> (Looks): Blok 'looks' (tampilan) ini akan memunculkan gelembung teks di atas sprite selama beberapa detik.
+                    Kita terjemahkan ke kode: <code>if &lt;x position = -102&gt;</code>.
+                    <br>
+                    (-102 adalah posisi X awal karpet dari kode reset kita).
+                </div>
+                <p style="font-size: 1.1rem; font-weight: 600; margin-top: 20px;">Latihan Siswa:</p>
+                <p>"Gabungkan bloknya. Tarik blok <code>if...then...else</code> di bawah <code>when this sprite clicked</code>, lalu masukkan kondisi <code>x position = -102</code>."</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 4.3: Aksi -->
+    <div class="slide" id="slide4-3">
+        <h2 class="agenda-title">Misi 1.3: <span class="highlight-gradient">Aksi Karpet (Gerakan)</span></h2>
+        <p style="font-size: 1.2rem; margin-bottom: 20px; max-width: 800px; text-align: center;">
+            Sekarang kita isi bagian `then` dan `else` dengan perintah gerak. Kita pakai `glide` agar gerakannya mulus.
+        </p>
+        <div class="mission-layout">
+            <div class="mission-code">
+                 <img src="https://images2.imgbox.com/93/d7/iIREuWmO_o.png" alt="Kode lengkap karpet dengan glide" class="scratch-code">
+            </div>
+            <div class="mission-expl">
+                <p style="font-size: 1.1rem; font-weight: 600; margin-bottom: 15px;">Mengisi Logika:</p>
+                <ul>
+                    <li>
+                        <strong>Jika YA</strong> (Karpet di kiri):
+                        <br>
+                        Di dalam `then`, masukkan:
+                        <br>
+                        <code style="color: #4C97FF;">glide 1 secs to x: 50 y: -158</code>
+                    </li>
+                    <br>
+                    <li>
+                        <strong>Jika TIDAK</strong> (Karpet di kanan):
+                        <br>
+                        Di dalam `else`, masukkan:
+                        <br>
+                        <code style="color: #4C97FF;">glide 1 secs to x: -102 y: -158</code>
+                    </li>
+                </ul>
+                <div class="block-expl">
+                    <strong>Perbedaan `glide` vs `go to`:</strong>
+                    <br>
+                    <code>go to</code>: Teleportasi instan.
+                    <br>
+                    <code>glide</code>: Meluncur perlahan, terlihat animasinya.
+                </div>
+                <p style="font-size: 1.1rem; font-weight: 600; margin-top: 20px;">Latihan Siswa:</p>
+                <p>"Masukkan blok <code>glide</code> yang benar ke dalam slot `then` dan `else`."</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 4.4: Kode Lengkap & Uji Coba -->
+    <div class="slide" id="slide4-4">
+        <h2 class="agenda-title">Misi 1.4: <span class="highlight-gradient">Kode Lengkap & Uji Coba</span></h2>
+        <p style="font-size: 1.2rem; margin-bottom: 20px; max-width: 800px; text-align: center;">
+            Ini adalah kode lengkap untuk membuat karpet bergeser bolak-balik (toggle).
+        </p>
+        <div class="mission-layout">
+            <div class="mission-code">
+                 <img src="https://images2.imgbox.com/e9/35/N7cXPlFM_o.png" alt="Kode lengkap karpet" class="scratch-code">
+            </div>
+            <div class="mission-expl">
+                <p style="font-size: 1.1rem; font-weight: 600; margin-bottom: 15px;">Cara Kerjanya:</p>
+                <ol>
+                    <li>Saat kamu klik karpet...</li>
+                    <li>Komputer bertanya: "Apakah posisi X karpet sekarang -102?"</li>
+                    <li><strong>Jika YA:</strong> Karpet akan meluncur ke kanan (x: 50).</li>
+                    <li><strong>Jika TIDAK:</strong> Karpet akan meluncur kembali ke kiri (x: -102).</li>
+                </ol>
+                <div class="block-expl" style="background: #e6fffa; border-color: #38a169;">
+                    <strong style="color: #2f855a;">✅ Uji Coba:</strong>
+                    <br>
+                    "Sekarang, klik bendera hijau, lalu klik karpetmu! Apakah dia bergeser ke kanan? Coba klik lagi! Apakah dia kembali ke kiri?"
                 </div>
             </div>
         </div>
     </div>
 
     <!-- Slide 6: Misi 3 - Mengambil `Palu` (DIGANTI) -->
-    <div class="slide" id="slide6">
-        <h2 class="agenda-title">Misi 3: Membuat <span class="highlight-gradient">`Palu`</span> Bisa Di-Drag</h2>
+    <div class="slide" id="slide6-1">
+        <h2 class="agenda-title">Misi 2.1: <span class="highlight-gradient">Setup Palu</span></h2>
         <p style="font-size: 1.2rem; margin-bottom: 20px; max-width: 800px; text-align: center;">
-            Kita akan buat `Palu` bisa digeser-geser oleh pemain.
+            Pertama, kita pastikan Palu selalu muncul di tempat yang benar dan siap digunakan saat kita masuk Room 1.
         </p>
         <div class="mission-layout">
             <div class="mission-code">
-                 <!-- Gambar kode Palu: set 'punyaPalu' to 1, hide. Dan kode reset: set 'punyaPalu' to 0, show (DIGANTI) -->
-                 <img src="https://placehold.co/500x350/f0f0f0/000.png?text=Kode+Palu+(BARU)\nwhen+backdrop+switches+to+Room+1\n-show\n-go+to+x:y:(posisi+awal)\n-set+drag+mode+[draggable]\n\nwhen+backdrop+switches+to+Room+2\n-hide\n\nwhen+backdrop+switches+to+Room+3\n-hide" alt="Kode Palu untuk di-drag" class="scratch-code">
+                 <img src="https://images2.imgbox.com/36/c9/5ybBKVZJ_o.png" alt="Kode Reset Palu" class="scratch-code">
             </div>
             <div class="mission-expl">
-                <p style="font-size: 1.1rem; font-weight: 600; margin-bottom: 15px;">Kode di sprite `Palu`:</p>
-                <p style="font-size: 1rem; line-height: 1.7;">
-                    <strong>1. Kode "Reset" (PENTING):</strong>
-                    <br>Saat <code style="color: #E1A91A;">when backdrop switches to Room 1</code>:
-                    <ul>
-                        <li><code style="color: #8A55D7;">show</code> (Palu muncul)</li>
-                        <li><code style="color: #4C97FF;">go to x: [posisi awal] y: [posisi awal]</code></li>
-                        <li><code style="color: #4CBFE6;">set drag mode [draggable]</code> (Biar bisa di-drag!)</li>
-                    </ul>
-                </p>
-                 <p style="font-size: 1rem; line-height: 1.7; margin-top: 10px;">
-                    <strong>2. Kode "Sembunyi":</strong>
-                    <br>Saat <code style="color: #E1A91A;">when backdrop switches to Room 2</code> (dan 3):
-                    <ul>
-                        <li><code style="color: #8A55D7;">hide</code> (Sembunyi di ruangan lain)</li>
-                    </ul>
-                </p>
-                
-                <!-- Penjelasan Blok (BARU) -->
+                <p style="font-size: 1.1rem; font-weight: 600; margin-bottom: 15px;">Kode "Reset" di sprite `Palu`:</p>
+                <p>Saat <code style="color: #E1A91A;">when backdrop switches to Room 1</code>:</p>
+                <ul>
+                    <li><code style="color: #4C97FF;">go to x: 157 y: -132</code>: Pindah ke posisi awal.</li>
+                    <li><code style="color: #8A55D7;">show</code>: Pastikan palu terlihat.</li>
+                    <li><code style="color: #8A55D7;">go to front layer</code>: Agar palu muncul di depan sprite lain.</li>
+                    <li><code style="color: #8A55D7;">switch costume to costume1</code>: Pastikan gambar palu benar.</li>
+                </ul>
                 <div class="block-expl" style="margin-top: 10px;">
-                    <strong>Fungsi Blok:</strong>
+                    <strong>Latihan Siswa (Bagian 1):</strong>
                     <br>
-                    <code>go to x: y:</code> (Motion): Blok 'reset' yang penting. Memastikan Palu kembali ke tempatnya setiap masuk Room 1.
-                    <br><br>
-                    <code>set drag mode [draggable]</code> (Sensing): BLOK BARU! Ini adalah blok 'sensor' yang mengizinkan pemain meng-klik dan menahan sprite ini untuk digeser-geser.
+                    "Buatlah kode 'Reset' ini agar palumu selalu siap di tempatnya setiap kali kamu masuk Room 1."
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 6.2: Properti Palu -->
+    <div class="slide" id="slide6-2">
+        <h2 class="agenda-title">Misi 2.2: Membuat Palu Bisa <span class="highlight-gradient">"Dipegang"</span></h2>
+        <p style="font-size: 1.2rem; margin-bottom: 20px; max-width: 800px; text-align: center;">
+            Sekarang, kita tambahkan satu blok super penting agar palu bisa digeser-geser oleh pemain.
+        </p>
+        <div class="mission-layout">
+            <div class="mission-code">
+                 <img src="https://images2.imgbox.com/40/6a/Vsauwo3H_o.png" alt="Kode Reset Lengkap dengan Drag Mode" class="scratch-code">
+            </div>
+            <div class="mission-expl">
+                <p style="font-size: 1.1rem; font-weight: 600; margin-bottom: 15px;">Blok Baru: <code style="color: #4CBFE6;">set drag mode [draggable]</code></p>
+                <p>Blok dari kategori <strong>Sensing</strong> ini memberi tahu Scratch bahwa sprite ini boleh di-klik dan digeser-geser oleh pemain saat game berjalan.</p>
+                <div class="block-expl">
+                    <strong>Cara Memasang yang Benar:</strong>
+                    <br>
+                    Letakkan blok ini di dalam kode "Reset" (<code>when backdrop switches...</code>). Dengan begitu, palu akan langsung bisa di-drag sejak awal kita masuk ruangan.
+                </div>
+                <p style="font-size: 1.1rem; font-weight: 600; margin-top: 20px;">Latihan Siswa (Bagian 2):</p>
+                <p>"Tambahkan blok <code>set drag mode [draggable]</code> di akhir kode 'Reset' palumu. Coba jalankan game. Bisakah kamu menggeser palunya sekarang?"</p>
+                <p style="font-size: 0.9rem; line-height: 1.5; margin-top: 10px; background: #fffbe6; padding: 10px; border-radius: 8px;">
+                    <strong>Catatan untuk Pengajar:</strong> Menaruh blok ini di "Reset" lebih logis daripada di `when clicked` agar properti `draggable` langsung aktif saat scene dimulai.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 6.3: Aksi Palu -->
+    <div class="slide" id="slide6-3">
+        <h2 class="agenda-title">Misi 2.3: Memberi Palu <span class="highlight-gradient">Kekuatan!</span></h2>
+        <p style="font-size: 1.2rem; margin-bottom: 20px; max-width: 800px; text-align: center;">
+            Palu sudah bisa digeser. Sekarang, bagaimana cara "memukul"? Saat palu di-klik, kita akan cek apakah dia menyentuh TV.
+        </p>
+        <div class="mission-layout">
+            <div class="mission-code">
+                 <img src="https://images2.imgbox.com/2c/82/IhdZSLer_o.png" alt="Kode Aksi Palu" class="scratch-code">
+            </div>
+            <div class="mission-expl">
+                <p style="font-size: 1.1rem; font-weight: 600; margin-bottom: 15px;">Kode Aksi di sprite `Palu`:</p>
+                <ul>
+                    <li><code style="color: #E1A91A;">when this sprite clicked</code>: Pemicu "aksi" saat palu di-klik.</li>
+                    <li><code style="color: #FFAB19;">wait 0.1 seconds</code>: Jeda singkat untuk stabilitas.</li>
+                    <li><code style="color: #FFAB19;">if &lt;touching [tv]?&gt; then</code>: "Otak" palu. Dia bertanya, "Apakah aku menyentuh TV?"</li>
+                    <li><code style="color: #E1A91A;">broadcast [pecahin tv]</code>: Jika ya, palu "berteriak" mengirim sinyal rahasia ke sprite lain (TV).</li>
+                </ul>
+                <div class="block-expl">
+                    <strong>Latihan Siswa (Bagian 3):</strong>
+                    <br>
+                    "Buat kode 'Aksi' ini di sprite palu. Geser palumu sampai menyentuh TV, lalu klik palunya! (Belum terjadi apa-apa di TV, tapi palu sudah mengirim sinyal)."
                 </div>
             </div>
         </div>
     </div>
 
     <!-- Slide 7: Misi 4 - Memecahkan `TV` (DIGANTI) -->
-    <div class="slide" id="slide7">
-        <h2 class="agenda-title">Misi 4: Memecahkan <span class="highlight-gradient">`TV`</span></h2>
+    <div class="slide" id="slide7-1">
+        <h2 class="agenda-title">Misi 3.1: <span class="highlight-gradient">Setup TV</span></h2>
         <p style="font-size: 1.2rem; margin-bottom: 20px; max-width: 800px; text-align: center;">
-            Saat `TV` di-klik, kita cek: "Apakah `Palu` sedang menyentuh TV?"
+            Kita perlu "mereset" TV setiap kali masuk Room 1 untuk memastikan TV kembali utuh (tidak pecah).
         </p>
         <div class="mission-layout">
             <div class="mission-code">
-                 <!-- Gambar kode TV: if 'punyaPalu' = 1 then... (DIGANTI) -->
-                 <img src="https://placehold.co/500x350/f0f0f0/000.png?text=Kode+TV+(BARU)\nwhen+this+sprite+clicked\n-if+<touching+[Palu]?>+then\n--switch+costume+to+[tv-pecah]\n--broadcast+[tvPecah]\n-else\n--say+"Butuh+alat!"+for+2+secs" alt="Kode TV untuk dipecahkan" class="scratch-code">
+                 <img src="https://images2.imgbox.com/e1/00/SU2faREe_o.png" alt="Kode Reset TV" class="scratch-code">
             </div>
             <div class="mission-expl">
-                <p style="font-size: 1.1rem; font-weight: 600; margin-bottom: 15px;">Kode di sprite `TV`:</p>
-                <ol>
-                    <li>Gunakan <code style="color: #E1A91A;">when this sprite clicked</code>.</li>
-                    <li>Tambahkan blok <code style="color: #FFAB19;">if ... then ... else</code>.</li>
-                    <li>Di dalam <code style="color: #FFAB19;">if</code>, masukkan kondisi <code style="color: #4CBFE6;">touching [Palu] ?</code>.</li>
-                    <li><strong>Jika YA (Menyentuh Palu):</strong>
-                        <ul>
-                            <li><code style="color: #8A55D7;">switch costume to [tv-pecah]</code></li>
-                            <li><code style="color: #E1A91A;">broadcast [tvPecah]</code> (Untuk memunculkan kunci!)</li>
-                        </ul>
-                    </li>
-                    <li><strong>Jika TIDAK (else):</strong>
-                        <ul>
-                            <li><code style="color: #8A55D7;">say "Butuh alat untuk ini!" for 2 secs</code></li>
-                        </ul>
-                    </li>
-                </ol>
-                
-                <!-- Penjelasan Blok (BARU) -->
+                <p style="font-size: 1.1rem; font-weight: 600; margin-bottom: 15px;">Kode "Reset" di sprite `TV`:</p>
+                <p>Saat <code style="color: #E1A91A;">when backdrop switches to Room 1</code>:</p>
+                <ul>
+                    <li><code style="color: #4C97FF;">go to x: -115 y: -84</code>: Pindah ke posisi awal.</li>
+                    <li><code style="color: #8A55D7;">show</code>: Pastikan TV terlihat.</li>
+                    <li><code style="color: #8A55D7;">go to front layer</code>: Taruh di lapisan depan.</li>
+                    <li><code style="color: #8A55D7;">switch costume to tv1</code>: <strong>PENTING!</strong> Kembali ke kostum utuh.</li>
+                </ul>
                 <div class="block-expl" style="margin-top: 10px;">
-                    <strong>Fungsi Blok:</strong>
+                    <strong>Latihan Siswa:</strong>
                     <br>
-                    <code>if...then...else</code> (Control): Blok 'kontrol' ini adalah 'persimpangan'. JIKA kondisinya benar, jalankan 'then'. JIKA salah, jalankan 'else'.
-                    <br><br>
-                    <code>touching [Palu]?</code> (Sensing): Kondisi 'sensor' ini akan bernilai 'benar' JIKA sprite TV sedang bersentuhan dengan sprite Palu.
-                    <br><br>
-                    <code>broadcast [tvPecah]</code> (Events): Mengirim 'sinyal' rahasia ke semua sprite lain (terutama ke Kunci).
+                    "Buatlah kode 'Reset' ini di sprite TV-mu. Pastikan kamu memilih kostum `tv1` (atau nama kostum TV-mu yang masih utuh)."
                 </div>
-                
-                <p style="font-size: 1rem; line-height: 1.8; margin-top: 10px; background: #fffbe6; padding: 10px; border-radius: 8px;">
-                    <strong>Reset:</strong> Pastikan kode reset <code style="color: #8A55D7;">switch costume to [tv-normal]</code> dari Meet 8 still ada (di <code>when backdrop switches to Room 1</code>)!
-                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 7.2: Reaksi TV -->
+    <div class="slide" id="slide7-2">
+        <h2 class="agenda-title">Misi 3.2: <span class="highlight-gradient">TV Pecah! (Reaksi)</span></h2>
+        <p style="font-size: 1.2rem; margin-bottom: 20px; max-width: 800px; text-align: center;">
+            Ingat, Palu mengirim sinyal `pecahin tv`. Sekarang, kita buat TV "mendengarkan" sinyal rahasia itu.
+        </p>
+        <div class="mission-layout">
+            <div class="mission-code">
+                 <img src="https://images2.imgbox.com/27/80/BGMXl7oZ_o.png" alt="Kode Reaksi TV" class="scratch-code">
+            </div>
+            <div class="mission-expl">
+                <p style="font-size: 1.1rem; font-weight: 600; margin-bottom: 15px;">Kode "Aksi" di sprite `TV`:</p>
+                <ul>
+                    <li><code style="color: #E1A91A;">when I receive [pecahin tv]</code>: Ini adalah "telinga" sprite. Dia menunggu sinyal dari Palu.</li>
+                    <li><code style="color: #8A55D7;">next costume</code>: Saat sinyal diterima, ganti ke kostum berikutnya di daftar (misal: dari utuh ke retak 1, lalu ke retak 2, dst).</li>
+                </ul>
+                <div class="block-expl" style="background: #e6fffa; border-color: #38a169;">
+                    <strong style="color: #2f855a;">✅ Uji Coba:</strong>
+                    <br>
+                    "Tambahkan kode ini ke TV. Jalankan game, geser palu ke atas TV, lalu klik palunya berkali-kali. Apa yang terjadi pada TV?"
+                </div>
             </div>
         </div>
     </div>
 
     <!-- Slide 8: Misi 5 - `Kunci` Muncul & Diambil (DIGANTI) -->
-    <div class="slide" id="slide8">
-        <h2 class="agenda-title">Misi 5: <span class="highlight-gradient">`Kunci`</span> Muncul & Di-Drag</h2>
+    <div class="slide" id="slide8-1">
+        <h2 class="agenda-title">Misi 4.1: <span class="highlight-gradient">Setup Kunci (Logika Sembunyi)</span></h2>
         <p style="font-size: 1.2rem; margin-bottom: 20px; max-width: 800px; text-align: center;">
-            `Kunci` akan merespon `broadcast` dari TV, lalu bisa kita geser juga.
+            Kita akan "sembunyikan" kunci di belakang TV menggunakan lapisan (layers), bukan dengan blok `hide`.
         </p>
         <div class="mission-layout">
             <div class="mission-code">
-                 <!-- Gambar kode Kunci: receive 'tvPecah', show. clicked, set 'punyaKunci' to 1, hide (DIGANTI) -->
-                 <img src="https://placehold.co/500x400/f0f0f0/000.png?text=Kode+Kunci+(BARU)\nwhen+backdrop+switches+to+Room+1\n-hide\n(dan+room+2,+room+3...)\n\nwhen+I+receive+[tvPecah]\n-show\n-go+to+x:y:+(posisi+di+TV)\n-set+drag+mode+[draggable]" alt="Kode Kunci untuk muncul dan diambil" class="scratch-code">
+                 <img src="https://images2.imgbox.com/dd/8b/PitDUY8V_o.png" alt="Kode Reset Kunci dengan Layer" class="scratch-code">
             </div>
             <div class="mission-expl">
-                <p style="font-size: 1.1rem; font-weight: 600; margin-bottom: 15px;">Kode di sprite `Kunci`:</p>
-                <p style="font-size: 1rem; line-height: 1.7;">
-                    <strong>1. Kode "Reset" (PENTING):</strong>
-                    <br>Saat <code style="color: #E1A91A;">when backdrop switches to Room 1</code> (dan 2, 3):
-                    <ul>
-                        <li><code style="color: #8A55D7;">hide</code> (Kunci harus selalu sembunyi di awal)</li>
-                    </ul>
-                </p>
-                 <p style="font-size: 1rem; line-height: 1.7; margin-top: 10px;">
-                    <strong>2. Kode "Muncul":</strong>
-                    <br>Saat <code style="color: #E1A91A;">when I receive [tvPecah]</code>:
-                    <ul>
-                        <li><code style="color: #8A55D7;">show</code></li>
-                        <li><code style="color: #4C97FF;">go to x: [posisi TV] y: [posisi TV]</code></li>
-                        <li><code style="color: #4CBFE6;">set drag mode [draggable]</code></li>
-                    </ul>
-                </p>
-                
-                <!-- Penjelasan Blok (BARU) -->
+                <p style="font-size: 1.1rem; font-weight: 600; margin-bottom: 15px;">Kode "Reset" di sprite `Kunci`:</p>
+                <p>Saat <code style="color: #E1A91A;">when backdrop switches to Room 1</code>:</p>
+                <ul>
+                    <li><code style="color: #4C97FF;">go to x: -114 y: -63</code>: Posisi di belakang TV.</li>
+                    <li><code style="color: #8A55D7;">show</code>: Kita sengaja menampilkannya.</li>
+                    <li><code style="color: #8A55D7;">go to back layer</code>: <strong>BLOK KUNCI!</strong> Mengirim kunci ke lapisan paling belakang, di belakang TV.</li>
+                    <li><code style="color: #8A55D7;">switch costume to key1</code>: Pastikan gambar kunci benar.</li>
+                </ul>
                 <div class="block-expl" style="margin-top: 10px;">
-                    <strong>Fungsi Blok:</strong>
+                    <strong>Latihan Siswa:</strong>
                     <br>
-                    <code>when I receive [tvPecah]</code> (Events): Event ini 'mendengar' sinyal dari TV. Saat TV pecah, kode ini berjalan.
-                    <br><br>
-                    <code>show</code> / <code>hide</code> (Looks): Memunculkan atau menyembunyikan kunci.
-                    <br><br>
-                    <code>set drag mode [draggable]</code> (Sensing): Agar kuncinya juga bisa kita ambil dan geser!
-                </div>
-            </div>
-        </div>
-    </div>
-    
-    <!-- Slide 9: Misi 6 - Membuka `Pintu` (DIGANTI) -->
-    <div class="slide" id="slide9">
-        <h2 class="agenda-title">Misi 6: Membuka <span class="highlight-gradient">`Pintu`!</span></h2>
-        <p style="font-size: 1.2rem; margin-bottom: 20px; max-width: 800px; text-align: center;">
-            Misi Terakhir! Saat `Pintu` di-klik, kita cek: "Apakah `Kunci` menyentuh Pintu?"
-        </p>
-        <div class="mission-layout">
-            <div class="mission-code">
-                 <!-- Gambar kode Pintu: if 'punyaKunci' = 1 then broadcast 'bukaPintu' (DIGANTI) -->
-                 <img src="https://placehold.co/500x350/f0f0f0/000.png?text=Kode+Pintu+(BARU)\nwhen+this+sprite+clicked\n-if+<touching+[Kunci]?>+then\n--broadcast+[bukaPintu]\n-else\n--say+"Terkunci!"+for+2+secs" alt="Kode Pintu untuk dibuka dengan kunci" class="scratch-code">
-            </div>
-            <div class="mission-expl">
-                <p style="font-size: 1.1rem; font-weight: 600; margin-bottom: 15px;">Kode di sprite `Pintu`:</p>
-                <ol>
-                    <li>Gunakan <code style="color: #E1A91A;">when this sprite clicked</code>.</li>
-                    <li>Tambahkan blok <code style="color: #FFAB19;">if ... then ... else</code>.</li>
-                    <li>Di dalam <code style="color: #FFAB19;">if</code>, masukkan kondisi <code style="color: #4CBFE6;">touching [Kunci] ?</code>.</li>
-                    <li><strong>Jika YA (Menyentuh Kunci):</strong>
-                        <ul>
-                            <li><code style="color: #E1A91A;">broadcast [bukaPintu]</code> (Sinyal dari Meet 7!)</li>
-                        </ul>
-                    </li>
-                    <li><strong>Jika TIDAK (else):</strong>
-                        <ul>
-                            <li><code style="color: #8A55D7;">say "Terkunci!" for 2 secs</code></li>
-                        </ul>
-                    </li>
-                </ol>
-                
-                <!-- Penjelasan Blok (BARU) -->
-                <div class="block-expl" style="margin-top: 10px;">
-                    <strong>Fungsi Blok:</strong>
-                    <br>
-                    <code>if <touching [Kunci]?></code> (Sensing/Control): Logika yang sama dengan TV! Pintu akan cek, 'Apakah Kunci menyentuhku?'
-                    <br><br>
-                    <code>broadcast [bukaPintu]</code> (Events): Jika ya, kirim sinyal 'bukaPintu' yang sudah kita buat di Meet 7 untuk pindah ruangan.
-                    <br><br>
-                    <code>say "Terkunci!"</code> (Looks): Pesan jika kita klik pintu tanpa membawa kunci.
+                    "Buat kode 'Reset' ini di Kunci. Pastikan posisinya di belakang TV dan gunakan blok `go to back layer`."
                 </div>
             </div>
         </div>
     </div>
 
+    <!-- Slide 8.2: Aksi Kunci -->
+    <div class="slide" id="slide8-2">
+        <h2 class="agenda-title">Misi 4.2: <span class="highlight-gradient">Aksi Kunci (Membuka Pintu)</span></h2>
+        <p style="font-size: 1.2rem; margin-bottom: 20px; max-width: 800px; text-align: center;">
+            Setelah TV pecah, kita harus bisa mengambil kunci dan menggunakannya di pintu untuk pindah ruangan.
+        </p>
+        <div class="mission-layout">
+            <div class="mission-code">
+                 <img src="https://images2.imgbox.com/17/92/PzHokbVD_o.png" alt="Kode Aksi Kunci" class="scratch-code">
+            </div>
+            <div class="mission-expl">
+                <p style="font-size: 1.1rem; font-weight: 600; margin-bottom: 15px;">Kode "Aksi" di sprite `Kunci`:</p>
+                <ul>
+                    <li><code style="color: #E1A91A;">when this sprite clicked</code>: Berjalan saat kita bisa meng-klik kunci.</li>
+                    <li><code style="color: #4CBFE6;">set drag mode draggable</code>: Membuat kunci bisa di-drag.</li>
+                    <li><code style="color: #FFAB19;">wait 0.01 seconds</code>: Jeda singkat untuk memisahkan klik dan drag.</li>
+                    <li><code style="color: #FFAB19;">if &lt;touching [door]?&gt; then</code>: "Otak" kunci. Apakah menyentuh pintu?</li>
+                    <li><code style="color: #E1A91A;">broadcast [buka pintu] and wait</code>: Kirim sinyal ke pintu dan tunggu pintu selesai beranimasi.</li>
+                    <li><code style="color: #8A55D7;">next backdrop</code>: Pindah ke ruangan berikutnya!</li>
+                </ul>
+                <div class="block-expl" style="margin-top: 10px;">
+                    <strong>Latihan Siswa:</strong>
+                    <br>
+                    "Buat kode 'Aksi' ini di Kunci. Nanti, kita akan buat kode untuk Pintu agar merespon sinyal `buka pintu`."
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 9: Misi 6 - Membuka `Pintu` (DIGANTI) -->
+    <div class="slide" id="slide9-1">
+        <h2 class="agenda-title">Misi 5.1: <span class="highlight-gradient">Setup Pintu</span></h2>
+        <p style="font-size: 1.2rem; margin-bottom: 20px; max-width: 800px; text-align: center;">
+            Seperti semua sprite interaktif, kita perlu "mereset" Pintu setiap kali kita masuk ke Room 1 untuk memastikannya selalu tertutup.
+        </p>
+        <div class="mission-layout">
+            <div class="mission-code">
+                 <img src="https://images2.imgbox.com/e9/d5/nzS3GKiz_o.png" alt="Kode Reset Pintu" class="scratch-code">
+            </div>
+            <div class="mission-expl">
+                <p style="font-size: 1.1rem; font-weight: 600; margin-bottom: 15px;">Kode "Reset" di sprite `Pintu`:</p>
+                <p>Saat <code style="color: #E1A91A;">when backdrop switches to Room 1</code>:</p>
+                <ul>
+                    <li><code style="color: #4C97FF;">go to x: 33 y: -40</code>: Pindah ke posisi tetapnya.</li>
+                    <li><code style="color: #8A55D7;">show</code>: Pastikan pintu terlihat.</li>
+                    <li><code style="color: #8A55D7;">go to front layer</code>: Taruh di lapisan depan.</li>
+                    <li><code style="color: #8A55D7;">switch costume to door closed</code>: <strong>PENTING!</strong> Kembali ke kostum tertutup.</li>
+                </ul>
+                <div class="block-expl" style="margin-top: 10px;">
+                    <strong>Latihan Siswa:</strong>
+                    <br>
+                    "Buat kode 'Reset' ini di sprite Pintu. Pastikan kamu memilih kostum `door closed`."
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 9.2: Reaksi Pintu -->
+    <div class="slide" id="slide9-2">
+        <h2 class="agenda-title">Misi 5.2: <span class="highlight-gradient">Pintu Terbuka!</span></h2>
+        <p style="font-size: 1.2rem; margin-bottom: 20px; max-width: 800px; text-align: center;">
+            Ingat, Kunci akan mengirim `broadcast [buka pintu] and wait`. Sekarang, kita buat Pintu "mendengarkan" sinyal itu.
+        </p>
+        <div class="mission-layout">
+            <div class="mission-code">
+                 <img src="https://images2.imgbox.com/28/4b/ZCDHcy5b_o.png" alt="Kode Reaksi Pintu" class="scratch-code">
+            </div>
+            <div class="mission-expl">
+                <p style="font-size: 1.1rem; font-weight: 600; margin-bottom: 15px;">Kode "Aksi" di sprite `Pintu`:</p>
+                <ul>
+                    <li><code style="color: #E1A91A;">when I receive [buka pintu]</code>: "Telinga" Pintu, menunggu sinyal dari Kunci.</li>
+                    <li><code style="color: #C88330;">play sound [Door Creak2] until done</code>: Mainkan suara pintu menderit dan tunggu sampai selesai.</li>
+                    <li><code style="color: #8A55D7;">switch costume to door opened</code>: Setelah suara selesai, ganti ke kostum pintu terbuka.</li>
+                </ul>
+                <div class="block-expl" style="background: #e6fffa; border-color: #38a169;">
+                    <strong style="color: #2f855a;">✅ Uji Coba Terakhir!</strong>
+                    <br>
+                    "Uji coba seluruh permainanmu dari awal! Apakah kamu bisa kabur dari ruangan?"
+                </div>
+            </div>
+        </div>
+    </div>
+    
     <!-- Slide 10: Rangkuman (BARU) -->
     <div class="slide" id="slide10">
         <h1 class="main-header" style="color: #008080;">ROOM 1 SELESAI!</h1>
