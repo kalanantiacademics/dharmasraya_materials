@@ -1,0 +1,1372 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pertemuan 10: Inovasi & Asesmen</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        /* CSS Reset dan Global Styles */
+        body {
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            padding: 0;
+            /* Gambar Latar Belakang BODY diperbarui */
+            background: url('https://i.imgur.com/z221jXz.png') center/cover fixed no-repeat;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .presentation-container {
+            /* Ukuran container diperbarui */
+            width: 77vw;
+            height: 71.5vh;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5); 
+            border-radius: 12px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            background-color: transparent; 
+        }
+
+        /* Slide Styling Umum */
+        .slide {
+            width: 100%;
+            height: 100%;
+            padding: 40px 60px;
+            box-sizing: border-box;
+            color: #333;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            position: absolute;
+            top: 0;
+            left: 0;
+            /* Transisi diubah untuk transform dan opacity */
+            transition: transform 0.6s ease-in-out, opacity 0.6s ease-in-out;
+            /* Overlay Putih untuk Konten di Atas BG */
+            background-color: rgba(255, 255, 255, 0.95);
+            visibility: hidden; /* Sembunyikan slide yang tidak aktif */
+            overflow-y: auto; /* MEMBUAT SLIDE BISA DI-SCROLL JIKA KONTEN PANJANG */
+            opacity: 0;
+        }
+
+        .slide.active {
+            opacity: 1;
+            visibility: visible;
+            z-index: 10; /* Slide aktif selalu di atas */
+            transform: translateX(0);
+        }
+
+        /* State untuk animasi */
+        .slide.is-next {
+            /* Slide yang akan muncul dari kanan */
+            transform: translateX(100%);
+            visibility: visible;
+            opacity: 1;
+            z-index: 11; /* Muncul di atas slide aktif saat transisi */
+        }
+
+        .slide.is-exiting {
+            /* Slide saat ini yang akan keluar ke kanan */
+            transform: translateX(100%);
+            opacity: 1;
+            z-index: 11; /* Tetap di atas slide di bawahnya saat keluar */
+        }
+
+        /* Cover Slide (Slide 1) - Mempertahankan BG Gelap */
+        #slide1 {
+            /* Perbarui BG cover sesuai BG utama */
+            background: linear-gradient(rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0.75)), url('https://i.imgur.com/z221jXz.png') center/cover no-repeat;
+            background-color: transparent; 
+            color: white;
+            align-items: center;
+            text-align: center;
+            justify-content: center;
+        }
+        
+        /* Slide dengan warna solid */
+        .solid-teal-bg {
+            background-color: #008080; /* Teal */
+            color: white;
+        }
+        
+        /* Elemen dekoratif untuk slide sampul */
+        .starburst {
+            position: absolute;
+            width: 100px;
+            height: 100px;
+            z-index: 2; /* Di bawah teks tapi di atas background */
+        }
+        
+        /* LOGO KIRI ATAS - RUANGGURU, DHARMASRAYA, DISDIK (GLOBAL BODY) */
+        .slide-logo-left {
+            position: fixed; /* Fixed to viewport */
+            top: 0;
+            left: 0;
+            background-color: white;
+            padding: 10px 20px 10px 40px;
+            border-bottom-right-radius: 30px; 
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            display: flex;
+            align-items: center;
+            z-index: 99; /* Pastikan di foreground */
+            transition: opacity 0.3s ease;
+            gap: 15px; /* Jarak antar logo */
+        }
+        .slide-logo-left img {
+            height: 45px; 
+            width: auto;
+        }
+
+        /* LOGO KANAN ATAS - RG CODING (GLOBAL BODY) */
+        .slide-logo-right {
+            position: fixed; /* Fixed to viewport */
+            top: 0;
+            right: 0;
+            background-color: white;
+            padding: 10px 40px 10px 20px;
+            border-bottom-left-radius: 30px; 
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            display: flex;
+            align-items: center;
+            z-index: 99; /* Pastikan di foreground */
+            transition: opacity 0.3s ease;
+        }
+        .slide-logo-right img {
+            height: 45px; 
+            width: auto;
+        }
+
+        /* Gradient Class Sesuai Permintaan */
+        .highlight-gradient {
+            background: linear-gradient(
+                to right,
+                #008080, /* Deep teal/cyan */
+                #a8c368, /* Olive/lime green */
+                #f2c140  /* Golden yellow */
+            );
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            display: inline-block;
+        }
+
+        /* Navigasi BARU */
+        .nav-button {
+            background-color: rgba(0, 128, 128, 0.8); /* Teal Transparan */
+            color: white;
+            border: none; 
+            position: absolute; /* Tombol diposisikan secara absolute terhadap container */
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 100;
+            width: 40px; /* Kecil */
+            height: 40px; /* Kecil */
+            border-radius: 50%; /* Bulat */
+            cursor: pointer;
+            font-size: 1.2rem;
+            font-weight: 900;
+            line-height: 1;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        #prevBtn {
+            left: 0; /* Menempel di tepi kiri container */
+            margin-left: 15px; /* Beri sedikit jarak dari tepi */
+        }
+
+        #nextBtn {
+            right: 0; /* Menempel di tepi kanan container */
+            margin-right: 15px; /* Beri sedikit jarak dari tepi */
+        }
+        .nav-button:hover {
+            background-color: #f2c140; /* Kuning Hover */
+            color: #333;
+            transform: scale(1.1);
+        }
+        .nav-button:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+            transform: scale(1);
+        }
+
+        /* Slide Content kompensasi untuk logo agar tidak tertutup */
+        .slide h1, .slide h2, .slide .profile-content h2, 
+        .slide .rg-coding-header, .slide .schedule-title, .slide .thank-you-title {
+            margin-top: 50px; /* Kompensasi untuk logo global */
+        }
+        
+        /* Reset margin top di cover slide */
+        #slide1 h1, #slide1 h2, #slide1 .profile-content h2 {
+             margin-top: 0; 
+        }
+
+        .cover-title {
+            font-size: 4rem;
+            font-weight: 900;
+            margin-bottom: 20px;
+            line-height: 1.1;
+            z-index: 3;
+        }
+
+        .cover-subtitle {
+            font-size: 1.5rem;
+            font-weight: 400;
+            margin-bottom: 40px;
+            border-bottom: 3px solid #a8c368;
+            padding-bottom: 10px;
+            display: inline-block;
+            z-index: 3;
+        }
+
+        .presenter-info {
+            font-size: 1.2rem;
+            opacity: 0.8;
+            z-index: 3;
+        }
+        
+        /* Slide 2: Agenda */
+        .agenda-title {
+            font-size: 3rem;
+            font-weight: 800;
+            color: #008080;
+            /* Penyesuaian ukuran font agar tidak terlalu besar di mobile */
+            font-size: clamp(2rem, 5vw, 3rem);
+            line-height: 1.2;
+
+            margin-bottom: 40px;
+        }
+
+        /* --- Styling Baru untuk Agenda Cards --- */
+        .agenda-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 25px;
+            width: 100%;
+            max-width: 900px;
+            margin-top: -20px; /* Kompensasi margin bottom dari title */
+        }
+        .agenda-card {
+            background: white;
+            padding: 20px;
+            border-radius: 16px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+            text-align: center;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border: 1px solid #e5e7eb;
+        }
+        .agenda-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 15px 30px rgba(0, 128, 128, 0.15);
+        }
+        .agenda-card-icon {
+            font-size: 3rem;
+            line-height: 1;
+        }
+        .agenda-card-text {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #374151;
+            margin-top: 10px;
+        }
+
+        /* Slide 4: Ruangguru Coding - Card Size Reduced & New Style */
+        .main-header {
+            font-size: 3.2rem; 
+        }
+        .main-body {
+            font-size: 1.3rem; 
+            margin-bottom: 40px; 
+        }
+        
+        /* Styling untuk slide Pre-test */
+        .pretest-link {
+            font-size: 1.5rem;
+        }
+
+        /* --- Styling untuk Slide Pre-test (Slide 4) --- */
+        .pretest-container {
+            display: flex;
+            align-items: center;
+            gap: 40px;
+            background-color: white;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            border: 1px solid #eee;
+        }
+        .pretest-qr img {
+            width: 180px;
+            height: 180px;
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+        .pretest-timer-box {
+            text-align: center;
+        }
+
+        /* --- Styling untuk Kuis per Slide --- */
+        .quiz-slide {
+            /* Reset grid layout dari #slide3 lama */
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        .quiz-slide .agenda-title {
+            margin-bottom: 20px;
+        }
+        .quiz-options-container {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            width: 100%;
+            max-width: 700px;
+            margin-bottom: 25px;
+        }
+        .quiz-option {
+            display: block;
+            background: white;
+            padding: 1rem;
+            border: 2px solid #e5e7eb;
+            border-radius: 0.75rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 1.1rem;
+            text-align: left;
+        }
+        .quiz-option:hover {
+            border-color: #a8c368;
+            transform: translateY(-3px);
+        }
+        /* Ini adalah style untuk highlight yang Anda inginkan */
+        .quiz-option.selected {
+            border-color: #008080;
+            background-color: #f0f9ff;
+            font-weight: bold;
+        }
+        .check-answer-btn {
+            background-color: #008080;
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            font-size: 1.2rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .check-answer-btn:hover {
+            background-color: #f2c140;
+            color: #333;
+        }
+
+        /* --- Styling untuk Pop-up Feedback --- */
+        .feedback-popup {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0.7);
+            padding: 30px 50px;
+            border-radius: 20px;
+            color: white;
+            font-size: 2.5rem;
+            font-weight: 800;
+            z-index: 200;
+            opacity: 0;
+            transition: all 0.3s cubic-bezier(0.18, 0.89, 0.32, 1.28);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            text-align: center;
+        }
+
+        /* --- STYLING BARU UNTUK INOVASI MODAL (POP-UP) --- */
+        .innovation-modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-color: rgba(0, 0, 0, 0.7);
+            display: none; /* Sembunyi by default */
+            justify-content: center;
+            align-items: center;
+            z-index: 500;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        .innovation-modal-content {
+            background-color: white;
+            color: #333;
+            padding: 30px 40px;
+            border-radius: 16px;
+            width: 90%;
+            max-width: 800px; /* Lebar maksimum modal */
+            max-height: 80vh; /* Tinggi maksimum */
+            overflow-y: auto; /* Scroll jika konten panjang */
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            transform: scale(0.8);
+            transition: transform 0.3s cubic-bezier(0.18, 0.89, 0.32, 1.28);
+        }
+        .innovation-modal-overlay.show {
+            display: flex;
+            opacity: 1;
+        }
+        .innovation-modal-overlay.show .innovation-modal-content {
+            transform: scale(1);
+        }
+        .innovation-modal-content h3 {
+            font-size: 2rem;
+            font-weight: 800;
+            color: #008080;
+            margin-top: 0;
+            margin-bottom: 20px;
+        }
+        .innovation-modal-content p {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+        .innovation-modal-code {
+            background-color: #f4f4f4;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 20px 0;
+            border-left: 5px solid #008080;
+        }
+        .innovation-modal-code img {
+            width: 100%;
+            max-width: 500px;
+            display: block;
+            margin: 10px auto;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .innovation-modal-close-btn {
+            background-color: #dc3545;
+            color: white;
+            border: none;
+            padding: 10px 25px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            margin-top: 20px;
+            float: right;
+        }
+        .innovation-modal-close-btn:hover {
+            background-color: #c82333;
+        }
+
+        /* --- Styling Baru untuk Tombol Inovasi di Slide 15 --- */
+        .innovation-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 25px;
+            width: 100%;
+            max-width: 900px;
+        }
+        .innovation-card-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.4);
+            padding: 25px;
+            border-radius: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: left;
+        }
+        .innovation-card-btn:hover {
+            background: rgba(255, 255, 255, 0.25);
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        }
+        .innovation-card-btn strong {
+            font-size: 1.4rem;
+            color: #f2c140; /* Kuning */
+            display: block;
+            margin-bottom: 8px;
+        }
+        .innovation-card-btn p {
+            font-size: 1rem;
+            margin: 0;
+            line-height: 1.4;
+            color: white;
+        }
+
+        /* * --- PERBAIKAN PENTING UNTUK IFRAME ---
+         */
+        .iframe-wrapper {
+            width: 100%;
+            max-width: 600px; /* Max width for the game */
+            margin: 20px auto;
+            position: relative;
+            /* Aspect ratio 4:3 -> 3/4 = 0.75 */
+            /* Ini menciptakan kotak dengan tinggi 75% dari lebarnya */
+            padding-top: 75%; 
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+        .iframe-wrapper iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            /* * INI PERBAIKANNYA:
+             * Harus 100% agar mengisi penuh kotak wrapper
+             * yang tingginya diatur oleh 'padding-top' di atas.
+             */
+            height: 100%; 
+            border: 0;
+        }
+
+
+        /* Media Queries untuk Responsif (Mobile View) */
+        @media (max-width: 768px) {
+            .presentation-container {
+                width: 100vw;
+                height: 100vh;
+                border-radius: 0;
+            }
+            .slide {
+                padding: 30px 20px;
+                background-color: rgba(255, 255, 255, 1); 
+            }
+            .slide-logo-left, .slide-logo-right {
+                padding: 5px 10px;
+                border-radius: 0;
+            }
+            .slide-logo-left img, .slide-logo-right img {
+                height: 30px;
+            }
+            /* PERBAIKAN: Gunakan .quiz-slide, bukan #slide3 */
+            .quiz-slide, .content-grid, .ice-breaking-container, .pretest-container {
+                /* #slide3 diubah menjadi .quiz-slide */
+                /* grid-template-columns: 1fr; */ /* Dihapus karena bisa menyebabkan konflik */
+                flex-direction: column;
+            }
+            /* Khusus untuk slide login scratch */
+            .slide-iframe-container > div {
+                flex-direction: column;
+            }
+            .agenda-grid {
+                grid-template-columns: 1fr;
+            }
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+            .key-stats {
+                flex-direction: column;
+                align-items: center;
+            }
+            .key-stat-item {
+                width: 90%;
+            }
+            .schedule-grid {
+                grid-template-columns: 1fr; 
+            }
+            .full-span {
+                grid-column: span 1;
+            }
+            .navigation {
+                right: 5px;
+            }
+            .nav-button {
+                width: 35px;
+                height: 35px;
+            }
+            /* Modal di mobile */
+            .innovation-modal-content {
+                width: 95%;
+                padding: 20px 25px;
+            }
+            /* Grid inovasi di mobile */
+            .innovation-grid {
+                grid-template-columns: 1fr;
+            }
+            /* Iframe wrapper di mobile */
+            .iframe-wrapper {
+                padding-top: 75%; /* Jaga aspect ratio 4:3 */
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Definisi SVG untuk elemen dekoratif -->
+    <svg width="0" height="0" style="position:absolute;">
+      <defs>
+        <symbol id="starburst-svg" viewBox="0 0 100 100">
+          <path d="M50 0 L55.9 34.5 L85.35 14.65 L65.5 44.1 L100 50 L65.5 55.9 L85.35 85.35 L55.9 65.5 L50 100 L44.1 65.5 L14.65 85.35 L34.5 55.9 L0 50 L34.5 44.1 L14.65 14.65 L44.1 34.5 Z" fill="currentColor"/>
+        </symbol>
+      </defs>
+    </svg>
+    
+    <!-- LOGO DI LUAR CONTAINER (GLOBAL BODY) - Z-INDEX TERTINGGI -->
+    <!-- Logo Kiri Atas: Ruangguru, Dharmasraya, Disdik -->
+    <div class="slide-logo-left" id="globalLogoLeft">
+        <!-- Logo Ruangguru (Image) -->
+        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/6d/Ruangguru_logo.svg/2560px-Ruangguru_logo.svg.png" 
+             onerror="this.onerror=null; this.src='https://placehold.co/40x40/ffffff/0070c0?text=RG'"
+             alt="Logo Ruangguru">
+        <!-- Logo Kabupaten Dharmasraya -->
+        <img src="https://upload.wikimedia.org/wikipedia/commons/f/f9/Lambang_Kabupaten_Dharmasraya.png" 
+             onerror="this.onerror=null; this.src='https://placehold.co/40x40/ffffff/0070c0?text=DH'"
+             alt="Logo Kabupaten Dharmasraya">
+        <!-- Logo Disdik Dharmasraya -->
+        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQguI0U7hDXQP6UlNo24XCjT5nJKDttC7nSug&s" 
+             onerror="this.onerror=null; this.src='https://placehold.co/40x40/ffffff/0070c0?text=DS'"
+             alt="Logo Disdik Dharmasraya">
+    </div>
+    
+    <!-- Logo Kanan Atas: Ruangguru Coding -->
+    <div class="slide-logo-right" id="globalLogoRight">
+        <!-- Logo Ruangguru Coding -->
+        <img src="https://cdn-web-2.ruangguru.com/landing-pages/assets/e7d93748-818d-462d-be57-7db1e479cd62.png" 
+             onerror="this.onerror=null; this.src='https://placehold.co/80x40/ffffff/000000?text=RG+Coding'"
+             alt="Logo Ruangguru Coding">
+    </div>
+
+<div class="presentation-container">
+    
+    <!-- Slide 1: Cover Page (Judul diubah) -->
+    <div class="slide active" id="slide1">
+        <svg class="starburst" style="top: 15%; left: 10%; width:80px; height:80px; color: #a8c368; transform: rotate(20deg); opacity: 0.7;"><use xlink:href="#starburst-svg"></use></svg>
+        <svg class="starburst" style="bottom: 20%; right: 15%; transform: rotate(-15deg); color: #f2c140; opacity: 0.8;"><use xlink:href="#starburst-svg"></use></svg>
+        <img src="https://mario.wiki.gallery/images/a/ae/Mario_%28Defeated%29_-_Super_Mario_Sticker.gif" alt="Piala, bintang, dan kotak hadiah" style="border-radius: 12px; margin-bottom: 20px; z-index: 3;">
+        <p class="presenter-info" style="font-size: 1.5rem; margin-bottom: -10px;">Modul 2: Waste Sorting Hero!</p>
+        <h1 class="cover-title" style="font-size: 3.5rem;">
+            Pertemuan 10:
+            <br>
+            <span class="highlight-gradient">Inovasi, Finalisasi & Asesmen!</span>
+        </h1>
+        <p class="cover-subtitle">Saatnya selesaikan game-mu, tambahkan fitur keren, dan buktikan kehebatanmu!</p>
+    </div>
+
+    <!-- Slide 2: Tujuan Pembelajaran (DIPERBARUI) -->
+    <div class="slide" id="slide2">
+        <h2 class="agenda-title" style="text-align: center; width: 100%;">Agenda Pertemuan 10</h2>
+        <img src="https://images.squarespace-cdn.com/content/v1/611ffd4b87c1b24b98fabb3e/d7eccde2-3701-4004-895b-8f34878b04a9/Designer_Compressed.gif" alt="Roket, Lampu, Upload, Tanda Tanya" style="width: 100%; max-width: 400px; border-radius: 8px; margin-bottom: 20px;">
+        <div class="agenda-grid">
+            <div class="agenda-card">
+                <p class="agenda-card-text">Misi 1: Selesaikan & Perbaiki (Catch-up)</p>
+            </div>
+            <div class="agenda-card">
+                <p class="agenda-card-text">Misi 2: Waktunya Inovasi!</p>
+            </div>
+            <div class="agenda-card">
+                <p class="agenda-card-text">Misi 3: Kumpulkan Project</p>
+            </div>
+            <div class="agenda-card">
+                <p class="agenda-card-text">Misi 4: Kuis Asesmen</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 3: Misi 1 - Catch-up (BARU) -->
+    <div class="slide" id="slide3">
+        <h2 class="agenda-title">Misi 1: Selesaikan & Perbaiki <span class="highlight-gradient">(Catch-up)</span></h2>
+        <img src="https://ljvmiranda921.github.io/assets/png/how-to-debug/Blog-CodeRED-Execute.gif" alt="Kunci pas dan ikon kumbang (bug)" style="width: 300px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); margin-bottom: 20px;">
+        <p style="font-size: 1.3rem; text-align: center; max-width: 800px;">
+            Apakah game-mu masih ada error? Belum selesai?<br>
+            Tenang! Ini waktunya untuk memperbaiki.<br><br>
+            Bagi yang project-nya masih error atau belum selesai, ayo kita perbaiki bersama!<br>
+            <br>
+            <strong>Bagi yang sudah selesai, boleh langsung lanjut ke Misi 2!</strong>
+        </p>
+    </div>
+
+    <!-- Slide 4: Misi 2 - Inovasi (Dulu slide 14) -->
+    <div class="slide" id="slide4">
+        <h2 class="agenda-title">Misi 2: Waktunya <span class="highlight-gradient">INOVASI!</span></h2>
+        <img src="https://ljvmiranda921.github.io/assets/png/how-to-debug/Blog-CodeRED-Reproduce.gif" alt="Gambar palu dan obeng, atau 'work in progress'" style="width: 300px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); margin-bottom: 20px;">
+        <p style="font-size: 1.3rem; text-align: center; max-width: 800px;">
+            Game kalian sudah bisa dimainkan.<br>
+            Sekarang, saatnya menambahkan "bumbu" spesial buatan kalian sendiri!<br><br>
+            Pilih salah satu ide inovasi di slide berikutnya. Coba kalian pecahkan sendiri bagaimana cara membuatnya!
+        </p>
+    </div>
+
+    <!-- Slide 5: Ide Inovasi (Dulu slide 15, tombol modal) -->
+    <div class="slide solid-teal-bg" id="slide5">
+        <h2 class="main-header" style="color: #f2c140;">Ide Inovasi (Tantangan!)</h2>
+        <p class="main-body" style="font-size: 1.3rem; text-align: center; max-width: 850px;">
+            Pilih salah satu (atau lebih) tantangan ini untuk membuat game-mu lebih seru! Klik untuk melihat petunjuk.
+        </p>
+        <!-- Tombol-tombol baru yang memanggil modal -->
+        <div class="innovation-grid">
+            <!-- Tombol Ide 1 -->
+            <button class="innovation-card-btn" onclick="showInnovationModal('Ide 1: Sampah Jatuh! 🍂', document.getElementById('modal-content-1').innerHTML)">
+                <strong>Ide 1: Sampah Jatuh! 🍂</strong>
+                <p>Bagaimana kalau sampahnya tidak diam di atas, tapi jatuh pelan-pelan?</p>
+            </button>
+            
+            <!-- Tombol Ide 2 -->
+            <button class="innovation-card-btn" onclick="showInnovationModal('Ide 2: Timer Hitung Mundur! ⏱️', document.getElementById('modal-content-2').innerHTML)">
+                <strong>Ide 2: Timer Hitung Mundur! ⏱️</strong>
+                <p>Buat game lebih menantang dengan waktu 60 detik!</p>
+            </button>
+            
+            <!-- Tombol Ide 3 -->
+            <button class="innovation-card-btn" onclick="showInnovationModal('Ide 3: Layar &quot;Game Over&quot;! 👾', document.getElementById('modal-content-3').innerHTML)">
+                <strong>Ide 3: Layar "Game Over"! 👾</strong>
+                <p>Apa yang terjadi kalau waktu habis? Tampilkan layar "Game Over".</p>
+            </button>
+            
+            <!-- Tombol Ide 4 -->
+            <button class="innovation-card-btn" onclick="showInnovationModal('Ide 4: Sampah Ber-variasi! 🍌🍎', document.getElementById('modal-content-4').innerHTML)">
+                <strong>Ide 4: Sampah Ber-variasi! 🍌🍎</strong>
+                <p>Masa sampahnya botol terus? Ayo buat sampahnya berganti-ganti!</p>
+            </button>
+        </div>
+    </div>
+
+    <!-- Slide 6: Waktunya Berkreasi (Dulu slide 16) -->
+    <div class="slide solid-teal-bg" id="slide6">
+        <h2 class="main-header" style="color: #f2c140;">Waktunya Berkreasi!</h2>
+        <img src="https://4.bp.blogspot.com/-A8W5xD591TU/WFBxcwbloZI/AAAAAAAACVs/gMh7fTdkuV89Ock4OTiqf-JkXK1gWHl-ACLcB/s1600/tinkering-looping.gif" alt="Anak-anak sedang koding, berpikir, berkolaborasi" style="width: 400px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); margin: 20px 0;">
+        <p class="main-body" style="font-size: 1.3rem; text-align: center; max-width: 850px;">
+            Silakan pilih idemu! Kamu boleh pilih satu atau kerjakan semuanya.<br>
+            Coba pecahkan tantangannya! Jangan takut salah.<br>
+            Bapak/Ibu Guru akan berkeliling untuk membantu jika kamu buntu.<br><br>
+            <strong>Selamat berkreasi!</strong>
+        </p>
+    </div>
+
+    <!-- Slide 7: Show & Tell (Dulu slide 17) -->
+    <div class="slide" id="slide7">
+        <h2 class="agenda-title">Waktunya <span class="highlight-gradient">Show & Tell!</span></h2>
+        <img src="https://projects-static.raspberrypi.org/projects/interactive-animation/2af024f45b700213b10f1ca1a112198c8af611b8/en/images/edit-robot-costume.gif" alt="Anak di depan panggung, mempresentasikan karyanya" style="width: 300px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); margin-bottom: 20px;">
+        <p style="font-size: 1.3rem; text-align: center; max-width: 800px;">
+            Siapa yang mau pamerkan game-nya? Ayo tunjukkan hasil karyamu ke teman-teman!<br><br>
+            - Ide inovasi apa yang kamu pilih?<br>
+            - Apa bagian yang paling seru saat membuatnya?<br>
+            - Apa bagian yang paling sulit?
+        </p>
+    </div>
+
+    <!-- Slide 8: Misi 3 - Pengumpulan (Dulu slide 18) -->
+    <div class="slide" id="slide8">
+        <h2 class="agenda-title">Misi 3: Pengumpulan <span class="highlight-gradient">Tugas 2</span></h2>
+        <p style="font-size: 1.2rem; margin-bottom: 20px; max-width: 800px; text-align: center;">
+            Saatnya Mengumpulkan Karya Terbaikmu! Pastikan game-mu sudah diberi nama yang jelas dan klik tombol "Share" (Bagikan) oranye di Scratch.
+        </p>
+        <div class="pretest-container" style="gap: 20px; padding: 20px;">
+            <div class="pretest-qr">
+                <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=https://bit.ly/kumpul_tugas_dms" alt="QR Code Pengumpulan Tugas">
+            </div>
+            <div class="pretest-timer-box">
+                <p class="pretest-link" style="font-weight: bold;">Pindai QR Code atau buka link:</p>
+                <p class="pretest-link" style="background-color: #eee; padding: 10px 20px; border-radius: 8px; font-family: monospace; margin-top: 10px; font-size: 1.2rem;">bit.ly/kumpul_tugas_dms</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 9: Misi 4 - Intro Kuis (BARU) -->
+    <div class="slide" id="slide9">
+        <h2 class="agenda-title">Misi 4: <span class="highlight-gradient">Kuis Asesmen!</span></h2>
+        <img src="https://cdn.prod.website-files.com/61f7efd44d01cc87c88dc6f3/652fa5944f7292fbc78c608b_Scratch%20quiz.jpg" alt="Ikon kuis atau tanda tanya" style="width: 300px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); margin-bottom: 20px;">
+        <p style="font-size: 1.3rem; text-align: center; max-width: 800px;">
+            Kalian sudah membuat game yang luar biasa!<br>
+            Sekarang, saatnya menguji seberapa dalam pemahaman kalian tentang konsep-konsep yang sudah dipelajari.<br><br>
+            <strong>Ayo kita mulai kuisnya!</strong>
+        </p>
+    </div>
+
+    <!-- Slide 10: Soal 1 (Dulu slide3-quiz) -->
+    <div class="slide quiz-slide" id="slide10" data-answer="c">
+        <h2 class="agenda-title">Soal 1/10</h2>
+        <p style="font-size: 1.5rem; font-weight: 600; color: #1f2937; margin-bottom: 1.5rem; max-width: 800px; text-align: center;">
+            Untuk menyimpan SKOR di dalam game, kita menggunakan blok dari kategori...
+        </p>
+        <div class="quiz-options-container" data-selected-option="">
+            <div class="quiz-option" onclick="selectOption(this, 'a')">A. Looks</div>
+            <div class="quiz-option" onclick="selectOption(this, 'b')">B. Sensing</div>
+            <div class="quiz-option" onclick="selectOption(this, 'c')">C. Variables</div>
+        </div>
+        <button class="check-answer-btn" onclick="checkAnswer(this)">Cek Jawaban</button>
+    </div>
+
+    <!-- Slide 11: Soal 2 (Dulu slide 4) -->
+    <div class="slide quiz-slide" id="slide11" data-answer="b">
+        <h2 class="agenda-title">Soal 2/10</h2>
+        <p style="font-size: 1.5rem; font-weight: 600; color: #1f2937; margin-bottom: 1.5rem; max-width: 800px; text-align: center;">
+            Blok 'set [skor] to 0' biasanya diletakkan di awal game. Apa fungsinya?
+        </p>
+        <div class="quiz-options-container" data-selected-option="">
+            <div class="quiz-option" onclick="selectOption(this, 'a')">A. Menambah skor setiap detik</div>
+            <div class="quiz-option" onclick="selectOption(this, 'b')">B. Mengatur ulang skor menjadi nol</div>
+            <div class="quiz-option" onclick="selectOption(this, 'c')">C. Menyembunyikan papan skor</div>
+        </div>
+        <button class="check-answer-btn" onclick="checkAnswer(this)">Cek Jawaban</button>
+    </div>
+
+    <!-- Slide 12: Soal 3 (Dulu slide 5) -->
+    <div class="slide quiz-slide" id="slide12" data-answer="a">
+        <h2 class="agenda-title">Soal 3/10</h2>
+        <p style="font-size: 1.5rem; font-weight: 600; color: #1f2937; margin-bottom: 1.5rem; max-width: 800px; text-align: center;">
+            Jika sampah yang benar masuk ke tempat sampah, kita harus...
+        </p>
+        <div class="quiz-options-container" data-selected-option="">
+            <div class="quiz-option" onclick="selectOption(this, 'a')">A. change [skor] by 1</div>
+            <div class="quiz-option" onclick="selectOption(this, 'b')">B. set [skor] to 1</div>
+            <div class="quiz-option" onclick="selectOption(this, 'c')">C. hide variable [skor]</div>
+        </div>
+        <button class="check-answer-btn" onclick="checkAnswer(this)">Cek Jawaban</button>
+    </div>
+
+    <!-- Slide 13: Soal 4 (Dulu slide 6) -->
+    <div class="slide quiz-slide" id="slide13" data-answer="b">
+        <h2 class="agenda-title">Soal 4/10</h2>
+        <p style="font-size: 1.5rem; font-weight: 600; color: #1f2937; margin-bottom: 1.5rem; max-width: 800px; text-align: center;">
+            Untuk membuat sprite bisa diseret (drag) dengan mouse, kita harus mengatur 'draggable' di...
+        </p>
+        <div class="quiz-options-container" data-selected-option="">
+            <div class="quiz-option" onclick="selectOption(this, 'a')">A. Area kode</div>
+            <div class="quiz-option" onclick="selectOption(this, 'b')">B. Pengaturan sprite di bawah panggung</div>
+            <div class="quiz-option" onclick="selectOption(this, 'c')">C. Tab Costumes</div>
+        </div>
+        <button class="check-answer-btn" onclick="checkAnswer(this)">Cek Jawaban</button>
+    </div>
+
+    <!-- Slide 14: Soal 5 (Dulu slide 7) -->
+    <div class="slide quiz-slide" id="slide14" data-answer="b">
+        <h2 class="agenda-title">Soal 5/10</h2>
+        <p style="font-size: 1.5rem; font-weight: 600; color: #1f2937; margin-bottom: 1.5rem; max-width: 800px; text-align: center;">
+            Blok 'if &lt;...&gt; then' digunakan untuk...
+        </p>
+        <div class="quiz-options-container" data-selected-option="">
+            <div class="quiz-option" onclick="selectOption(this, 'a')">A. Mengulang perintah selamanya</div>
+            <div class="quiz-option" onclick="selectOption(this, 'b')">B. Memeriksa sebuah kondisi, jika benar maka lakukan sesuatu</div>
+            <div class="quiz-option" onclick="selectOption(this, 'c')">C. Membuat sprite baru</div>
+        </div>
+        <button class="check-answer-btn" onclick="checkAnswer(this)">Cek Jawaban</button>
+    </div>
+
+    <!-- Slide 15: Soal 6 (Dulu slide 8) -->
+    <div class="slide quiz-slide" id="slide15" data-answer="c">
+        <h2 class="agenda-title">Soal 6/10</h2>
+        <p style="font-size: 1.5rem; font-weight: 600; color: #1f2937; margin-bottom: 1.5rem; max-width: 800px; text-align: center;">
+            Untuk memeriksa apakah sampah menyentuh tempat sampah yang benar, kita bisa menggunakan blok...
+        </p>
+        <div class="quiz-options-container" data-selected-option="">
+            <div class="quiz-option" onclick="selectOption(this, 'a')">A. touching [mouse-pointer]?</div>
+            <div class="quiz-option" onclick="selectOption(this, 'b')">B. touching color [hijau]?</div>
+            <div class="quiz-option" onclick="selectOption(this, 'c')">C. touching [nama sprite tempat sampah]?</div>
+        </div>
+        <button class="check-answer-btn" onclick="checkAnswer(this)">Cek Jawaban</button>
+    </div>
+
+    <!-- Slide 16: Soal 7 (Dulu slide 9) -->
+    <div class="slide quiz-slide" id="slide16" data-answer="a">
+        <h2 class="agenda-title">Soal 7/10</h2>
+        <p style="font-size: 1.5rem; font-weight: 600; color: #1f2937; margin-bottom: 1.5rem; max-width: 800px; text-align: center;">
+            Apa yang terjadi jika kita menggunakan blok 'if &lt;...&gt; then ... else ...'?
+        </p>
+        <div class="quiz-options-container" data-selected-option="">
+            <div class="quiz-option" onclick="selectOption(this, 'a')">A. Jika kondisi benar, lakukan A. Jika salah, lakukan B.</div>
+            <div class="quiz-option" onclick="selectOption(this, 'b')">B. Hanya menjalankan perintah jika kondisi salah.</div>
+            <div class="quiz-option" onclick="selectOption(this, 'c')">C. Mengulang perintah A dan B.</div>
+        </div>
+        <button class="check-answer-btn" onclick="checkAnswer(this)">Cek Jawaban</button>
+    </div>
+
+    <!-- Slide 17: Soal 8 (Dulu slide 10) -->
+    <div class="slide quiz-slide" id="slide17" data-answer="b">
+        <h2 class="agenda-title">Soal 8/10</h2>
+        <p style="font-size: 1.5rem; font-weight: 600; color: #1f2937; margin-bottom: 1.5rem; max-width: 800px; text-align: center;">
+            Untuk membuat sampah kembali ke posisi awal setelah berhasil dimasukkan, blok apa yang paling tepat?
+        </p>
+        <div class="quiz-options-container" data-selected-option="">
+            <div class="quiz-option" onclick="selectOption(this, 'a')">A. go to random position</div>
+            <div class="quiz-option" onclick="selectOption(this, 'b')">B. go to x: ... y: ...</div>
+            <div class="quiz-option" onclick="selectOption(this, 'c')">C. glide 1 secs to random position</div>
+        </div>
+        <button class="check-answer-btn" onclick="checkAnswer(this)">Cek Jawaban</button>
+    </div>
+
+    <!-- Slide 18: Soal 9 (Dulu slide 11) -->
+    <div class="slide quiz-slide" id="slide18" data-answer="b">
+        <h2 class="agenda-title">Soal 9/10</h2>
+        <p style="font-size: 1.5rem; font-weight: 600; color: #1f2937; margin-bottom: 1.5rem; max-width: 800px; text-align: center;">
+            Fitur 'broadcast' (siaran) berguna untuk...
+        </p>
+        <div class="quiz-options-container" data-selected-option="">
+            <div class="quiz-option" onclick="selectOption(this, 'a')">A. Memainkan musik</div>
+            <div class="quiz-option" onclick="selectOption(this, 'b')">B. Mengirim pesan rahasia antar sprite</div>
+            <div class="quiz-option" onclick="selectOption(this, 'c')">C. Mengubah latar belakang</div>
+        </div>
+        <button class="check-answer-btn" onclick="checkAnswer(this)">Cek Jawaban</button>
+    </div>
+
+    <!-- Slide 19: Soal 10 (Dulu slide 12) -->
+    <div class="slide quiz-slide" id="slide19" data-answer="a">
+        <h2 class="agenda-title">Soal 10/10</h2>
+        <p style="font-size: 1.5rem; font-weight: 600; color: #1f2937; margin-bottom: 1.5rem; max-width: 800px; text-align: center;">
+            Saat waktu habis dan game over, perintah apa yang paling tepat untuk menghentikan semua gerakan?
+        </p>
+        <div class="quiz-options-container" data-selected-option="">
+            <div class="quiz-option" onclick="selectOption(this, 'a')">A. stop [all]</div>
+            <div class="quiz-option" onclick="selectOption(this, 'b')">B. delete this clone</div>
+            <div class="quiz-option" onclick="selectOption(this, 'c')">C. hide</div>
+        </div>
+        <button class="check-answer-btn" onclick="checkAnswer(this)">Cek Jawaban</button>
+    </div>
+
+    <!-- Slide 20: Hasil Kuis (Dulu slide 13) -->
+    <div class="slide" id="slide20">
+        <h2 class="agenda-title">Kuis Selesai!</h2>
+        <img src="https://triviamaker.com/AI%20Generator%20Robot.gif" alt="Ikon piala atau medali" style="width: 200px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); margin-bottom: 20px;">
+        <p style="font-size: 1.5rem; text-align: center;">Kerja bagus, Pahlawan Koding!</p>
+        <p style="font-size: 1.2rem; text-align: center; max-width: 800px; margin-top: 10px;">
+            Kamu sudah menyelesaikan semua soal dan project Modul 2!
+        </p>
+    </div>
+
+    <!-- Slide 21: Misi 5 - Feedback (Dulu slide 19) -->
+    <div class="slide" id="slide21">
+        <h2 class="agenda-title">Misi 5: Berikan <span class="highlight-gradient">Feedback-mu!</span></h2>
+        <p style="font-size: 1.2rem; margin-bottom: 20px; max-width: 800px; text-align: center;">
+            Kami Ingin Dengar Pendapatmu! Bagaimana perasaanmu belajar Modul 2 ini? Apa yang paling kamu suka? Apa yang masih bikin bingung?
+        </p>
+        <div class="pretest-container" style="gap: 20px; padding: 20px;">
+            <div class="pretest-qr">
+                <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=https://bit.ly/feedback_class_dms" alt="QR Code Feedback">
+            </div>
+            <div class="pretest-timer-box">
+                <p class="pretest-link" style="font-weight: bold;">Pindai QR Code atau buka link:</p>
+                <p class="pretest-link" style="background-color: #eee; padding: 10px 20px; border-radius: 8px; font-family: monospace; margin-top: 10px; font-size: 1.2rem;">bit.ly/feedback_class_dms</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 23: Contoh Game 1 (BARU) -->
+    <div class="slide" id="slide23">
+        <h2 class="agenda-title">Contoh Game: <span class="highlight-gradient">Flappy Bird</span></h2>
+        <p style="font-size: 1.1rem; margin-bottom: 20px; max-width: 800px; text-align: center;">
+            Kalian bisa buat game Flappy Bird versimu sendiri! (by PinkNevia)
+        </p>
+        <div class="iframe-wrapper">
+            <iframe src="https://scratch.mit.edu/projects/408842203/embed" allowtransparency="true" width="385" height="302" frameborder="0" scrolling="no" allowfullscreen></iframe>
+        </div>
+    </div>
+
+    <!-- Slide 24: Contoh Game 2 (BARU) -->
+    <div class="slide" id="slide24">
+        <h2 class="agenda-title">Contoh Game: <span class="highlight-gradient">Shooter</span></h2>
+        <p style="font-size: 1.1rem; margin-bottom: 20px; max-width: 800px; text-align: center;">
+            Atau game tembak-tembakan luar angkasa! (by Kokaro_kinara)
+        </p>
+        <div class="iframe-wrapper">
+            <iframe src="https://scratch.mit.edu/projects/621515378/embed" allowtransparency="true" width="385" height="302" frameborder="0" scrolling="no" allowfullscreen></iframe>
+        </div>
+    </div>
+
+    <!-- Slide 25: Contoh Game 3 (BARU) -->
+    <div class="slide" id="slide25">
+        <h2 class="agenda-title">Contoh Game: <span class="highlight-gradient">Platformer</span></h2>
+        <p style="font-size: 1.1rem; margin-bottom: 20px; max-width: 800px; text-align: center;">
+            Atau game petualangan lompat-lompat (Platformer)! (by codingkalananti)
+        </p>
+        <div class="iframe-wrapper">
+            <iframe src="https://scratch.mit.edu/projects/560869566/embed" allowtransparency="true" width="385" height="302" frameborder="0" scrolling="no" allowfullscreen></iframe>
+        </div>
+    </div>
+
+    <!-- Slide 26: Penutupan Modul 2 (Dulu slide 20) -->
+    <div class="slide" id="slide26">
+        <h1 class="main-header" style="color: #008080;">MODUL 2 SELESAI!</h1>
+        <img src="https://triviamaker.com/AI%20Generator%20Robot.gif" alt="Piala besar bertuliskan 'Modul 2 Selesai!'" style="width: 250px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); margin-bottom: 20px;">
+        <p style="font-size: 1.8rem; font-weight: 600; color: #333; margin-bottom: 5px; text-align: center;">SELAMAT, PAHLAWAN KODING!</p>
+        <p style="font-size: 1.2rem; color: #555; opacity: 0.9; text-align: center;">Kalian sudah belajar banyak konsep Koding yang canggih dan resmi jadi Game Developer!</p>
+        <div class="contact-info" style="margin-top: 30px; padding: 15px; background-color: #f0f9ff; border-radius: 12px; border-left: 4px solid #008080;">
+            <p style="font-size: 1.3rem; color: #333; font-weight: bold; margin:0;">Sampai jumpa di Modul berikutnya! Jangan lupa di-SAVE project terakhirmu!</p>
+        </div>
+    </div>
+
+    <button class="nav-button" id="prevBtn" onclick="changeSlide(-1)">&#9664;</button>
+    <button class="nav-button" id="nextBtn" onclick="changeSlide(1)">&#9658;</button>
+</div>
+
+<!-- ====================================================== -->
+<!-- ===== HTML BARU UNTUK MODAL POP-UP & PETUNJUK ===== -->
+<!-- ====================================================== -->
+
+<!-- 1. Struktur Modal Overlay (Wrapper) -->
+<div class="innovation-modal-overlay" id="innovationModalOverlay" onclick="closeInnovationModal()">
+    <div class="innovation-modal-content" onclick="event.stopPropagation()"> <!-- event.stopPropagation() mencegah modal tertutup saat diklik di dalam konten -->
+        <h3 id="modal-title">Judul Modal</h3>
+        <div id="modal-body">
+            <!-- Konten petunjuk akan dimasukkan di sini oleh JavaScript -->
+        </div>
+        <button class="innovation-modal-close-btn" onclick="closeInnovationModal()">Tutup</button>
+    </div>
+</div>
+
+<!-- 2. Konten Petunjuk (Disembunyikan) -->
+<!-- Ini adalah 'template' konten yang akan kita panggil -->
+<div style="display: none;">
+
+    <!-- Konten Petunjuk untuk Ide 1 -->
+    <div id="modal-content-1">
+        <p>Ini adalah kelanjutan dari materi kita! Supaya sampah tidak diam di atas, kita harus membuatnya bergerak ke bawah (mengubah sumbu Y) secara terus-menerus.</p>
+        <ol>
+            <li>Buka sprite <strong>Sampah</strong> (Botol Plastik).</li>
+            <li>Cari skrip <code>when I start as a clone</code>.</li>
+            <li>Di dalam <code>forever</code> loop yang SUDAH ADA (yang untuk mengecek mouse dilepas), tambahkan blok <code>change y by -5</code>. Angka -5 bisa kamu ganti-ganti untuk mengatur kecepatan.</li>
+        </ol>
+        <p><strong>Kenapa ditaruh di situ?</strong> Supaya sampahnya JATUH SAMBIL bisa kita geser-geser!</p>
+        <div class="innovation-modal-code">
+            <p><strong>Kode yang ditambahkan:</strong></p>
+            <img src="https://breakoutmentors.com/wp-content/uploads/2013/03/Screenshot-2023-11-02-at-12.16.59-PM.png" alt="Kode sampah jatuh change y by -5">
+            <p style="text-align: center; font-size: 0.9rem;">Blok <code>change y by -5</code> bisa ditambahkan di dalam <code>forever/Repeat</code>.</p>
+        </div>
+    </div>
+
+    <!-- Konten Petunjuk untuk Ide 2 -->
+    <div id="modal-content-2">
+        <p>Kita butuh "kotak ajaib" baru untuk menyimpan waktu! Kita akan pakai Variabel lagi.</p>
+        <ol>
+            <li>Pergi ke <strong>Stage (Backdrop)</strong>. Ini tempat terbaik untuk mengurus timer.</li>
+            <li>Buat Variabel baru, beri nama <strong>Waktu</strong> (For all sprites).</li>
+            <li>Di skrip <code>when green flag clicked</code> (di Stage), tambahkan <code>set [Waktu] to 60</code>. Ini adalah nilai awal timer kita.</li>
+            <li>Buat <code>forever</code> loop baru di Stage.</li>
+            <li>Di dalamnya, masukkan <code>wait 1 seconds</code>, lalu <code>change [Waktu] by -1</code>.</li>
+        </ol>
+        <p>Ini akan membuat variabel Waktu berkurang satu setiap satu detik!</p>
+        <div class="innovation-modal-code">    
+            <p><strong>Kode di STAGE:</strong></p>
+            <img src="https://pinnguaq.com/wp-content/uploads/2020/05/timer-pulled-apart-screenshot.jpg" alt="Kode timer hitung mundur di Stage">
+        </div>
+    </div>
+
+    <!-- Konten Petunjuk untuk Ide 3 -->
+    <div id="modal-content-3">
+        <p>Ini adalah kelanjutan dari Ide 2! Kita akan pakai <code>broadcast</code> (siaran) untuk mengirim pesan "Game Over".</p>
+        <ol>
+            <li>Masih di <strong>Stage</strong>, di dalam <code>forever</code> loop timer, tambahkan blok <code>if...then</code>.</li>
+            <li>Isi kondisinya dengan <code>&lt;[Waktu] &lt; 1&gt;</code> (dari Operator hijau). Artinya "Jika Waktu kurang dari 1".</li>
+            <li>Di dalamnya, masukkan blok <code>broadcast [message1]</code> (dari Events). Klik "message1" dan buat "New Message..." bernama <strong>Game Over</strong>.</li>
+            <li>Setelah broadcast, tambahkan <code>stop [all]</code> untuk menghentikan semua skrip.</li>
+            <li>Sekarang, buat <strong>Sprite baru</strong>. Gambar layar "Game Over" di Costumes.</li>
+            <li>Di kode Sprite "Game Over" ini, tambahkan <code>when green flag clicked</code> -> <code>hide</code>.</li>
+            <li>Lalu tambahkan <code>when I receive [Game Over]</code> -> <code>show</code>.</li>
+        </ol>
+        <div class="innovation-modal-code">
+            <p><strong>Kode di STAGE (lanjutan timer):</strong></p>
+            <img src="https://nextbigtechnology.com/wp-content/uploads/2021/01/code-script.png" alt="Kode broadcast game over">
+        </div>
+    </div>
+
+    <!-- Konten Petunjuk untuk Ide 4 -->
+    <div id="modal-content-4">
+        <p>Punya banyak sprite sampah itu repot. Cara canggihnya: 1 sprite, tapi BANYAK kostum!</p>
+        <ol>
+            <li>Buka sprite <strong>Sampah</strong> (Botol Plastik).</li>
+            <li>Klik Tab <strong>Costumes</strong> di kiri atas.</li>
+            <li>Upload kostum baru untuk sampah lain (misal: Kulit Pisang, Kertas) di sprite yang SAMA. Catat urutan nomor kostumnya (misal: 1=Botol, 2=Pisang, 3=Kertas).</li>
+            <li>Kembali ke <strong>Code</strong>. Cari skrip <code>when I start as a clone</code>.</li>
+            <li>Tepat di bawah <code>when I start as a clone</code>, tambahkan blok <code>switch costume to [pick random (1) to (3)]</code>. (Ganti '3' dengan jumlah total kostum sampahmu).</li>
+            <li><strong>TANTANGAN TERBESAR:</strong> Sekarang logikamu harus dicek! Kamu harus pakai <code>if...else</code> bersarang untuk mengecek kostum mana yang sedang aktif.</li>
+        </ol>
+        <div class="innovation-modal-code">
+            <p><strong>Kode di awal kloning:</strong></p>
+            <img src="https://scratch-tutorial.readthedocs.io/fr/latest/_images/bat_clone.png" alt="Kode ganti kostum acak">
+        </div>
+    </div>
+
+</div>
+<!-- ====================================================== -->
+<!-- ===== AKHIR DARI HTML BARU ===== -->
+<!-- ====================================================== -->
+
+
+<script>
+    // Variabel ini kita letakkan di scope luar agar bisa diakses oleh
+    // event listener DOMContentLoaded dan juga fungsi global (jika ada).
+    const slides = document.querySelectorAll('.slide');
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    const globalLogoLeft = document.getElementById('globalLogoLeft');
+    const globalLogoRight = document.getElementById('globalLogoRight');
+    let currentSlide = 0;
+
+    // ======================================================
+    // ===== FUNGSI BARU UNTUK MODAL POP-UP =====
+    // ======================================================
+    // Kita letakkan di luar DOMContentLoaded agar bisa dipanggil 'onclick'
+
+    // PERBAIKAN: Definisikan variabel di scope global TAPI
+    // inisialisasi mereka di dalam DOMContentLoaded
+    let modalOverlay;
+    let modalTitle;
+    let modalBody;
+
+
+    function showInnovationModal(title, contentHtml) {
+        if (!modalOverlay || !modalTitle || !modalBody) {
+            // Inisialisasi darurat jika DOMContentLoaded belum jalan
+            // Ini seharusnya tidak terjadi, tapi sebagai pengaman
+            modalOverlay = document.getElementById('innovationModalOverlay');
+            modalTitle = document.getElementById('modal-title');
+            modalBody = document.getElementById('modal-body');
+            if (!modalOverlay) return; // Jika masih gagal, hentikan
+        }
+
+        modalTitle.textContent = title;
+        modalBody.innerHTML = contentHtml; // Pakai innerHTML karena kita passing HTML
+        
+        modalOverlay.classList.add('show');
+    }
+
+    function closeInnovationModal() {
+        if (!modalOverlay) return;
+        modalOverlay.classList.remove('show');
+    }
+
+    // ======================================================
+    // ===== AKHIR DARI FUNGSI BARU =====
+    // ======================================================
+
+
+    // Fungsi showSlide dan changeSlide bisa tetap di sini.
+    // Mereka tidak dipanggil oleh onclick, jadi scope-nya aman.
+    function showSlide(index, direction = 'next') {
+        if (index === currentSlide && slides[index].classList.contains('active')) {
+            return; // Jangan lakukan apa-apa jika slide sudah aktif
+        }
+
+        const oldSlide = slides[currentSlide];
+        const newSlide = slides[index];
+
+        // Hapus semua kelas animasi sebelumnya
+        slides.forEach((slide, i) => {
+            slide.classList.remove('active', 'is-next', 'is-exiting');
+            // Atur z-index dasar
+            slide.style.zIndex = 1;
+        });
+
+        if (direction === 'next') {
+            oldSlide.style.zIndex = 10;
+            newSlide.style.zIndex = 11;
+            newSlide.classList.add('is-next');
+            
+            // Trigger transisi
+            requestAnimationFrame(() => {
+                newSlide.classList.add('active');
+                newSlide.classList.remove('is-next');
+            });
+        } else { // Arah 'prev'
+            oldSlide.style.zIndex = 11;
+            newSlide.style.zIndex = 10;
+            newSlide.classList.add('active'); // Langsung aktifkan slide di bawahnya
+            oldSlide.classList.add('is-exiting'); // Geser slide saat ini keluar
+        }
+
+        currentSlide = index;
+        slides[index].classList.add('active');
+
+        // VISIBILITAS LOGO DI SEMUA SLIDE (TERMASUK SLIDE 1)
+        // Kita tidak menyembunyikan logo di slide 0 lagi
+        globalLogoLeft.style.opacity = 1;
+        globalLogoRight.style.opacity = 1;
+        globalLogoLeft.style.pointerEvents = 'auto';
+        globalLogoRight.style.pointerEvents = 'auto';
+        
+        // VISIBILITAS NAVIGASI DI SEMUA SLIDE (TERMASUK SLIDE 1)
+        prevBtn.style.opacity = 1;
+        nextBtn.style.opacity = 1;
+        
+        // Atur warna panah navigasi berdasarkan slide (untuk kontras di slide 1)
+        const isDarkSlide = slides[index].id === 'slide1' || slides[index].classList.contains('solid-teal-bg');
+        const navButtons = document.querySelectorAll('.nav-button');
+        navButtons.forEach(btn => {
+            if (isDarkSlide) {
+                btn.style.backgroundColor = 'rgba(255, 255, 255, 0.2)'; // Lebih terang di BG gelap
+                btn.style.color = 'white';
+            } else {
+                btn.style.backgroundColor = 'rgba(0, 128, 128, 0.8)'; // Teal di BG terang
+                btn.style.color = 'white';
+            }
+        });
+
+        // Update status tombol navigasi
+        prevBtn.disabled = currentSlide === 0;
+        nextBtn.disabled = currentSlide === slides.length - 1;
+    }
+
+    function changeSlide(direction) {
+        const newIndex = currentSlide + direction;
+
+        if (newIndex >= 0 && newIndex < slides.length) {
+            const moveDirection = direction === 1 ? 'next' : 'prev';
+            showSlide(newIndex, moveDirection);
+        }
+    }
+    
+    // FUNGSI KEYBOARD UNTUK NAVIGASI
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'ArrowRight') {
+            changeSlide(1);
+        } else if (e.key === 'ArrowLeft') {
+            changeSlide(-1);
+        }
+    });
+
+    document.addEventListener('DOMContentLoaded', () => {
+        // Tampilkan slide pertama saat DOM siap
+        showSlide(currentSlide);
+
+        // --- Inisialisasi Variabel Modal ---
+        modalOverlay = document.getElementById('innovationModalOverlay');
+        modalTitle = document.getElementById('modal-title');
+        modalBody = document.getElementById('modal-body');
+
+        // --- LOGIKA TIMER PRE-TEST ---
+        const timerDisplay = document.getElementById('timer-display');
+        const startBtn = document.getElementById('start-timer-btn');
+        const restartBtn = document.getElementById('restart-timer-btn');
+        
+        let timerInterval = null;
+        let timeLeft = 10 * 60; // 10 menit dalam detik
+
+        function updateTimerDisplay() {
+            if (!timerDisplay) return;
+            const minutes = Math.floor(timeLeft / 60);
+            const seconds = timeLeft % 60;
+            timerDisplay.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        }
+
+        function startTimer() {
+            if (timerInterval) return; // Mencegah interval ganda
+
+            startBtn.disabled = true;
+
+            timerInterval = setInterval(() => {
+                timeLeft--;
+                updateTimerDisplay();
+
+                if (timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    timerDisplay.textContent = "WAKTU HABIS";
+                }
+            }, 1000);
+        }
+
+        function restartTimer() {
+            clearInterval(timerInterval);
+            timerInterval = null;
+            timeLeft = 10 * 60;
+            updateTimerDisplay();
+            startBtn.disabled = false;
+        }
+
+        if (startBtn && restartBtn) {
+            startBtn.addEventListener('click', startTimer);
+            restartBtn.addEventListener('click', restartTimer);
+        }
+        
+        // --- LOGIKA KUIS PER SLIDE ---
+
+        // PERBAIKAN: Tambahkan 'window.' di depan nama fungsi
+        // agar bisa diakses secara global oleh 'onclick' di HTML.
+        window.selectOption = function(element, value) {
+            const optionsContainer = element.parentElement;
+            // Hanya izinkan memilih jika belum ada jawaban benar
+            if (optionsContainer.dataset.answered === 'true') return;
+
+            // Hapus kelas 'selected' dari semua opsi di kontainer yang sama
+            const options = optionsContainer.querySelectorAll('.quiz-option');
+            options.forEach(opt => opt.classList.remove('selected'));
+
+            // Tambahkan kelas 'selected' ke opsi yang diklik
+            element.classList.add('selected');
+            // Simpan jawaban yang dipilih di data attribute container
+            optionsContainer.dataset.selectedOption = value;
+        }
+
+        // PERBAIKAN: Tambahkan 'window.' di depan nama fungsi
+        window.checkAnswer = function(button) {
+            const slide = button.closest('.quiz-slide');
+            const correctAnswer = slide.dataset.answer;
+            const optionsContainer = slide.querySelector('.quiz-options-container');
+            const selectedAnswer = optionsContainer.dataset.selectedOption;
+
+            if (!selectedAnswer) {
+                // Menggunakan alert() seperti di kode asli Anda.
+                // Ini akan bekerja sekarang karena fungsi checkAnswer sudah dipanggil.
+                
+                // CATATAN: window.alert() BISA jadi diblokir di
+                // lingkungan iframe. Jika ini tidak muncul,
+                // kita harus menggantinya dengan modal custom.
+                // Untuk sekarang, kita biarkan dulu.
+                alert("Pilih salah satu jawaban dulu ya!");
+                return;
+            }
+
+            if (selectedAnswer === correctAnswer) {
+                showFeedbackPopup(true);
+                optionsContainer.dataset.answered = 'true'; // Tandai sudah dijawab benar
+                button.style.display = 'none'; // Sembunyikan tombol cek
+                // Otomatis pindah ke slide berikutnya setelah 1.5 detik
+                setTimeout(() => {
+                    changeSlide(1);
+                }, 1800); // Beri waktu lebih lama agar animasi selesai
+            } else {
+                showFeedbackPopup(false);
+                // Reset pilihan setelah jawaban salah
+                setTimeout(() => {
+                    const options = slide.querySelectorAll('.quiz-option');
+                    options.forEach(opt => opt.classList.remove('selected'));
+                    optionsContainer.dataset.selectedOption = ""; // Reset data attribute
+                }, 1000);
+            }
+        }
+
+        // Fungsi ini adalah 'helper' internal, jadi TIDAK perlu 'window.'
+        // Biarkan tersembunyi di dalam scope DOMContentLoaded.
+        function showFeedbackPopup(isCorrect) {
+            // Hapus pop-up lama jika ada
+            const oldPopup = document.querySelector('.feedback-popup');
+            if (oldPopup) {
+                oldPopup.remove();
+            }
+
+            const popup = document.createElement('div');
+            popup.className = 'feedback-popup';
+            if (isCorrect) {
+                popup.style.backgroundColor = '#28a745'; // Hijau
+                popup.innerHTML = 'Hore, Benar! 🎉';
+            } else {
+                popup.style.backgroundColor = '#dc3545'; // Merah
+                popup.innerHTML = 'Yah, Salah... 😢<br><span style="font-size: 1.5rem; font-weight: 400;">Coba lagi!</span>';
+            }
+            document.body.appendChild(popup);
+
+            // Animasikan pop-up
+            requestAnimationFrame(() => {
+                popup.style.opacity = '1';
+                popup.style.transform = 'translate(-50%, -50%) scale(1)';
+            });
+
+            // Sembunyikan pop-up setelah beberapa saat
+            setTimeout(() => {
+                popup.style.opacity = '0';
+                popup.style.transform = 'translate(-50%, -50%) scale(0.7)';
+                setTimeout(() => popup.remove(), 300);
+            }, isCorrect ? 1200 : 1500);
+        }
+
+    });
+</script>
+
+</body>
+</html>
