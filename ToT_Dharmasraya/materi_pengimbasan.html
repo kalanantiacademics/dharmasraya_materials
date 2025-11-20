@@ -1,9 +1,10 @@
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Materi Lengkap Pengimbasan Scratch - Dharmasraya</title>
+    <title>Materi Lengkap Pengimbasan Scratch & AI - Dharmasraya</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
@@ -13,7 +14,8 @@
         body {
             font-family: 'Inter', sans-serif;
             background-color: #f0f2f5;
-            overflow: hidden; /* Hide scrollbars */
+            overflow: hidden;
+            /* Hide scrollbars */
         }
 
         :root {
@@ -21,7 +23,7 @@
             --brand-blue: #302DE4;
             --brand-dark: #1F1F1F;
         }
-        
+
         /* Background pattern styling */
         .bg-pattern {
             position: relative;
@@ -63,7 +65,8 @@
             transition: opacity 0.6s ease-in-out, transform 0.6s ease-in-out, visibility 0.6s;
             transform: scale(0.95);
             background-color: white;
-            overflow: auto; /* Membolehkan scroll jika konten terlalu panjang */
+            overflow: auto;
+            /* Membolehkan scroll jika konten terlalu panjang */
         }
 
         .slide.active {
@@ -78,18 +81,18 @@
             transform: translateX(-100%) scale(0.95);
             opacity: 0;
         }
-        
+
         /* Animation for slides moving out to the right */
         .slide.exit-right {
             transform: translateX(100%) scale(0.95);
             opacity: 0;
         }
-        
+
         /* Animation for slides entering from the right */
         .slide.enter-right {
-             transform: translateX(100%) scale(0.95);
+            transform: translateX(100%) scale(0.95);
         }
-        
+
         /* Animation for slides entering from the left */
         .slide.enter-left {
             transform: translateX(-100%) scale(0.95);
@@ -112,39 +115,132 @@
             cursor: pointer;
             transition: all 0.3s ease;
         }
+
         .nav-arrow:hover {
             background-color: var(--brand-blue);
             transform: translateY(-50%) scale(1.1);
         }
-        #prev-slide { left: 20px; }
-        #next-slide { right: 20px; }
 
-        /* Slide indicator dots styling */
-        #slide-indicators {
+        #prev-slide {
+            left: 20px;
+        }
+
+        #next-slide {
+            right: 20px;
+        }
+
+        /* Navigation Dropdown Styling */
+        #slide-navigator {
             position: absolute;
             bottom: 20px;
             left: 50%;
             transform: translateX(-50%);
-            z-index: 20;
+            z-index: 100;
             display: flex;
-            gap: 12px;
-            background-color: rgba(0,0,0,0.2);
-            padding: 8px 16px;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        #nav-trigger {
+            background-color: rgba(0, 0, 0, 0.6);
+            color: white;
+            padding: 10px 24px;
             border-radius: 99px;
-            flex-wrap: wrap; /* Membungkus dot jika terlalu banyak */
-            justify-content: center;
-        }
-        .indicator-dot {
-            width: 12px;
-            height: 12px;
-            background-color: rgba(255, 255, 255, 0.5);
-            border-radius: 50%;
             cursor: pointer;
+            font-weight: bold;
+            font-size: 1rem;
             transition: all 0.3s ease;
+            backdrop-filter: blur(4px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
-        .indicator-dot.active {
-            background-color: var(--brand-lime);
-            transform: scale(1.2);
+
+        #nav-trigger:hover {
+            background-color: var(--brand-blue);
+            transform: scale(1.05);
+        }
+
+        #nav-trigger::after {
+            content: '▲';
+            font-size: 0.8em;
+            transition: transform 0.3s;
+        }
+
+        #nav-trigger.open::after {
+            transform: rotate(180deg);
+        }
+
+        #nav-dropdown {
+            position: absolute;
+            bottom: 120%;
+            /* Muncul di atas tombol */
+            left: 50%;
+            transform: translateX(-50%) scale(0.95);
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            width: 300px;
+            max-height: 0;
+            overflow-y: auto;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            transform-origin: bottom center;
+            border: 1px solid #eee;
+        }
+
+        #nav-dropdown.open {
+            opacity: 1;
+            visibility: visible;
+            transform: translateX(-50%) scale(1);
+            max-height: 60vh;
+            /* Batasi tinggi agar tidak mentok atas */
+            padding: 8px 0;
+        }
+
+        .nav-item {
+            padding: 10px 16px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            font-size: 0.9rem;
+            color: #333;
+            border-bottom: 1px solid #f0f0f0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .nav-item:last-child {
+            border-bottom: none;
+        }
+
+        .nav-item:hover {
+            background-color: #f5f7fa;
+            color: var(--brand-blue);
+        }
+
+        .nav-item.active {
+            background-color: #eef2ff;
+            color: var(--brand-blue);
+            font-weight: bold;
+            border-left: 4px solid var(--brand-blue);
+        }
+
+        .nav-item-number {
+            background-color: #e2e8f0;
+            color: #64748b;
+            font-size: 0.75rem;
+            padding: 2px 6px;
+            border-radius: 4px;
+            min-width: 24px;
+            text-align: center;
+        }
+
+        .nav-item.active .nav-item-number {
+            background-color: var(--brand-blue);
+            color: white;
         }
 
         /* Simple Animation for Cards */
@@ -153,6 +249,7 @@
                 opacity: 0;
                 transform: translateY(20px);
             }
+
             to {
                 opacity: 1;
                 transform: translateY(0);
@@ -161,11 +258,21 @@
 
         .slide.active .animate-card {
             animation: card-fade-in-up 0.7s ease-out forwards;
-            opacity: 0; /* Start as invisible */
+            opacity: 0;
+            /* Start as invisible */
         }
-        .slide.active .animate-card-delay-1 { animation-delay: 0.15s; }
-        .slide.active .animate-card-delay-2 { animation-delay: 0.3s; }
-        .slide.active .animate-card-delay-3 { animation-delay: 0.45s; }
+
+        .slide.active .animate-card-delay-1 {
+            animation-delay: 0.15s;
+        }
+
+        .slide.active .animate-card-delay-2 {
+            animation-delay: 0.3s;
+        }
+
+        .slide.active .animate-card-delay-3 {
+            animation-delay: 0.45s;
+        }
 
         /* Helper class for placeholder images */
         .placeholder-img {
@@ -184,35 +291,49 @@
         }
     </style>
 </head>
+
 <body>
     <!-- Starburst SVG Definition -->
     <svg width="0" height="0" class="absolute">
-      <defs>
-        <symbol id="starburst-svg" viewBox="0 0 100 100">
-          <path d="M50 0 L55.9 34.5 L85.35 14.65 L65.5 44.1 L100 50 L65.5 55.9 L85.35 85.35 L55.9 65.5 L50 100 L44.1 65.5 L14.65 85.35 L34.5 55.9 L0 50 L34.5 44.1 L14.65 14.65 L44.1 34.5 Z" fill="currentColor"/>
-        </symbol>
-      </defs>
+        <defs>
+            <symbol id="starburst-svg" viewBox="0 0 100 100">
+                <path
+                    d="M50 0 L55.9 34.5 L85.35 14.65 L65.5 44.1 L100 50 L65.5 55.9 L85.35 85.35 L55.9 65.5 L50 100 L44.1 65.5 L14.65 85.35 L34.5 55.9 L0 50 L34.5 44.1 L14.65 14.65 L44.1 34.5 Z"
+                    fill="currentColor" />
+            </symbol>
+        </defs>
     </svg>
 
     <div id="presentation-container" class="relative w-full">
         <header class="absolute top-0 left-0 right-0 p-6 flex justify-between items-center z-30">
             <!-- Logo Ruangguru (placeholder) -->
-            <img src="https://cdn-web-2.ruangguru.com/landing-pages/assets/e7d93748-818d-462d-be57-7db1e479cd62.png" alt="Ruangguru Logo" class="h-10">
+            <img src="https://cdn-web-2.ruangguru.com/landing-pages/assets/e7d93748-818d-462d-be57-7db1e479cd62.png"
+                alt="Ruangguru Logo" class="h-10">
             <!-- Logo Kabupaten Dharmasraya -->
-            <img src="https://upload.wikimedia.org/wikipedia/commons/f/f9/Lambang_Kabupaten_Dharmasraya.png" alt="Dharmasraya Logo" class="h-12">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/f/f9/Lambang_Kabupaten_Dharmasraya.png"
+                alt="Dharmasraya Logo" class="h-12">
         </header>
 
         <div id="presentation-wrapper">
-            <!-- ========== BAGIAN 1: PENDAHULUAN & PERSIAPAN ========== -->
+            <!-- ========== BAGIAN 1: PENDAHULUAN & PERSIAPAN (SCRATCH) ========== -->
 
             <!-- Slide 0: Judul Utama (Gabungan) -->
-            <div id="slide-0" class="slide active items-center justify-center" style="background-color: var(--brand-lime);">
-                 <svg class="starburst" style="top: 15%; left: 10%; width:80px; height:80px; color: white; transform: rotate(20deg); opacity: 0.7;"><use xlink:href="#starburst-svg"></use></svg>
-                 <svg class="starburst" style="bottom: 20%; right: 15%; transform: rotate(-15deg); color: white;"><use xlink:href="#starburst-svg"></use></svg>
+            <div id="slide-0" class="slide active items-center justify-center"
+                style="background-color: var(--brand-lime);">
+                <svg class="starburst"
+                    style="top: 15%; left: 10%; width:80px; height:80px; color: white; transform: rotate(20deg); opacity: 0.7;">
+                    <use xlink:href="#starburst-svg"></use>
+                </svg>
+                <svg class="starburst" style="bottom: 20%; right: 15%; transform: rotate(-15deg); color: white;">
+                    <use xlink:href="#starburst-svg"></use>
+                </svg>
                 <div class="w-full max-w-4xl text-center z-10">
                     <div class="p-10 bg-white rounded-2xl shadow-2xl border-2 border-gray-100 animate-card">
-                        <h1 class="text-5xl lg:text-6xl font-black text-[var(--brand-dark)] tracking-tighter leading-tight">Mengajar Kreatif dengan Scratch</h1>
-                        <p class="text-2xl lg:text-3xl font-bold text-[var(--brand-blue)] mt-3">Materi Lengkap ToT & Pengimbasan</p>
+                        <h1
+                            class="text-5xl lg:text-6xl font-black text-[var(--brand-dark)] tracking-tighter leading-tight">
+                            Mengajar Kreatif dengan Scratch</h1>
+                        <p class="text-2xl lg:text-3xl font-bold text-[var(--brand-blue)] mt-3">Materi Lengkap ToT &
+                            Pengimbasan</p>
                         <div class="h-2 w-28 bg-[var(--brand-blue)] my-8 rounded-full mx-auto"></div>
                         <h2 class="text-xl font-semibold text-gray-700">Kabupaten Dharmasraya</h2>
                     </div>
@@ -224,30 +345,42 @@
                 <h2 class="text-4xl font-black text-gray-800 mb-8 text-center">Tujuan Sesi Lengkap Ini</h2>
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 w-full max-w-7xl">
                     <!-- Tujuan Hari 1 -->
-                    <div class="bg-white p-6 rounded-2xl text-center border-2 border-gray-200 shadow-xl animate-card animate-card-delay-1">
+                    <div
+                        class="bg-white p-6 rounded-2xl text-center border-2 border-gray-200 shadow-xl animate-card animate-card-delay-1">
                         <p class="text-7xl">🧩</p>
-                        <p class="text-xl font-semibold mt-4 text-gray-800">Memahami 4 pilar Berpikir Komputasional (Computational Thinking).</p>
+                        <p class="text-xl font-semibold mt-4 text-gray-800">Memahami 4 pilar Berpikir Komputasional
+                            (Computational Thinking).</p>
                     </div>
-                    <div class="bg-white p-6 rounded-2xl text-center border-2 border-gray-200 shadow-xl animate-card animate-card-delay-2">
+                    <div
+                        class="bg-white p-6 rounded-2xl text-center border-2 border-gray-200 shadow-xl animate-card animate-card-delay-2">
                         <p class="text-7xl">🐱</p>
-                        <p class="text-xl font-semibold mt-4 text-gray-800">Mengenal antarmuka dan area kerja Scratch.</p>
+                        <p class="text-xl font-semibold mt-4 text-gray-800">Mengenal antarmuka dan area kerja Scratch.
+                        </p>
                     </div>
-                    <div class="bg-white p-6 rounded-2xl text-center border-2 border-gray-200 shadow-xl animate-card animate-card-delay-3">
+                    <div
+                        class="bg-white p-6 rounded-2xl text-center border-2 border-gray-200 shadow-xl animate-card animate-card-delay-3">
                         <p class="text-7xl">🏃‍♂️</p>
-                        <p class="text-xl font-semibold mt-4 text-gray-800">Membuat animasi sederhana (gerak, kostum, suara).</p>
+                        <p class="text-xl font-semibold mt-4 text-gray-800">Membuat animasi sederhana (gerak, kostum,
+                            suara).</p>
                     </div>
                     <!-- Tujuan Hari 2 -->
-                    <div class="bg-white p-6 rounded-2xl text-center border-2 border-gray-100 shadow-xl animate-card animate-card-delay-1">
+                    <div
+                        class="bg-white p-6 rounded-2xl text-center border-2 border-gray-100 shadow-xl animate-card animate-card-delay-1">
                         <p class="text-7xl">🔄</p>
-                        <p class="text-xl font-semibold mt-4 text-gray-800">Menggunakan blok <strong class="text-orange-500">Kontrol</strong> ('selamanya') untuk animasi otomatis.</p>
+                        <p class="text-xl font-semibold mt-4 text-gray-800">Menggunakan blok <strong
+                                class="text-orange-500">Kontrol</strong> ('selamanya') untuk animasi otomatis.</p>
                     </div>
-                    <div class="bg-white p-6 rounded-2xl text-center border-2 border-gray-100 shadow-xl animate-card animate-card-delay-2">
+                    <div
+                        class="bg-white p-6 rounded-2xl text-center border-2 border-gray-100 shadow-xl animate-card animate-card-delay-2">
                         <p class="text-7xl">🖱️</p>
-                        <p class="text-xl font-semibold mt-4 text-gray-800">Menggunakan blok <strong class="text-cyan-500">Sensor</strong> ('tanya') untuk input pengguna.</p>
+                        <p class="text-xl font-semibold mt-4 text-gray-800">Menggunakan blok <strong
+                                class="text-cyan-500">Sensor</strong> ('tanya') untuk input pengguna.</p>
                     </div>
-                    <div class="bg-white p-6 rounded-2xl text-center border-2 border-gray-100 shadow-xl animate-card animate-card-delay-3">
+                    <div
+                        class="bg-white p-6 rounded-2xl text-center border-2 border-gray-100 shadow-xl animate-card animate-card-delay-3">
                         <p class="text-7xl">💡</p>
-                        <p class="text-xl font-semibold mt-4 text-gray-800">Merancang ide proyek Scratch untuk mata pelajaran.</p>
+                        <p class="text-xl font-semibold mt-4 text-gray-800">Merancang ide proyek Scratch untuk mata
+                            pelajaran.</p>
                     </div>
                 </div>
             </div>
@@ -259,12 +392,15 @@
                     <div class="bg-white p-8 rounded-2xl border-2 border-gray-200 shadow-xl animate-card">
                         <h3 class="text-2xl font-bold text-gray-700">Pilihan 1: "Mulai Membuat"</h3>
                         <p class="text-lg mt-4 text-gray-600">Anda bisa langsung membuat proyek.</p>
-                        <p class="text-lg mt-4 font-bold text-red-600">❌ Kekurangan: Proyek tidak bisa disimpan secara online. Jika browser ditutup, proyek akan HILANG.</p>
+                        <p class="text-lg mt-4 font-bold text-red-600">❌ Kekurangan: Proyek tidak bisa disimpan secara
+                            online. Jika browser ditutup, proyek akan HILANG.</p>
                     </div>
-                    <div class="bg-white p-8 rounded-2xl border-4 border-[var(--brand-blue)] shadow-xl animate-card animate-card-delay-1">
+                    <div
+                        class="bg-white p-8 rounded-2xl border-4 border-[var(--brand-blue)] shadow-xl animate-card animate-card-delay-1">
                         <h3 class="text-2xl font-bold text-[var(--brand-blue)]">Pilihan 2: "Gabung" (Join)</h3>
                         <p class="text-lg mt-4 text-gray-600">Anda mendaftar akun gratis.</p>
-                        <p class="text-lg mt-4 font-bold text-green-600">✅ Keuntungan: Proyek otomatis tersimpan. Bisa diakses dari komputer manapun. Bisa dibagikan (share) ke rekan guru atau siswa.</p>
+                        <p class="text-lg mt-4 font-bold text-green-600">✅ Keuntungan: Proyek otomatis tersimpan. Bisa
+                            diakses dari komputer manapun. Bisa dibagikan (share) ke rekan guru atau siswa.</p>
                     </div>
                 </div>
                 <p class="mt-8 text-2xl font-bold text-gray-800">Rekomendasi Wajib: Selalu "Gabung" (Buat Akun)!</p>
@@ -273,8 +409,12 @@
             <!-- Slide 4: (BARU) Cara Membuat Akun -->
             <div id="slide-4" class="slide bg-pattern">
                 <h2 class="text-4xl font-black text-gray-800 mb-6">Langkah 1: Membuat Akun (Gabung)</h2>
-                <p class="text-xl text-gray-600 mb-6 max-w-3xl text-center">Buka <strong class="font-mono bg-gray-200 p-2 rounded-lg">scratch.mit.edu</strong> dan klik <strong class="text-[var(--brand-blue)]">"Gabung"</strong> atau <strong class="text-[var(--brand-blue)]">"Join"</strong> di pojok kanan atas.</p>
-                <div class="bg-white p-8 rounded-2xl shadow-xl border-2 border-gray-100 w-full max-w-4xl grid grid-cols-1 md:grid-cols-2 gap-6">
+                <p class="text-xl text-gray-600 mb-6 max-w-3xl text-center">Buka <strong
+                        class="font-mono bg-gray-200 p-2 rounded-lg">scratch.mit.edu</strong> dan klik <strong
+                        class="text-[var(--brand-blue)]">"Gabung"</strong> atau <strong
+                        class="text-[var(--brand-blue)]">"Join"</strong> di pojok kanan atas.</p>
+                <div
+                    class="bg-white p-8 rounded-2xl shadow-xl border-2 border-gray-100 w-full max-w-4xl grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div class="text-left">
                         <p class="text-xl font-bold mb-4">Ikuti langkah-langkahnya:</p>
                         <ul class="list-decimal list-inside space-y-3 text-lg">
@@ -286,41 +426,58 @@
                             <li>Masukkan email Anda (SANGAT PENTING).</li>
                         </ul>
                     </div>
-                    <img src="https://images2.imgbox.com/7f/bc/GqHH8RKe_o.gif" width="900px" alt="Animasi proses pendaftaran akun Scratch" class="rounded-lg shadow-lg border-4 border-white justify-self-center md:col-span-2">
+                    <img src="https://images2.imgbox.com/7f/bc/GqHH8RKe_o.gif" width="900px"
+                        alt="Animasi proses pendaftaran akun Scratch"
+                        class="rounded-lg shadow-lg border-4 border-white justify-self-center md:col-span-2">
                 </div>
             </div>
 
             <!-- Slide 5: (BARU) Konfirmasi Email -->
             <div id="slide-5" class="slide bg-pattern">
                 <h2 class="text-4xl font-black text-gray-800 mb-6">Langkah 2: Konfirmasi Email Anda</h2>
-                <p class="text-xl text-gray-600 mb-6 max-w-3xl text-center">Setelah mendaftar, Anda harus membuka email (Gmail/lainnya) yang Anda daftarkan.</p>
-                <div class_class="bg-white p-8 rounded-2xl shadow-xl border-2 border-gray-100 w-full max-w-3xl text-center">
+                <p class="text-xl text-gray-600 mb-6 max-w-3xl text-center">Setelah mendaftar, Anda harus membuka email
+                    (Gmail/lainnya) yang Anda daftarkan.</p>
+                <div class="bg-white p-8 rounded-2xl shadow-xl border-2 border-gray-100 w-full max-w-3xl text-center">
                     <p class="text-7xl mb-4">📧</p>
-                    <p class="text-2xl text-gray-700">Cari email dari <strong class="text-[var(--brand-blue)]">Scratch</strong> dan klik tombol <strong class="text-orange-500">"Confirm my account"</strong> di dalamnya.</p>
-                    <p class="text-xl mt-4 text-red-600 font-bold">PENTING: Jika tidak konfirmasi, Anda tidak akan bisa "Berbagi" (Share) proyek Anda!</p>
+                    <p class="text-2xl text-gray-700">Cari email dari <strong
+                            class="text-[var(--brand-blue)]">Scratch</strong> dan klik tombol <strong
+                            class="text-orange-500">"Confirm my account"</strong> di dalamnya.</p>
+                    <p class="text-xl mt-4 text-red-600 font-bold">PENTING: Jika tidak konfirmasi, Anda tidak akan bisa
+                        "Berbagi" (Share) proyek Anda!</p>
                 </div>
             </div>
 
-            <!-- ========== BAGIAN 2: BERPIKIR KOMPUTASIONAL ========== -->
+            <!-- ========== BAGIAN 2: BERPIKIR KOMPUTASIONAL (SCRATCH) ========== -->
 
             <!-- Slide 6: Jembatan Topik CT -->
             <div id="slide-6" class="slide text-center bg-pattern">
-                 <svg class="starburst" style="top: 15%; left: 10%; color: var(--brand-lime);"><use xlink:href="#starburst-svg"></use></svg>
-                 <svg class="starburst" style="bottom: 20%; right: 15%; transform: rotate(15deg); width: 60px; height: 60px; color: var(--brand-blue);"><use xlink:href="#starburst-svg"></use></svg>
+                <svg class="starburst" style="top: 15%; left: 10%; color: var(--brand-lime);">
+                    <use xlink:href="#starburst-svg"></use>
+                </svg>
+                <svg class="starburst"
+                    style="bottom: 20%; right: 15%; transform: rotate(15deg); width: 60px; height: 60px; color: var(--brand-blue);">
+                    <use xlink:href="#starburst-svg"></use>
+                </svg>
                 <div class="bg-white p-12 rounded-3xl shadow-2xl border-2 border-gray-200 max-w-4xl z-10 animate-card">
                     <p class="text-xl text-gray-600 mb-4">Sebelum kita 'coding' dengan Scratch...</p>
-                    <p class="text-xl text-gray-600 mb-8">Kita perlu melatih cara berpikir yang sistematis untuk memecahkan masalah.</p>
-                    <h1 class="text-5xl font-black text-white bg-[var(--brand-blue)] py-4 px-8 rounded-2xl shadow-2xl inline-block transform -rotate-2">BERPIKIR KOMPUTASIONAL</h1>
+                    <p class="text-xl text-gray-600 mb-8">Kita perlu melatih cara berpikir yang sistematis untuk
+                        memecahkan masalah.</p>
+                    <h1
+                        class="text-5xl font-black text-white bg-[var(--brand-blue)] py-4 px-8 rounded-2xl shadow-2xl inline-block transform -rotate-2">
+                        BERPIKIR KOMPUTASIONAL</h1>
                     <p class="text-lg mt-2 font-bold text-gray-500">(COMPUTATIONAL THINKING)</p>
                 </div>
             </div>
 
             <!-- Slide 7: Studi Kasus Nasi Goreng -->
             <div id="slide-7" class="slide bg-pattern">
-                <div class="bg-white p-12 rounded-3xl shadow-2xl border-2 border-gray-200 max-w-4xl text-center animate-card">
+                <div
+                    class="bg-white p-12 rounded-3xl shadow-2xl border-2 border-gray-200 max-w-4xl text-center animate-card">
                     <h2 class="text-4xl font-black text-gray-800">Studi Kasus Sederhana:</h2>
-                    <p class="text-4xl font-bold text-white bg-[var(--brand-blue)] mt-4 p-4 rounded-xl inline-block">"Membuat Nasi Goreng Spesial"</p>
-                    <p class="text-xl mt-6 text-gray-600">Mari kita bedah masalah ini menggunakan 4 pilar Berpikir Komputasional.</p>
+                    <p class="text-4xl font-bold text-white bg-[var(--brand-blue)] mt-4 p-4 rounded-xl inline-block">
+                        "Membuat Nasi Goreng Spesial"</p>
+                    <p class="text-xl mt-6 text-gray-600">Mari kita bedah masalah ini menggunakan 4 pilar Berpikir
+                        Komputasional.</p>
                 </div>
             </div>
 
@@ -328,8 +485,10 @@
             <div id="slide-8" class="slide bg-pattern text-center">
                 <div class="w-full max-w-4xl animate-card">
                     <h2 class="text-5xl font-black text-gray-800 mb-2">Pilar #1: DEKOMPOSISI</h2>
-                    <p class="text-2xl text-gray-600 mb-8">Memecah masalah 'gajah' (Nasi Goreng) menjadi potongan 'ayam' (tugas-tugas kecil).</p>
-                    <div class="bg-white border-4 border-[var(--brand-lime)] text-gray-800 p-8 rounded-2xl w-full shadow-2xl">
+                    <p class="text-2xl text-gray-600 mb-8">Memecah masalah 'gajah' (Nasi Goreng) menjadi potongan 'ayam'
+                        (tugas-tugas kecil).</p>
+                    <div
+                        class="bg-white border-4 border-[var(--brand-lime)] text-gray-800 p-8 rounded-2xl w-full shadow-2xl">
                         <h3 class="font-black text-2xl text-[var(--brand-dark)]">Contoh Dekomposisi:</h3>
                         <ul class="list-disc list-inside text-left mt-4 text-lg space-y-1">
                             <li>Menyiapkan bahan (nasi, bumbu, telur, ayam)</li>
@@ -344,12 +503,14 @@
 
             <!-- Slide 9: Pilar #2: PENGENALAN POLA -->
             <div id="slide-9" class="slide bg-pattern text-center">
-                 <div class="w-full max-w-4xl animate-card">
+                <div class="w-full max-w-4xl animate-card">
                     <h2 class="text-5xl font-black text-gray-800 mb-2">Pilar #2: PENGENALAN POLA</h2>
                     <p class="text-2xl text-gray-600 mb-8">Mencari kesamaan (pola) agar lebih efisien.</p>
-                    <div class="bg-white border-4 border-[var(--brand-blue)] text-gray-800 p-8 rounded-2xl w-full shadow-2xl">
+                    <div
+                        class="bg-white border-4 border-[var(--brand-blue)] text-gray-800 p-8 rounded-2xl w-full shadow-2xl">
                         <h3 class="font-black text-2xl text-[var(--brand-dark)]">Contoh Pola:</h3>
-                        <p class="mt-2 text-lg">Proses 'menumis' (memanaskan minyak, masukkan bahan, aduk) digunakan saat menggoreng telur, menumis bumbu, dan bahkan saat memasukkan nasi.</p>
+                        <p class="mt-2 text-lg">Proses 'menumis' (memanaskan minyak, masukkan bahan, aduk) digunakan
+                            saat menggoreng telur, menumis bumbu, dan bahkan saat memasukkan nasi.</p>
                     </div>
                 </div>
             </div>
@@ -358,20 +519,25 @@
             <div id="slide-10" class="slide bg-pattern text-center">
                 <div class="w-full max-w-4xl animate-card">
                     <h2 class="text-5xl font-black text-gray-800 mb-2">Pilar #3: ABSTRAKSI</h2>
-                    <p class="text-2xl text-gray-600 mb-8">Fokus pada informasi yang PENTING saja, abaikan detail yang tidak relevan.</p>
-                     <div class="bg-white border-4 border-[var(--brand-lime)] text-gray-800 p-8 rounded-2xl w-full shadow-2xl">
+                    <p class="text-2xl text-gray-600 mb-8">Fokus pada informasi yang PENTING saja, abaikan detail yang
+                        tidak relevan.</p>
+                    <div
+                        class="bg-white border-4 border-[var(--brand-lime)] text-gray-800 p-8 rounded-2xl w-full shadow-2xl">
                         <h3 class="font-black text-2xl text-[var(--brand-dark)]">Contoh Abstraksi:</h3>
-                        <p class="mt-2 text-lg">Saat menumis, yang penting adalah 'bahan matang'. Kita tidak perlu peduli detail merk wajan, jenis spatula, atau berapa kali adukan per detik.</p>
+                        <p class="mt-2 text-lg">Saat menumis, yang penting adalah 'bahan matang'. Kita tidak perlu
+                            peduli detail merk wajan, jenis spatula, atau berapa kali adukan per detik.</p>
                     </div>
                 </div>
             </div>
-            
+
             <!-- Slide 11: Pilar #4: ALGORITMA -->
             <div id="slide-11" class="slide bg-pattern text-center">
                 <div class="w-full max-w-4xl animate-card">
                     <h2 class="text-5xl font-black text-gray-800 mb-2">Pilar #4: ALGORITMA</h2>
-                    <p class="text-2xl text-gray-600 mb-8">Membuat urutan langkah-demi-langkah (resep) yang jelas untuk menyelesaikan masalah.</p>
-                     <div class="bg-white border-4 border-[var(--brand-blue)] text-gray-800 p-8 rounded-2xl w-full shadow-2xl">
+                    <p class="text-2xl text-gray-600 mb-8">Membuat urutan langkah-demi-langkah (resep) yang jelas untuk
+                        menyelesaikan masalah.</p>
+                    <div
+                        class="bg-white border-4 border-[var(--brand-blue)] text-gray-800 p-8 rounded-2xl w-full shadow-2xl">
                         <h3 class="font-black text-2xl text-[var(--brand-dark)]">Algoritma Nasi Goreng (Contoh):</h3>
                         <ol class="list-decimal list-inside text-left mt-4 text-lg space-y-1">
                             <li>Panaskan minyak.</li>
@@ -384,32 +550,38 @@
                     </div>
                 </div>
             </div>
-            
-            <!-- ========== BAGIAN 3: SESI 1 - ANIMASI DASAR ========== -->
+
+            <!-- ========== BAGIAN 3: SESI 1 - ANIMASI DASAR (SCRATCH) ========== -->
 
             <!-- Slide 12: Transisi ke Scratch -->
             <div id="slide-12" class="slide" style="background-color: var(--brand-dark);">
                 <div class="text-center w-full max-w-4xl">
                     <h2 class="text-4xl font-black text-white mb-8 animate-card">Hubungannya dengan Scratch?</h2>
-                     <div class="text-center bg-gray-700 p-8 rounded-2xl border-2 border-gray-600">
-                        <h3 class="text-3xl font-bold text-[var(--brand-lime)]">Berpikir Komputasional adalah 'RESEP'-nya.</h3>
+                    <div class="text-center bg-gray-700 p-8 rounded-2xl border-2 border-gray-600">
+                        <h3 class="text-3xl font-bold text-[var(--brand-lime)]">Berpikir Komputasional adalah
+                            'RESEP'-nya.</h3>
                         <p class="text-6xl my-4 text-white">⬇️</p>
                         <h3 class="text-3xl font-bold text-[var(--brand-lime)]">Scratch adalah 'DAPUR'-nya.</h3>
-                        <p class="mt-6 text-xl text-white/80">Sekarang, mari kita ubah 'Resep' (Algoritma) kita menjadi 'Aksi' (Program) di Scratch!</p>
+                        <p class="mt-6 text-xl text-white/80">Sekarang, mari kita ubah 'Resep' (Algoritma) kita menjadi
+                            'Aksi' (Program) di Scratch!</p>
                     </div>
                 </div>
             </div>
 
             <!-- Slide 13: Pengenalan Antarmuka -->
             <div id="slide-13" class="slide bg-pattern">
-                 <div class="bg-white p-8 rounded-2xl shadow-xl border-2 border-gray-100 max-w-6xl w-full">
-                     <h2 class="text-4xl font-black text-gray-800 mb-6">Tur Singkat Area Kerja Scratch</h2>
-                     <p class="text-xl text-gray-600 mb-6 max-w-4xl mx-auto text-center">Setelah login, klik tombol <strong class="text-[var(--brand-blue)]">"Buat" (Create)</strong> di kiri atas. Mari kita kenali area utamanya!</p>
-                     <div class="w-full">
-                        <img src="https://images2.imgbox.com/da/90/7wxsAOvf_o.png" alt="Antarmuka Scratch" class="rounded-lg shadow-lg border-4 border-white">
+                <div class="bg-white p-8 rounded-2xl shadow-xl border-2 border-gray-100 max-w-6xl w-full">
+                    <h2 class="text-4xl font-black text-gray-800 mb-6">Tur Singkat Area Kerja Scratch</h2>
+                    <p class="text-xl text-gray-600 mb-6 max-w-4xl mx-auto text-center">Setelah login, klik tombol
+                        <strong class="text-[var(--brand-blue)]">"Buat" (Create)</strong> di kiri atas. Mari kita kenali
+                        area utamanya!
+                    </p>
+                    <div class="w-full">
+                        <img src="https://images2.imgbox.com/da/90/7wxsAOvf_o.png" alt="Antarmuka Scratch"
+                            class="rounded-lg shadow-lg border-4 border-white">
                         <!-- Ganti placeholder ini dengan screenshot antarmuka Scratch yang sudah diberi label area (Blok, Kode, Panggung, Sprite) -->
-                     </div>
-                 </div>
+                    </div>
+                </div>
             </div>
 
             <!-- Slide 14: Blok Perintah Dasar -->
@@ -419,36 +591,43 @@
                     <div class="bg-blue-500 text-white p-8 rounded-2xl shadow-xl text-center">
                         <h3 class="text-3xl font-black">Gerakan (Motion)</h3>
                         <p class="mt-2 text-xl">Mengatur posisi dan pergerakan karakter (sprite).</p>
-                        <img src="https://scratch.oneoffcoder.com/_images/00-move_10_steps.png" alt="Move 10 steps block" class="mt-4 h-15 mx-auto">
+                        <img src="https://scratch.oneoffcoder.com/_images/00-move_10_steps.png"
+                            alt="Move 10 steps block" class="mt-4 h-15 mx-auto">
                     </div>
                     <div class="bg-purple-500 text-white p-8 rounded-2xl shadow-xl text-center">
                         <h3 class="text-3xl font-black">Tampilan (Looks)</h3>
                         <p class="mt-2 text-xl">Mengubah kostum, latar, dan menampilkan teks.</p>
-                        <img src="https://scratch.oneoffcoder.com/_images/06-next-costume.png" alt="Next costume block" class="mt-4 h-15 mx-auto">
+                        <img src="https://scratch.oneoffcoder.com/_images/06-next-costume.png" alt="Next costume block"
+                            class="mt-4 h-15 mx-auto">
                     </div>
                     <div class="bg-pink-500 text-white p-8 rounded-2xl shadow-xl text-center">
                         <h3 class="text-3xl font-black">Suara (Sound)</h3>
                         <p class="mt-2 text-xl">Memainkan musik atau efek suara.</p>
-                        <img src="https://scratch.oneoffcoder.com/_images/01-start-sound-meow.png" alt="Start sound meow block" class="mt-4 h-15 mx-auto">
+                        <img src="https://scratch.oneoffcoder.com/_images/01-start-sound-meow.png"
+                            alt="Start sound meow block" class="mt-4 h-15 mx-auto">
                     </div>
                 </div>
             </div>
 
             <!-- Slide 15: Praktik Terbimbing 1 -->
             <div id="slide-15" class="slide bg-pattern">
-                 <h2 class="text-4xl font-black text-gray-800 mb-2">Praktik #1: Membuat Kucing Bergerak</h2>
-                 <p class="text-xl text-gray-600 mb-6">Ayo susun blok ini. Coba klik bloknya!</p>
-                 <div class="bg-gray-100 p-8 rounded-2xl shadow-lg border-2 border-gray-200 max-w-4xl text-center">
-                     <img src="https://images2.imgbox.com/39/8a/yyv7z1dm_o.png" alt="Kode Blok Gerakan" class="rounded-lg">
-                     <p class="mt-4 text-lg">Kita juga butuh 'pemicu'. Ambil blok <strong class="text-yellow-500">"ketika bendera hijau diklik"</strong> dari kategori <strong>Kejadian (Events)</strong>.</p>
-                 </div>
+                <h2 class="text-4xl font-black text-gray-800 mb-2">Praktik #1: Membuat Kucing Bergerak</h2>
+                <p class="text-xl text-gray-600 mb-6">Ayo susun blok ini. Coba klik bloknya!</p>
+                <div class="bg-gray-100 p-8 rounded-2xl shadow-lg border-2 border-gray-200 max-w-4xl text-center">
+                    <img src="https://images2.imgbox.com/39/8a/yyv7z1dm_o.png" alt="Kode Blok Gerakan"
+                        class="rounded-lg">
+                    <p class="mt-4 text-lg">Kita juga butuh 'pemicu'. Ambil blok <strong class="text-yellow-500">"ketika
+                            bendera hijau diklik"</strong> dari kategori <strong>Kejadian (Events)</strong>.</p>
+                </div>
             </div>
 
             <!-- Slide 16: (BARU) Penjelasan Praktik #1 -->
             <div id="slide-16" class="slide bg-pattern">
-                 <h2 class="text-4xl font-black text-gray-800 mb-6">Bedah Praktik #1: Resep vs Kode</h2>
-                 <p class="text-xl text-gray-600 mb-6">Ini adalah ALGORITMA pertama kita. Kita menerjemahkan resep ke kode.</p>
-                 <div class="bg-white p-8 rounded-2xl shadow-xl border-2 border-gray-100 w-full max-w-4xl grid grid-cols-1 md:grid-cols-2 gap-6">
+                <h2 class="text-4xl font-black text-gray-800 mb-6">Bedah Praktik #1: Resep vs Kode</h2>
+                <p class="text-xl text-gray-600 mb-6">Ini adalah ALGORITMA pertama kita. Kita menerjemahkan resep ke
+                    kode.</p>
+                <div
+                    class="bg-white p-8 rounded-2xl shadow-xl border-2 border-gray-100 w-full max-w-4xl grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div class="text-left p-4 bg-gray-50 rounded-lg">
                         <h3 class="text-2xl font-bold mb-4">Resep / Algoritma:</h3>
                         <ol class="list-decimal list-inside space-y-3 text-lg">
@@ -461,23 +640,25 @@
                         <p>1. Blok <strong class="text-yellow-500">[ketika bendera hijau diklik]</strong></p>
                         <p>2. Blok <strong class="text-blue-500">[gerak 10 langkah]</strong></p>
                     </div>
-                 </div>
-                 <p class="mt-6 text-xl font-bold text-gray-700">Setiap blok adalah satu langkah dalam resep!</p>
+                </div>
+                <p class="mt-6 text-xl font-bold text-gray-700">Setiap blok adalah satu langkah dalam resep!</p>
             </div>
 
             <!-- Slide 17: Praktik Terbimbing 2 -->
-             <div id="slide-17" class="slide bg-pattern">
-                 <h2 class="text-4xl font-black text-gray-800 mb-2">Praktik #2: Animasi & Suara</h2>
-                 <p class="text-xl text-gray-600 mb-6">Sekarang, tambahkan blok ini agar gerakannya terlihat hidup dan bersuara!</p>
-                 <div class="bg-gray-100 p-8 rounded-2xl shadow-lg border-2 border-gray-200 max-w-4xl text-center">
-                     <img src="https://images2.imgbox.com/1a/43/o32npCjT_o.png" alt="Kode Blok Lengkap" class="rounded-lg">
-                     <p class="mt-4 text-lg">Klik bendera hijau berulang-ulang. Apa yang terjadi?</p>
-                 </div>
+            <div id="slide-17" class="slide bg-pattern">
+                <h2 class="text-4xl font-black text-gray-800 mb-2">Praktik #2: Animasi & Suara</h2>
+                <p class="text-xl text-gray-600 mb-6">Sekarang, tambahkan blok ini agar gerakannya terlihat hidup dan
+                    bersuara!</p>
+                <div class="bg-gray-100 p-8 rounded-2xl shadow-lg border-2 border-gray-200 max-w-4xl text-center">
+                    <img src="https://images2.imgbox.com/1a/43/o32npCjT_o.png" alt="Kode Blok Lengkap"
+                        class="rounded-lg">
+                    <p class="mt-4 text-lg">Klik bendera hijau berulang-ulang. Apa yang terjadi?</p>
+                </div>
             </div>
 
             <!-- Slide 18: Praktik Mandiri Sesi 1 -->
             <div id="slide-18" class="slide" style="background-color: var(--brand-lime);">
-                <h2 class="text-5xl font-black text-gray-900 mb-4">Waktunya Berkreasi! (Sesi 1)</h2>
+                <h2 class="text-5xl font-black text-gray-900 mb-4">Waktunya Berkreasi!</h2>
                 <p class="text-2xl text-gray-800 mb-8">Silakan modifikasi proyek tadi atau buat yang baru!</p>
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6 w-full max-w-5xl">
                     <div class="bg-white p-6 rounded-2xl shadow-lg">
@@ -497,36 +678,45 @@
 
             <!-- Slide 19: Refleksi Sesi 1 -->
             <div id="slide-19" class="slide bg-pattern">
-                <h2 class="text-5xl font-black text-gray-800 mb-8">Refleksi Singkat Sesi 1</h2>
-                <div class="text-left w-full max-w-3xl bg-white p-8 rounded-2xl border-2 border-gray-100 space-y-6 shadow-xl text-xl">
-                    <p>1. Apa itu <strong class="text-[var(--brand-blue)]">Algoritma</strong> dalam Berpikir Komputasional?</p>
-                    <p>2. Blok apa yang digunakan untuk membuat sprite <strong class="text-blue-600">bergerak</strong>?</p>
+                <h2 class="text-5xl font-black text-gray-800 mb-8">Refleksi Singkat</h2>
+                <div
+                    class="text-left w-full max-w-3xl bg-white p-8 rounded-2xl border-2 border-gray-100 space-y-6 shadow-xl text-xl">
+                    <p>1. Apa itu <strong class="text-[var(--brand-blue)]">Algoritma</strong> dalam Berpikir
+                        Komputasional?</p>
+                    <p>2. Blok apa yang digunakan untuk membuat sprite <strong class="text-blue-600">bergerak</strong>?
+                    </p>
                     <p>3. Blok apa yang digunakan untuk <strong class="text-purple-600">mengganti kostum</strong>?</p>
                 </div>
             </div>
 
-            <!-- ========== BAGIAN 4: SESI 2 - INTERAKTIVITAS ========== -->
+            <!-- ========== BAGIAN 4: SESI 2 - INTERAKTIVITAS (SCRATCH) ========== -->
 
             <!-- Slide 20: Jembatan Topik Sesi 2 -->
             <div id="slide-20" class="slide bg-pattern">
-                 <h2 class="text-4xl font-black text-gray-800 mb-4">Ingat Animasi Kita Tadi?</h2>
-                 <p class="text-2xl text-gray-600 mb-8">Kita harus klik-klik bendera hijau terus agar karakternya bergerak.</p>
-                 <div class="bg-white p-8 rounded-2xl shadow-xl border-2 border-gray-100 max-w-3xl">
-                    <p class="text-2xl font-bold text-gray-700">Pertanyaan Sesi Ini...</p>
-                    <p class="text-3xl text-[var(--brand-blue)] font-bold mt-4">"Bagaimana caranya agar animasi berjalan OTOMATIS dan bisa merespon INPUT dari kita?"</p>
-                 </div>
+                <h2 class="text-4xl font-black text-gray-800 mb-4">Meningkatkan Level: Interaktivitas</h2>
+                <p class="text-2xl text-gray-600 mb-8">Kita harus klik-klik bendera hijau terus agar karakternya
+                    bergerak.</p>
+                <div class="bg-white p-8 rounded-2xl shadow-xl border-2 border-gray-100 max-w-3xl">
+                    <p class="text-2xl font-bold text-gray-700">Pertanyaan Selanjutnya...</p>
+                    <p class="text-3xl text-[var(--brand-blue)] font-bold mt-4">"Bagaimana caranya agar animasi berjalan
+                        OTOMATIS dan bisa merespon INPUT dari kita?"</p>
+                </div>
             </div>
 
             <!-- Slide 21: Blok Kontrol (Control) -->
             <div id="slide-21" class="slide bg-pattern">
                 <h2 class="text-4xl font-black text-gray-800 mb-8">Sang Pengatur Alur: Blok Kontrol (Control)</h2>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-8 w-full max-w-5xl">
-                    <div class="bg-orange-500 text-white p-6 rounded-2xl shadow-xl flex flex-col items-center justify-start">
-                        <img src="https://user-images.githubusercontent.com/46141631/104115638-48447d00-534c-11eb-8bad-c9312cdd5d8a.gif" alt="Forever block" class="h-[350px]">
+                    <div
+                        class="bg-orange-500 text-white p-6 rounded-2xl shadow-xl flex flex-col items-center justify-start">
+                        <img src="https://user-images.githubusercontent.com/46141631/104115638-48447d00-534c-11eb-8bad-c9312cdd5d8a.gif"
+                            alt="Forever block" class="h-[350px]">
                         <h3 class="text-2xl font-bold mt-2">Selamanya (Forever)</h3>
-                        <p class="mt-2 text-lg font-semibold">Menjalankan perintah di dalamnya berulang-ulang tanpa henti.</p>
+                        <p class="mt-2 text-lg font-semibold">Menjalankan perintah di dalamnya berulang-ulang tanpa
+                            henti.</p>
                     </div>
-                    <div class="bg-orange-500 text-white p-6 rounded-2xl shadow-xl flex flex-col items-center justify-start">
+                    <div
+                        class="bg-orange-500 text-white p-6 rounded-2xl shadow-xl flex flex-col items-center justify-start">
                         <img src="https://images2.imgbox.com/43/ce/lkSukg2g_o.gif" alt="Repeat block" class="h-[350px]">
                         <h3 class="text-2xl font-bold mt-2">Ulangi (Repeat)</h3>
                         <p class="mt-2 text-lg font-semibold">Menjalankan perintah sejumlah kali yang kita tentukan.</p>
@@ -536,226 +726,301 @@
 
             <!-- Slide 22: Praktik Terbimbing 3 - Selamanya -->
             <div id="slide-22" class="slide bg-pattern">
-                 <h2 class="text-4xl font-black text-gray-800 mb-2">Praktik #3: Kucing Berjalan Otomatis</h2>
-                 <p class="text-xl text-gray-600 mb-6">Ambil skrip Sesi 1, lalu 'bungkus' dengan blok <strong class="text-orange-500">'selamanya'</strong>.</p>
-                 <div class="bg-gray-100 p-8 rounded-2xl shadow-lg border-2 border-gray-200 max-w-4xl">
-                     <img src="https://user-images.githubusercontent.com/2855464/34061756-9803e268-e1b7-11e7-8fdf-70cca622a1a3.gif" alt="Kode Blok Jalan Otomatis" class="rounded-lg">
-                     <p class="mt-4 text-lg">Jangan lupa tambahkan <strong class="text-orange-500">'tunggu'</strong> dan <strong class="text-blue-500">'jika di tepi, pantulkan'</strong>!</p>
-                 </div>
+                <h2 class="text-4xl font-black text-gray-800 mb-2">Praktik #3: Kucing Berjalan Otomatis</h2>
+                <p class="text-xl text-gray-600 mb-6">Ambil skrip Sesi 1, lalu 'bungkus' dengan blok <strong
+                        class="text-orange-500">'selamanya'</strong>.</p>
+                <div class="bg-gray-100 p-8 rounded-2xl shadow-lg border-2 border-gray-200 max-w-4xl">
+                    <img src="https://user-images.githubusercontent.com/2855464/34061756-9803e268-e1b7-11e7-8fdf-70cca622a1a3.gif"
+                        alt="Kode Blok Jalan Otomatis" class="rounded-lg">
+                    <p class="mt-4 text-lg">Jangan lupa tambahkan <strong class="text-orange-500">'tunggu'</strong> dan
+                        <strong class="text-blue-500">'jika di tepi, pantulkan'</strong>!
+                    </p>
+                </div>
             </div>
 
             <!-- Slide 23: (BARU) Penjelasan Praktik #3 -->
             <div id="slide-23" class="slide bg-pattern">
-                 <h2 class="text-4xl font-black text-gray-800 mb-6">Bedah Praktik #3: Loop dan Detail</h2>
-                 <p class="text-xl text-gray-600 mb-6">Mengapa kode ini lebih baik? Mari kita bedah 3 bagian penting:</p>
-                 <div class="bg-white p-8 rounded-2xl shadow-xl border-2 border-gray-100 w-full max-w-4xl text-left space-y-4">
+                <h2 class="text-4xl font-black text-gray-800 mb-6">Bedah Praktik #3: Loop dan Detail</h2>
+                <p class="text-xl text-gray-600 mb-6">Mengapa kode ini lebih baik? Mari kita bedah 3 bagian penting:</p>
+                <div
+                    class="bg-white p-8 rounded-2xl shadow-xl border-2 border-gray-100 w-full max-w-4xl text-left space-y-4">
                     <div>
                         <h3 class="text-2xl font-bold text-orange-500">1. Blok [Selamanya] (Loop)</h3>
-                        <p class="text-lg mt-1 text-gray-700">Ini adalah "Pola" (dari CT). Daripada kita klik manual berulang-ulang, kita menyuruh komputer mengulangi perintah <strong class="text-blue-500">[gerak]</strong> dan <strong class="text-purple-500">[kostum]</strong> untuk kita.</p>
+                        <p class="text-lg mt-1 text-gray-700">Ini adalah "Pola" (dari CT). Daripada kita klik manual
+                            berulang-ulang, kita menyuruh komputer mengulangi perintah <strong
+                                class="text-blue-500">[gerak]</strong> dan <strong
+                                class="text-purple-500">[kostum]</strong> untuk kita.</p>
                     </div>
                     <div>
                         <h3 class="text-2xl font-bold text-orange-500">2. Blok [Tunggu] (Abstraksi)</h3>
-                        <p class="text-lg mt-1 text-gray-700">Komputer sangat cepat. Tanpa blok ini, kucing akan bergerak terlalu cepat (blur). Kita 'mengabaikan' kecepatan penuh komputer dan memberi jeda agar mata kita bisa melihat animasinya.</p>
+                        <p class="text-lg mt-1 text-gray-700">Komputer sangat cepat. Tanpa blok ini, kucing akan
+                            bergerak terlalu cepat (blur). Kita 'mengabaikan' kecepatan penuh komputer dan memberi jeda
+                            agar mata kita bisa melihat animasinya.</p>
                     </div>
                     <div>
                         <h3 class="text-2xl font-bold text-blue-500">3. Blok [Jika di Tepi, Pantulkan]</h3>
-                        <p class="text-lg mt-1 text-gray-700">Ini adalah 'logika'. Tanpa ini, kucing akan 'hilang' di tepi panggung. Blok ini memastikan dia tetap di area yang terlihat.</p>
+                        <p class="text-lg mt-1 text-gray-700">Ini adalah 'logika'. Tanpa ini, kucing akan 'hilang' di
+                            tepi panggung. Blok ini memastikan dia tetap di area yang terlihat.</p>
                     </div>
-                 </div>
+                </div>
             </div>
 
             <!-- Slide 24: Blok Sensor (Sensing) -->
             <div id="slide-24" class="slide bg-pattern">
                 <h2 class="text-4xl font-black text-gray-800 mb-8">Membuat Sprite 'Merasa': Blok Sensor (Sensing)</h2>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-8 w-full max-w-5xl">
-                    <div class="bg-cyan-500 text-white p-6 rounded-2xl shadow-xl flex flex-col items-center justify-start">
-                        <img src="https://scratch.oneoffcoder.com/_images/04-ask-name-wait.png" alt="Ask block" class="h-14 rounded">
+                    <div
+                        class="bg-cyan-500 text-white p-6 rounded-2xl shadow-xl flex flex-col items-center justify-start">
+                        <img src="https://scratch.oneoffcoder.com/_images/04-ask-name-wait.png" alt="Ask block"
+                            class="h-14 rounded">
                         <h3 class="text-2xl font-bold mt-2">Tanya (Ask)</h3>
-                        <p class="mt-2 text-lg font-semibold">Memunculkan kotak input agar pengguna bisa mengetik jawaban.</p>
+                        <p class="mt-2 text-lg font-semibold">Memunculkan kotak input agar pengguna bisa mengetik
+                            jawaban.</p>
                     </div>
-                    <div class="bg-cyan-500 text-white p-6 rounded-2xl shadow-xl flex flex-col items-center justify-start">
-                        <img src="https://scratch.oneoffcoder.com/_images/05-key-space-pressed.png" alt="Key pressed block" class="h-14 rounded">
+                    <div
+                        class="bg-cyan-500 text-white p-6 rounded-2xl shadow-xl flex flex-col items-center justify-start">
+                        <img src="https://scratch.oneoffcoder.com/_images/05-key-space-pressed.png"
+                            alt="Key pressed block" class="h-14 rounded">
                         <h3 class="text-2xl font-bold mt-2">Tombol Ditekan (Key Pressed)</h3>
-                        <p class="mt-2 text-lg font-semibold">Memicu aksi ketika kita menekan tombol di keyboard (dari kategori Kejadian/Events).</p>
+                        <p class="mt-2 text-lg font-semibold">Memicu aksi ketika kita menekan tombol di keyboard (dari
+                            kategori Kejadian/Events).</p>
                     </div>
                 </div>
             </div>
 
             <!-- Slide 25: Praktik Terbimbing 4 - Kuis -->
             <div id="slide-25" class="slide bg-pattern">
-                 <h2 class="text-4xl font-black text-gray-800 mb-2">Praktik #4: Kuis Sederhana (Interaktif)</h2>
-                 <p class="text-xl text-gray-600 mb-6">Mari buat si Kucing bertanya nama kita!</p>
-                 <div class="bg-gray-100 p-8 rounded-2xl shadow-lg border-2 border-gray-200 max-w-4xl">
-                     <img src="https://miro.medium.com/v2/resize:fit:1400/1*cjerqN_VS7-u_EdezqQj8w.png" alt="Kode Blok Kuis" class="rounded-lg">
-                     <p class="mt-4 text-lg">Blok <strong class="text-cyan-500">'jawaban'</strong> (answer) ada di Sensor. Blok <strong class="text-green-500">'gabungkan'</strong> (join) ada di Operator.</p>
-                 </div>
+                <h2 class="text-4xl font-black text-gray-800 mb-2">Praktik #4: Kuis Sederhana (Interaktif)</h2>
+                <p class="text-xl text-gray-600 mb-6">Mari buat si Kucing bertanya nama kita!</p>
+                <div class="bg-gray-100 p-8 rounded-2xl shadow-lg border-2 border-gray-200 max-w-4xl">
+                    <img src="https://miro.medium.com/v2/resize:fit:1400/1*cjerqN_VS7-u_EdezqQj8w.png"
+                        alt="Kode Blok Kuis" class="rounded-lg">
+                    <p class="mt-4 text-lg">Blok <strong class="text-cyan-500">'jawaban'</strong> (answer) ada di
+                        Sensor. Blok <strong class="text-green-500">'gabungkan'</strong> (join) ada di Operator.</p>
+                </div>
             </div>
 
             <!-- Slide 26: (BARU) Penjelasan Praktik #4 (Input Sederhana) -->
             <div id="slide-26" class="slide bg-pattern">
-                 <h2 class="text-4xl font-black text-gray-800 mb-6">Bedah Praktik #4: Input Sederhana</h2>
-                 <p class="text-xl text-gray-600 mb-6">Ini adalah inti dari interaksi! Mari kita bedah alurnya (Algoritma):</p>
-                 <div class="bg-white p-8 rounded-2xl shadow-xl border-2 border-gray-100 w-full max-w-4xl text-left space-y-4">
+                <h2 class="text-4xl font-black text-gray-800 mb-6">Bedah Praktik #4: Input Sederhana</h2>
+                <p class="text-xl text-gray-600 mb-6">Ini adalah inti dari interaksi! Mari kita bedah alurnya
+                    (Algoritma):</p>
+                <div
+                    class="bg-white p-8 rounded-2xl shadow-xl border-2 border-gray-100 w-full max-w-4xl text-left space-y-4">
                     <div>
                         <h3 class="text-2xl font-bold text-cyan-500">1. INPUT (Masukan)</h3>
-                        <p class="text-lg mt-1 text-gray-700">Kita menggunakan blok <strong class="text-cyan-500">[tanya "Siapa namamu?" dan tunggu]</strong>. Ini adalah perintah untuk 'meminta' data dari pengguna. Scratch akan otomatis menampilkan kotak input.</p>
+                        <p class="text-lg mt-1 text-gray-700">Kita menggunakan blok <strong class="text-cyan-500">[tanya
+                                "Siapa namamu?" dan tunggu]</strong>. Ini adalah perintah untuk 'meminta' data dari
+                            pengguna. Scratch akan otomatis menampilkan kotak input.</p>
                     </div>
                     <div>
                         <h3 class="text-2xl font-bold text-cyan-400">2. PENYIMPANAN (Storage)</h3>
-                        <p class="text-lg mt-1 text-gray-700">Apapun yang pengguna ketik akan otomatis disimpan oleh Scratch ke dalam 'variabel' bawaan bernama <strong class="text-cyan-500">[jawaban]</strong>. Ini seperti kotak ajaib yang menampung jawaban pengguna.</p>
+                        <p class="text-lg mt-1 text-gray-700">Apapun yang pengguna ketik akan otomatis disimpan oleh
+                            Scratch ke dalam 'variabel' bawaan bernama <strong class="text-cyan-500">[jawaban]</strong>.
+                            Ini seperti kotak ajaib yang menampung jawaban pengguna.</p>
                     </div>
                     <div>
                         <h3 class="text-2xl font-bold text-green-500">3. PROSES (Process)</h3>
-                        <p class="text-lg mt-1 text-gray-700">Kita ingin menyapa, jadi kita tidak hanya menampilkan jawaban. Kita 'memproses' data. Kita menggunakan blok <strong class="text-green-500">[gabungkan]</strong> untuk merangkai teks "Halo, " dengan isi dari kotak <strong class="text-cyan-500">[jawaban]</strong>.</p>
+                        <p class="text-lg mt-1 text-gray-700">Kita ingin menyapa, jadi kita tidak hanya menampilkan
+                            jawaban. Kita 'memproses' data. Kita menggunakan blok <strong
+                                class="text-green-500">[gabungkan]</strong> untuk merangkai teks "Halo, " dengan isi
+                            dari kotak <strong class="text-cyan-500">[jawaban]</strong>.</p>
                     </div>
-                     <div>
+                    <div>
                         <h3 class="text-2xl font-bold text-purple-500">4. OUTPUT (Keluaran)</h3>
-                        <p class="text-lg mt-1 text-gray-700">Terakhir, kita tampilkan hasil 'proses' tadi ke layar. Kita gunakan blok <strong class="text-purple-500">[katakan ...]</strong> dan masukkan seluruh blok <strong class="text-green-500">[gabungkan]</strong> ke dalamnya.</p>
+                        <p class="text-lg mt-1 text-gray-700">Terakhir, kita tampilkan hasil 'proses' tadi ke layar.
+                            Kita gunakan blok <strong class="text-purple-500">[katakan ...]</strong> dan masukkan
+                            seluruh blok <strong class="text-green-500">[gabungkan]</strong> ke dalamnya.</p>
                     </div>
-                 </div>
+                </div>
             </div>
-            
-            <!-- ========== MATERI BARU DIMULAI DARI SINI (PECAH 10 SLIDE) ========== -->
 
             <!-- Slide 27: (BARU) Jembatan Proyek Kuis -->
             <div id="slide-27" class="slide" style="background-color: var(--brand-lime);">
                 <h2 class="text-5xl font-black text-gray-900 mb-4">Proyek Kuis Lengkap!</h2>
-                <p class="text-2xl text-gray-800 mb-8 max-w-3xl text-center">Kita sudah bisa 'bertanya'. Sekarang, mari gabungkan semua ilmu untuk membuat KUIS LENGKAP dengan <strong class="text-[var(--brand-blue)]">SKOR</strong>, respon <strong class="text-green-600)">BENAR</strong>, dan respon <strong class="text-red-600)">SALAH</strong>!</p>
+                <p class="text-2xl text-gray-800 mb-8 max-w-3xl text-center">Kita sudah bisa 'bertanya'. Sekarang, mari
+                    gabungkan semua ilmu untuk membuat KUIS LENGKAP dengan <strong
+                        class="text-[var(--brand-blue)]">SKOR</strong>, respon <strong
+                        class="text-green-600)">BENAR</strong>, dan respon <strong class="text-red-600)">SALAH</strong>!
+                </p>
                 <p class="text-xl text-gray-700">Kita akan ikuti tutorial langkah demi langkah.</p>
             </div>
 
             <!-- Slide 28: (BARU) Proyek Kuis - Langkah 1 -->
             <div id="slide-28" class="slide bg-pattern">
-                 <h2 class="text-4xl font-black text-gray-800 mb-6">Proyek Kuis: Langkah 1 (Panggung & Karakter)</h2>
-                 <div class="bg-white p-8 rounded-2xl shadow-xl border-2 border-gray-100 w-full max-w-6xl grid grid-cols-1 gap-8">
+                <h2 class="text-4xl font-black text-gray-800 mb-6">Proyek Kuis: Langkah 1 (Panggung & Karakter)</h2>
+                <div
+                    class="bg-white p-8 rounded-2xl shadow-xl border-2 border-gray-100 w-full max-w-6xl grid grid-cols-1 gap-8">
                     <div class="text-left md:col-span-2">
-                        <h3 class="text-2xl font-bold text-gray-700 mb-4">Langkah 1: Siap-siap Panggung dan Karakter</h3>
+                        <h3 class="text-2xl font-bold text-gray-700 mb-4">Langkah 1: Siap-siap Panggung dan Karakter
+                        </h3>
                         <p class="text-lg mb-4">Pertama, kita siapkan dulu tempat bermainnya.</p>
                         <ul class="list-decimal list-inside space-y-2 text-lg">
                             <li>Buka proyek baru.</li>
                             <li>Hapus sprite Kucing. </li>
                             <li>Klik 'Choose a Backdrop' (pojok kanan bawah) dan pilih latar panggung. </li>
-                            <li>Klik 'Choose a Sprite' (kepala kucing biru) dan pilih 1 karakter orang (misal: 'David'). </li>
+                            <li>Klik 'Choose a Sprite' (kepala kucing biru) dan pilih 1 karakter orang (misal: 'David').
+                            </li>
                             <li>Letakkan karaktermu di tempat yang kamu suka.</li>
                         </ul>
                     </div>
-                    <img src="https://images2.imgbox.com/45/26/CpMSdvzT_o.gif" width="700px" alt="Animasi proses pendaftaran akun Scratch" class="rounded-lg shadow-lg border-4 border-white justify-self-center w-full max-w-4xl">
+                    <img src="https://images2.imgbox.com/45/26/CpMSdvzT_o.gif" width="700px"
+                        alt="Animasi proses pendaftaran akun Scratch"
+                        class="rounded-lg shadow-lg border-4 border-white justify-self-center w-full max-w-4xl">
 
-                   
-                 </div>
+
+                </div>
             </div>
-            
+
             <!-- Slide 29: (BARU) Proyek Kuis - Langkah 2 -->
             <div id="slide-29" class="slide bg-pattern">
-                 <h2 class="text-4xl font-black text-gray-800 mb-6">Proyek Kuis: Langkah 2 (Benar & Salah)</h2>
-                 <div class="bg-white p-8 rounded-2xl shadow-xl border-2 border-gray-100 w-full max-w-6xl grid grid-cols-1 gap-6">
+                <h2 class="text-4xl font-black text-gray-800 mb-6">Proyek Kuis: Langkah 2 (Benar & Salah)</h2>
+                <div
+                    class="bg-white p-8 rounded-2xl shadow-xl border-2 border-gray-100 w-full max-w-6xl grid grid-cols-1 gap-6">
                     <div class="text-left">
-                        <h3 class="text-2xl font-bold text-gray-700 mb-4">Langkah 2: Bikin Gambar 'Benar' dan 'Salah'</h3>
+                        <h3 class="text-2xl font-bold text-gray-700 mb-4">Langkah 2: Bikin Gambar 'Benar' dan 'Salah'
+                        </h3>
                         <p class="text-base mb-4">Kita perlu gambar untuk memberitahu pemain.</p>
                         <ul class="list-decimal list-inside space-y-2 text-base">
                             <li>Klik 'Choose a Sprite' lagi, cari dan tambahkan sprite 'Check'. </li>
                             <li>Klik 'Choose a Sprite' lagi, cari dan tambahkan sprite 'X'. </li>
-                            <li>(Opsional) Klik sprite 'X', pergi ke tab 'Costumes', dan gunakan 'Fill' (ember cat) untuk mengubah warnanya jadi merah. </li>
+                            <li>(Opsional) Klik sprite 'X', pergi ke tab 'Costumes', dan gunakan 'Fill' (ember cat)
+                                untuk mengubah warnanya jadi merah. </li>
                         </ul>
                     </div>
-                    <img src="https://images2.imgbox.com/18/f1/mgSMM3mU_o.gif" alt="Animasi menambahkan sprite Check dan X" class="rounded-lg shadow-lg border-4 border-white justify-self-center w-full max-w-4xl">
-                 </div>
-            </div>
-
-            <div id="slide-31" class="slide bg-pattern">
-                 <h2 class="text-4xl font-black text-gray-800 mb-6">Proyek Kuis: Langkah 3 (David Mulai Bicara)</h2>
-                 <div class="bg-white p-8 rounded-2xl shadow-xl border-2 border-gray-100 w-full max-w-6xl grid grid-cols-1 gap-6">
-                    <div class="text-left">
-                        <h3 class="text-2xl font-bold text-gray-700 mb-4">Langkah 4: David Mulai Bicara (Memulai Game)</h3>
-                        <p class="text-base mb-4">Klik Karakter David! Pastikan kamu sudah klik gambar David di daftar sprite bawah. Ini penting!</p>
-                        <ul class="list-decimal list-inside space-y-2 text-base">
-                            <li>Ambil <strong class="text-yellow-500">'when green flag clicked'</strong> (dari 'Events'). </li>
-                            <li>Pergi ke <strong class="text-purple-500">'Looks'</strong>, ambil <strong class="text-purple-500">'say [Hello!] for 2 seconds'</strong>. </li>
-                            <li>Ganti 'Hello!' jadi 'Halo! Selamat datang di kuis IPA!'. </li>
-                        </ul>
-                    </div>
-                    <img src="https://images2.imgbox.com/5c/03/aWzT9mtK_o.gif" alt="Animasi menambahkan blok say" class="rounded-lg shadow-lg border-4 border-white justify-self-center w-full max-w-4xl">
-                 </div>
+                    <img src="https://images2.imgbox.com/18/f1/mgSMM3mU_o.gif"
+                        alt="Animasi menambahkan sprite Check dan X"
+                        class="rounded-lg shadow-lg border-4 border-white justify-self-center w-full max-w-4xl">
+                </div>
             </div>
 
             <!-- Slide 30: (BARU) Proyek Kuis - Langkah 3 -->
             <div id="slide-30" class="slide bg-pattern">
-                 <h2 class="text-4xl font-black text-gray-800 mb-6">Proyek Kuis: Langkah 4 (Papan SKOR)</h2>
-                 <div class="bg-white p-8 rounded-2xl shadow-xl border-2 border-gray-100 w-full max-w-6xl grid grid-cols-1 gap-6">
+                <h2 class="text-4xl font-black text-gray-800 mb-6">Proyek Kuis: Langkah 4 (Papan SKOR)</h2>
+                <div
+                    class="bg-white p-8 rounded-2xl shadow-xl border-2 border-gray-100 w-full max-w-6xl grid grid-cols-1 gap-6">
                     <div class="text-left">
                         <h3 class="text-2xl font-bold text-gray-700 mb-4">Langkah 3: Membuat Papan SKOR</h3>
                         <p class="text-base mb-4">Kuis harus ada skornya, dong! Ayo kita buat.</p>
                         <ul class="list-decimal list-inside space-y-2 text-base">
-                            <li>Pergi ke palet blok <strong class="text-orange-600">'Variables'</strong> (oranye tua). </li>
-                            <li>Klik tombol di atas: <strong class="bg-white border border-gray-300 p-1 rounded">'Make a Variable'</strong>. </li>
-                            <li>Akan muncul kotak kecil. Ketik nama variabelnya: <strong class="text-red-500">Skor</strong>. Lalu klik 'OK'. </li>
-                            <li>Lihat! Sekarang ada papan skor di layar game-mu. Kamu bisa geser papan skor itu ke pojok atas.</li>
+                            <li>Pergi ke palet blok <strong class="text-orange-600">'Variables'</strong> (oranye tua).
+                            </li>
+                            <li>Klik tombol di atas: <strong class="bg-white border border-gray-300 p-1 rounded">'Make a
+                                    Variable'</strong>. </li>
+                            <li>Akan muncul kotak kecil. Ketik nama variabelnya: <strong
+                                    class="text-red-500">Skor</strong>. Lalu klik 'OK'. </li>
+                            <li>Lihat! Sekarang ada papan skor di layar game-mu. Kamu bisa geser papan skor itu ke pojok
+                                atas.</li>
                         </ul>
                     </div>
-                    <img src="https://images2.imgbox.com/90/11/If0tneQU_o.gif" alt="Animasi membuat variabel Skor" class="rounded-lg shadow-lg border-4 border-white justify-self-center w-full max-w-4xl">
-                 </div>
+                    <img src="https://images2.imgbox.com/90/11/If0tneQU_o.gif" alt="Animasi membuat variabel Skor"
+                        class="rounded-lg shadow-lg border-4 border-white justify-self-center w-full max-w-4xl">
+                </div>
             </div>
 
             <!-- Slide 31: (BARU) Proyek Kuis - Langkah 4 -->
-
+            <div id="slide-31" class="slide bg-pattern">
+                <h2 class="text-4xl font-black text-gray-800 mb-6">Proyek Kuis: Langkah 3 (David Mulai Bicara)</h2>
+                <div
+                    class="bg-white p-8 rounded-2xl shadow-xl border-2 border-gray-100 w-full max-w-6xl grid grid-cols-1 gap-6">
+                    <div class="text-left">
+                        <h3 class="text-2xl font-bold text-gray-700 mb-4">Langkah 4: David Mulai Bicara (Memulai Game)
+                        </h3>
+                        <p class="text-base mb-4">Klik Karakter David! Pastikan kamu sudah klik gambar David di daftar
+                            sprite bawah. Ini penting!</p>
+                        <ul class="list-decimal list-inside space-y-2 text-base">
+                            <li>Ambil <strong class="text-yellow-500">'when green flag clicked'</strong> (dari
+                                'Events'). </li>
+                            <li>Pergi ke <strong class="text-purple-500">'Looks'</strong>, ambil <strong
+                                    class="text-purple-500">'say [Hello!] for 2 seconds'</strong>. </li>
+                            <li>Ganti 'Hello!' jadi 'Halo! Selamat datang di kuis IPA!'. </li>
+                        </ul>
+                    </div>
+                    <img src="https://images2.imgbox.com/5c/03/aWzT9mtK_o.gif" alt="Animasi menambahkan blok say"
+                        class="rounded-lg shadow-lg border-4 border-white justify-self-center w-full max-w-4xl">
+                </div>
+            </div>
 
             <!-- Slide 32: (BARU) Proyek Kuis - Langkah 5 -->
             <div id="slide-32" class="slide bg-pattern">
-                 <h2 class="text-4xl font-black text-gray-800 mb-6">Proyek Kuis: Langkah 5 (Membuat Pertanyaan)</h2>
-                 <div class="bg-white p-8 rounded-2xl shadow-xl border-2 border-gray-100 w-full max-w-6xl grid grid-cols-1 gap-6">
+                <h2 class="text-4xl font-black text-gray-800 mb-6">Proyek Kuis: Langkah 5 (Membuat Pertanyaan)</h2>
+                <div
+                    class="bg-white p-8 rounded-2xl shadow-xl border-2 border-gray-100 w-full max-w-6xl grid grid-cols-1 gap-6">
                     <div class="text-left">
                         <h3 class="text-2xl font-bold text-gray-700 mb-4">Langkah 5: Membuat Pertanyaan Pertama</h3>
                         <p class="text-base mb-4">Ini bagian paling seru, membuat soal! (Masih di kode David).</p>
                         <ul class="list-decimal list-inside space-y-2 text-base">
-                            <li>Pergi ke <strong class="text-cyan-500">'Sensing'</strong>, ambil <strong class="text-cyan-500">'ask [What's your name?] and wait'</strong>. Pasang di bawah 'say'. </li>
+                            <li>Pergi ke <strong class="text-cyan-500">'Sensing'</strong>, ambil <strong
+                                    class="text-cyan-500">'ask [What's your name?] and wait'</strong>. Pasang di bawah
+                                'say'. </li>
                             <li>Ganti 'What's your name?' jadi 'Planet terbesar di tata surya?'. </li>
-                            <li>Pergi ke <strong class="text-orange-500">'Control'</strong>, ambil <strong class="text-orange-500">'if < > then ... else ...'</strong>. Pasang di bawah 'ask'. </li>
-                            <li>Pergi ke <strong class="text-green-500">'Operators'</strong>, ambil <strong class="text-green-500">'< > = 50'</strong>. Taruh di lubang 'if'. </li>
-                            <li>Di kotak pertama, masukkan <strong class="text-cyan-500">'answer'</strong> (dari 'Sensing'). </li>
+                            <li>Pergi ke <strong class="text-orange-500">'Control'</strong>, ambil <strong
+                                    class="text-orange-500">'if <> then ... else ...'</strong>. Pasang di bawah 'ask'.
+                            </li>
+                            <li>Pergi ke <strong class="text-green-500">'Operators'</strong>, ambil <strong
+                                    class="text-green-500">'<> = 50'</strong>. Taruh di lubang 'if'. </li>
+                            <li>Di kotak pertama, masukkan <strong class="text-cyan-500">'answer'</strong> (dari
+                                'Sensing'). </li>
                             <li>Di kotak kedua, ketik jawaban: 'Jupiter'. (Huruf besar/kecil harus sama!) </li>
                         </ul>
                     </div>
-                    <img src="https://images2.imgbox.com/47/7e/3Jbiwv2e_o.gif" alt="Animasi membuat blok pertanyaan kuis" class="rounded-lg shadow-lg border-4 border-white justify-self-center w-full max-w-4xl">
-                 </div>
+                    <img src="https://images2.imgbox.com/47/7e/3Jbiwv2e_o.gif"
+                        alt="Animasi membuat blok pertanyaan kuis"
+                        class="rounded-lg shadow-lg border-4 border-white justify-self-center w-full max-w-4xl">
+                </div>
             </div>
 
             <!-- Slide 33: (BARU) Proyek Kuis - Langkah 6 -->
             <div id="slide-33" class="slide bg-pattern">
-                 <h2 class="text-4xl font-black text-gray-800 mb-6">Proyek Kuis: Langkah 6 (Logika Benar/Salah)</h2>
-                 <div class="bg-white p-8 rounded-2xl shadow-xl border-2 border-gray-100 w-full max-w-6xl grid grid-cols-1 gap-6">
+                <h2 class="text-4xl font-black text-gray-800 mb-6">Proyek Kuis: Langkah 6 (Logika Benar/Salah)</h2>
+                <div
+                    class="bg-white p-8 rounded-2xl shadow-xl border-2 border-gray-100 w-full max-w-6xl grid grid-cols-1 gap-6">
                     <div class="text-left">
-                        <h3 class="text-2xl font-bold text-gray-700 mb-4">Langkah 6: Apa yang Terjadi Kalau Benar / Salah?</h3>
-                        <p class="text-base mb-4">Sekarang kita isi bagian 'then' (jika benar) dan 'else' (jika salah).</p>
-                        
+                        <h3 class="text-2xl font-bold text-gray-700 mb-4">Langkah 6: Apa yang Terjadi Kalau Benar /
+                            Salah?</h3>
+                        <p class="text-base mb-4">Sekarang kita isi bagian 'then' (jika benar) dan 'else' (jika salah).
+                        </p>
+
                         <strong class="text-lg font-bold text-green-600">Jika Benar (di dalam 'then'):</strong>
                         <ul class="list-decimal list-inside space-y-2 text-base mb-4 ml-4">
-                            <li>Tambah Skor: Ambil <strong class="text-orange-600">'change [Skor] by 1'</strong> (dari 'Variables'). </li>
-                            <li>Kirim Pesan 'Benar': Ambil <strong class="text-yellow-500">'broadcast [message1]'</strong> (dari 'Events'). Klik 'message1' -> 'New Message...'. Ketik: <strong class="text-red-500">Benar</strong>. </li>
+                            <li>Tambah Skor: Ambil <strong class="text-orange-600">'change [Skor] by 1'</strong> (dari
+                                'Variables'). </li>
+                            <li>Kirim Pesan 'Benar': Ambil <strong class="text-yellow-500">'broadcast
+                                    [message1]'</strong> (dari 'Events'). Klik 'message1' -> 'New Message...'. Ketik:
+                                <strong class="text-red-500">Benar</strong>.
+                            </li>
                         </ul>
 
                         <strong class="text-lg font-bold text-red-600">Jika Salah (di dalam 'else'):</strong>
                         <ul class="list-decimal list-inside space-y-2 text-base ml-4">
-                            <li>Kirim Pesan 'Salah': Ambil <strong class="text-yellow-500">'broadcast [message1]'</strong>. Klik 'message1' -> 'New Message...'. Ketik: <strong class="text-red-500">Salah</strong>. </li>
+                            <li>Kirim Pesan 'Salah': Ambil <strong class="text-yellow-500">'broadcast
+                                    [message1]'</strong>. Klik 'message1' -> 'New Message...'. Ketik: <strong
+                                    class="text-red-500">Salah</strong>. </li>
                         </ul>
                     </div>
-                    <img src="https://images2.imgbox.com/45/26/CpMSdvzT_o.gif" alt="Animasi menambahkan logika benar/salah" class="rounded-lg shadow-lg border-4 border-white justify-self-center w-full max-w-4xl">
-                 </div>
+                    <img src="https://images2.imgbox.com/45/26/CpMSdvzT_o.gif"
+                        alt="Animasi menambahkan logika benar/salah"
+                        class="rounded-lg shadow-lg border-4 border-white justify-self-center w-full max-w-4xl">
+                </div>
             </div>
 
             <!-- Slide 34: (BARU) Proyek Kuis - Langkah 7 -->
             <div id="slide-34" class="slide bg-pattern">
-                 <h2 class="text-4xl font-black text-gray-800 mb-6">Proyek Kuis: Langkah 7 (Kode 'Centang')</h2>
-                 <div class="bg-white p-8 rounded-2xl shadow-xl border-2 border-gray-100 w-full max-w-6xl grid grid-cols-1 gap-6">
+                <h2 class="text-4xl font-black text-gray-800 mb-6">Proyek Kuis: Langkah 7 (Kode 'Centang')</h2>
+                <div
+                    class="bg-white p-8 rounded-2xl shadow-xl border-2 border-gray-100 w-full max-w-6xl grid grid-cols-1 gap-6">
                     <div class="text-left">
-                        <h3 class="text-2xl font-bold text-gray-700 mb-4">Langkah 7: Menghidupkan Gambar 'Centang' (Benar)</h3>
-                        <p class="text-base mb-4">Sekarang kita atur sprite centang. <strong class="text-red-500">Klik Sprite 'Centang'</strong> di daftar sprite!</p>
-                        
+                        <h3 class="text-2xl font-bold text-gray-700 mb-4">Langkah 7: Menghidupkan Gambar 'Centang'
+                            (Benar)</h3>
+                        <p class="text-base mb-4">Sekarang kita atur sprite centang. <strong class="text-red-500">Klik
+                                Sprite 'Centang'</strong> di daftar sprite!</p>
+
                         <strong class="text-lg font-bold">Kode 1: Sembunyi saat mulai</strong>
                         <ul class="list-disc list-inside ml-4 mb-4 text-base">
                             <li>Ambil <strong class="text-yellow-500">'when green flag clicked'</strong>. </li>
                             <li>Ambil <strong class="text-purple-500">'hide'</strong> (sembunyi) (dari 'Looks'). </li>
                         </ul>
-                        
+
                         <strong class="text-lg font-bold">Kode 2: Muncul saat Benar</strong>
                         <ul class="list-disc list-inside ml-4 text-base">
                             <li>Ambil <strong class="text-yellow-500">'when I receive [Benar]'</strong>. </li>
@@ -764,75 +1029,77 @@
                             <li>Pasang <strong class="text-purple-500">'hide'</strong> (sembunyi) lagi. </li>
                         </ul>
                     </div>
-                    <img src="https://images2.imgbox.com/15/82/6kWCCpqT_o.gif" alt="Animasi kode untuk sprite centang" class="rounded-lg shadow-lg border-4 border-white justify-self-center w-full max-w-4xl">
-                 </div>
+                    <img src="https://images2.imgbox.com/15/82/6kWCCpqT_o.gif" alt="Animasi kode untuk sprite centang"
+                        class="rounded-lg shadow-lg border-4 border-white justify-self-center w-full max-w-4xl">
+                </div>
             </div>
 
             <!-- Slide 35: (BARU) Proyek Kuis - Langkah 8 -->
             <div id="slide-35" class="slide bg-pattern">
-                 <h2 class="text-4xl font-black text-gray-800 mb-6">Proyek Kuis: Langkah 8 (Kode 'Silang')</h2>
-                 <div class="bg-white p-8 rounded-2xl shadow-xl border-2 border-gray-100 w-full max-w-6xl grid grid-cols-1 gap-6">
+                <h2 class="text-4xl font-black text-gray-800 mb-6">Proyek Kuis: Langkah 8 (Kode 'Silang')</h2>
+                <div
+                    class="bg-white p-8 rounded-2xl shadow-xl border-2 border-gray-100 w-full max-w-6xl grid grid-cols-1 gap-6">
                     <div class="text-left">
-                        <h3 class="text-2xl font-bold text-gray-700 mb-4">Langkah 8: Menghidupkan Gambar 'Silang' (Salah)</h3>
-                        <p class="text-base mb-4">Lakukan hal yang SAMA PERSIS seperti Langkah 7, tapi untuk sprite 'X'. <strong class="text-red-500">Klik Sprite 'X'</strong> dulu!</p>
-                        
+                        <h3 class="text-2xl font-bold text-gray-700 mb-4">Langkah 8: Menghidupkan Gambar 'Silang'
+                            (Salah)</h3>
+                        <p class="text-base mb-4">Lakukan hal yang SAMA PERSIS seperti Langkah 7, tapi untuk sprite 'X'.
+                            <strong class="text-red-500">Klik Sprite 'X'</strong> dulu!
+                        </p>
+
                         <strong class="text-lg font-bold">Kode 1: Sembunyi saat mulai</strong>
                         <ul class="list-disc list-inside ml-4 mb-4 text-base">
-                            <li>Pasang <strong class="text-yellow-500">'when green flag clicked'</strong> -> <strong class="text-purple-500">'hide'</strong>. </li>
+                            <li>Pasang <strong class="text-yellow-500">'when green flag clicked'</strong> -> <strong
+                                    class="text-purple-500">'hide'</strong>. </li>
                         </ul>
-                        
+
                         <strong class="text-lg font-bold">Kode 2: Muncul saat Salah</strong>
                         <ul class="list-disc list-inside ml-4 text-base">
                             <li>Pasang <strong class="text-yellow-500">'when I receive [Salah]'</strong>. </li>
-                            <li>Pasang <strong class="text-purple-500">'show'</strong> -> <strong class="text-orange-500">'wait 1 seconds'</strong> -> <strong class="text-purple-500">'hide'</strong>.</li>
+                            <li>Pasang <strong class="text-purple-500">'show'</strong> -> <strong
+                                    class="text-orange-500">'wait 1 seconds'</strong> -> <strong
+                                    class="text-purple-500">'hide'</strong>.</li>
                         </ul>
                     </div>
-                    <img src="https://images2.imgbox.com/15/82/6kWCCpqT_o.gif" alt="Animasi kode untuk sprite silang" class="rounded-lg shadow-lg border-4 border-white justify-self-center w-full max-w-4xl">
-                 </div>
+                    <img src="https://images2.imgbox.com/15/82/6kWCCpqT_o.gif" alt="Animasi kode untuk sprite silang"
+                        class="rounded-lg shadow-lg border-4 border-white justify-self-center w-full max-w-4xl">
+                </div>
             </div>
 
-            
-
-            <!-- ========== SLIDE VIDEO YOUTUBE BARU ========== -->
 
             <!-- Slide 38: (BARU) Video Tutorial Kuis -->
             <div id="slide-38" class="slide bg-pattern">
-                 <h2 class="text-4xl font-black text-gray-800 mb-6">Proyek Kuis: Video Tutorial Lengkap</h2>
-                 <p class="text-xl text-gray-600 mb-6">Berikut adalah video rangkuman langkah-langkah yang baru saja kita pelajari.</p>
-                 <div class="bg-white p-6 rounded-2xl shadow-2xl border-2 border-gray-200">
-                    <iframe 
-                        width="853" 
-                        height="480" 
-                        src="https://www.youtube.com/embed/50VeptTnuDI" 
-                        title="YouTube video player" 
-                        frameborder="0" 
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
-                        allowfullscreen
-                        class="rounded-lg">
+                <h2 class="text-4xl font-black text-gray-800 mb-6">Proyek Kuis: Video Tutorial Lengkap</h2>
+                <p class="text-xl text-gray-600 mb-6">Berikut adalah video rangkuman langkah-langkah yang baru saja kita
+                    pelajari.</p>
+                <div class="bg-white p-6 rounded-2xl shadow-2xl border-2 border-gray-200">
+                    <iframe width="853" height="480" src="https://www.youtube.com/embed/50VeptTnuDI"
+                        title="YouTube video player" frameborder="0"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                        allowfullscreen class="rounded-lg">
                     </iframe>
-                 </div>
+                </div>
             </div>
-
-            <!-- ========== AKHIR SLIDE BARU ========== -->
-
 
             <!-- Slide 39: (Asli Slide 38) Praktik Mandiri Sesi 2 -->
             <div id="slide-39" class="slide" style="background-color: var(--brand-blue); color: white;">
-                <h2 class="text-5xl font-black mb-4">Waktunya Proyek Mandiri! (Sesi 2)</h2>
+                <h2 class="text-5xl font-black mb-4">Waktunya Proyek Mandiri!</h2>
                 <p class="text-2xl opacity-80 mb-8">Pilih satu tantangan ini, atau buat idemu sendiri.</p>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6 w-full max-w-5xl text-gray-800">
                     <div class="bg-white p-6 rounded-2xl shadow-lg">
                         <h3 class="text-2xl font-bold text-[var(--brand-blue)]">Tantangan #1: Kembangkan Kuis</h3>
-                        <p class="mt-2 text-lg">Modifikasi kuis yang baru saja kita buat. Tambah 3 soal lagi tentang mata pelajaran Anda!</p>
+                        <p class="mt-2 text-lg">Modifikasi kuis yang baru saja kita buat. Tambah 3 soal lagi tentang
+                            mata pelajaran Anda!</p>
                     </div>
                     <div class="bg-white p-6 rounded-2xl shadow-lg">
                         <h3 class="text-2xl font-bold text-[var(--brand-blue)]">Tantangan #2: Gerak Keyboard</h3>
-                        <p class="mt-2 text-lg">Buat sprite bergerak ke kanan saat <strong class="uppercase">tombol panah kanan</strong> ditekan. (Gunakan blok 'ketika tombol...ditekan' dari Kejadian).</p>
+                        <p class="mt-2 text-lg">Buat sprite bergerak ke kanan saat <strong class="uppercase">tombol
+                                panah kanan</strong> ditekan. (Gunakan blok 'ketika tombol...ditekan' dari Kejadian).
+                        </p>
                     </div>
                 </div>
             </div>
-            
-            <!-- ========== BAGIAN 5: PENUTUP & IDE PROYEK ========== -->
+
+            <!-- ========== BAGIAN 5: PENUTUP & IDE PROYEK (SCRATCH) ========== -->
 
             <!-- Slide 40: (Asli Slide 39) Sesi Berbagi -->
             <div id="slide-40" class="slide bg-pattern">
@@ -844,9 +1111,12 @@
             <!-- Slide 41: (Asli Slide 40) Ide Proyek di Kelas -->
             <div id="slide-41" class="slide bg-pattern">
                 <h2 class="text-5xl font-black text-gray-800 mb-8">Saran: Menggunakan Scratch untuk Mengajar</h2>
-                <div class="bg-white p-12 rounded-3xl shadow-2xl border-2 border-gray-200 max-w-4xl text-center animate-card">
-                    <h3 class="text-3xl font-bold text-gray-800">Scratch bisa digunakan untuk berbagai mata pelajaran!</h3>
-                    <p class="text-xl mt-4 text-gray-600">Ini bukan hanya untuk pelajaran TIK. Ini adalah ALAT BANTU AJAR.</p>
+                <div
+                    class="bg-white p-12 rounded-3xl shadow-2xl border-2 border-gray-200 max-w-4xl text-center animate-card">
+                    <h3 class="text-3xl font-bold text-gray-800">Scratch bisa digunakan untuk berbagai mata pelajaran!
+                    </h3>
+                    <p class="text-xl mt-4 text-gray-600">Ini bukan hanya untuk pelajaran TIK. Ini adalah ALAT BANTU
+                        AJAR.</p>
                 </div>
             </div>
 
@@ -854,62 +1124,648 @@
             <div id="slide-42" class="slide bg-pattern">
                 <h2 class="text-4xl font-black text-gray-800 mb-6">Contoh Proyek: Kuis PPKn</h2>
                 <div class="bg-white p-6 rounded-2xl shadow-2xl border-2 border-gray-200">
-                    <iframe src="https://scratch.mit.edu/projects/1188622870/embed" allowtransparency="true" width="485" height="402" frameborder="0" scrolling="no" allowfullscreen></iframe>
+                    <iframe src="https://scratch.mit.edu/projects/1188622870/embed" allowtransparency="true" width="485"
+                        height="402" frameborder="0" scrolling="no" allowfullscreen></iframe>
                 </div>
-                <p class="mt-6 text-xl text-gray-700 max-w-2xl text-center">Buat kuis interaktif tentang pahlawan, sila Pancasila, atau sejarah lokal Dharmasraya.</p>
+                <p class="mt-6 text-xl text-gray-700 max-w-2xl text-center">Buat kuis interaktif tentang pahlawan, sila
+                    Pancasila, atau sejarah lokal Dharmasraya.</p>
             </div>
 
             <!-- Slide 43: (Asli Slide 42) Contoh Kuis Fisika -->
             <div id="slide-43" class="slide bg-pattern">
                 <h2 class="text-4xl font-black text-gray-800 mb-6">Contoh Proyek: Kuis Fisika/Matematika</h2>
                 <div class="bg-white p-6 rounded-2xl shadow-2xl border-2 border-gray-200">
-                    <iframe src="https://scratch.mit.edu/projects/910237753/embed" allowtransparency="true" width="485" height="402" frameborder="0" scrolling="no" allowfullscreen></iframe>
+                    <iframe src="https://scratch.mit.edu/projects/910237753/embed" allowtransparency="true" width="485"
+                        height="402" frameborder="0" scrolling="no" allowfullscreen></iframe>
                 </div>
-                <p class="mt-6 text-xl text-gray-700 max-w-2xl text-center">Buat soal cerita atau kuis hitung cepat (rumus luas, kecepatan, dll).</p>
+                <p class="mt-6 text-xl text-gray-700 max-w-2xl text-center">Buat soal cerita atau kuis hitung cepat
+                    (rumus luas, kecepatan, dll).</p>
             </div>
 
             <!-- Slide 44: (Asli Slide 43) Contoh Cerita Interaktif -->
             <div id="slide-44" class="slide bg-pattern">
                 <h2 class="text-4xl font-black text-gray-800 mb-6">Contoh Proyek: Cerita Interaktif (B. Indo)</h2>
                 <div class="bg-white p-6 rounded-2xl shadow-2xl border-2 border-gray-200">
-                    <iframe src="https://scratch.mit.edu/projects/583797871/embed" allowtransparency="true" width="485" height="402" frameborder="0" scrolling="no" allowfullscreen></iframe>
+                    <iframe src="https://scratch.mit.edu/projects/583797871/embed" allowtransparency="true" width="485"
+                        height="402" frameborder="0" scrolling="no" allowfullscreen></iframe>
                 </div>
-                <p class="mt-6 text-xl text-gray-700 max-w-2xl text-center">Siswa dapat membuat dialog antar 2 sprite, atau cerita "pilih petualanganmu sendiri".</p>
-            </div>
-
-            <!-- Slide 45: (Asli Slide 44) (BARU) Tips Sukses Pengimbasan -->
-            <div id="slide-45" class="slide" style="background-color: var(--brand-lime);">
-                <h2 class="text-5xl font-black text-gray-900 mb-8">Tips Sukses Pengimbasan!</h2>
-                <p class="text-2xl text-gray-800 mb-8 max-w-3xl text-center">Pesan untuk Anda yang akan menjadi fasilitator bagi rekan guru:</p>
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 w-full max-w-6xl text-left">
-                    <div class="bg-white p-6 rounded-2xl shadow-lg">
-                        <p class="text-5xl mb-4">✅</p>
-                        <h3 class="text-2xl font-bold text-[var(--brand-blue)]">Mulai dari yang Sederhana</h3>
-                        <p class="mt-2 text-lg">Jangan langsung buat game rumit. Mulailah dengan praktik #1 (Gerak) dan #4 (Kuis). Itu sudah sangat berdampak.</p>
-                    </div>
-                    <div class="bg-white p-6 rounded-2xl shadow-lg">
-                        <p class="text-5xl mb-4">🤗</p>
-                        <h3 class="text-2xl font-bold text-[var(--brand-blue)]">Tidak Harus Sempurna</h3>
-                        <p class="mt-2 text-lg">Tidak apa-apa jika Anda lupa nama blok. Ajak rekan guru untuk 'eksplorasi' bersama. Proses belajar bersama itu penting.</p>
-                    </div>
-                    <div class="bg-white p-6 rounded-2xl shadow-lg">
-                        <p class="text-5xl mb-4">💡</p>
-                        <h3 class="text-2xl font-bold text-[var(--brand-blue)]">Fokus pada "Ide"</h3>
-                        <p class="mt-2 text-lg">Tujuan utamanya bukan 'jago coding', tapi bagaimana alat ini bisa memecahkan masalah di kelas (misal: kuis yang membosankan).</p>
-                    </div>
-                </div>
+                <p class="mt-6 text-xl text-gray-700 max-w-2xl text-center">Siswa dapat membuat dialog antar 2 sprite,
+                    atau cerita "pilih petualanganmu sendiri".</p>
             </div>
 
 
-            <!-- Slide 48: (Asli Slide 47) Terima Kasih -->
-            <div id="slide-48" class="slide" style="background-color: var(--brand-blue); color: white;">
-                 <svg class="starburst" style="top: 10%; left: 10%; width:120px; height:120px; color: var(--brand-lime); transform: rotate(20deg); opacity: 0.5;"><use xlink:href="#starburst-svg"></use></svg>
-                 <svg class="starburst" style="bottom: 15%; right: 10%; transform: rotate(-15deg); color: white;"><use xlink:href="#starburst-svg"></use></svg>
+
+            <!-- ========== MULAI MATERI AI (DARI PDF) ========== -->
+
+            <!-- Slide 46: Judul Materi AI -->
+            <div id="slide-46" class="slide" style="background-color: var(--brand-blue); color: white;">
+                <svg class="starburst"
+                    style="top: 10%; left: 10%; width:120px; height:120px; color: var(--brand-lime); transform: rotate(20deg); opacity: 0.5;">
+                    <use xlink:href="#starburst-svg"></use>
+                </svg>
+                <svg class="starburst" style="bottom: 15%; right: 10%; transform: rotate(-15deg); color: white;">
+                    <use xlink:href="#starburst-svg"></use>
+                </svg>
+                <div class="w-full max-w-4xl text-center z-10">
+                    <div
+                        class="p-10 bg-white/10 backdrop-blur-md rounded-2xl shadow-2xl border-2 border-white/30 animate-card">
+                        <h1 class="text-5xl lg:text-6xl font-black tracking-tighter leading-tight">Transformasi
+                            Pembelajaran Abad 21</h1>
+                        <p class="text-2xl lg:text-3xl font-bold text-[var(--brand-lime)] mt-3">Membangun Literasi
+                            Koding dan Kecerdasan Buatan (AI) untuk Guru</p>
+                        <div class="h-2 w-28 bg-[var(--brand-lime)] my-8 rounded-full mx-auto"></div>
+                        <h2 class="text-xl font-semibold text-white/80">Future Skills for Educators Series</h2>
+                    </div>
+                </div>
+            </div>
+
+
+
+            <!-- Slide 48: Tujuan Sesi AI (Day 1) -->
+            <div id="slide-48" class="slide bg-pattern">
+                <h2 class="text-4xl font-black text-gray-800 mb-8 text-center">Tujuan Sesi AI</h2>
+                <p class="text-2xl text-gray-600 mb-6 max-w-3xl text-center">Dasar Prompting & Media Ajar Kreatif dengan
+                    AI</p>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 w-full max-w-7xl">
+                    <div
+                        class="bg-white p-6 rounded-2xl text-center border-2 border-gray-200 shadow-xl animate-card animate-card-delay-1">
+                        <p class="text-7xl">🤔</p>
+                        <p class="text-xl font-semibold mt-4 text-gray-800">Guru dapat menjelaskan konsep dasar berpikir
+                            komputasional melalui aktivitas unplugged.</p>
+                    </div>
+                    <div
+                        class="bg-white p-6 rounded-2xl text-center border-2 border-gray-200 shadow-xl animate-card animate-card-delay-2">
+                        <p class="text-7xl">🎨</p>
+                        <p class="text-xl font-semibold mt-4 text-gray-800">Guru dapat membuat absensi digital & jurnal
+                            mengajar menggunakan Canva AI.</p>
+                    </div>
+                    <div
+                        class="bg-white p-6 rounded-2xl text-center border-2 border-gray-200 shadow-xl animate-card animate-card-delay-3">
+                        <p class="text-7xl">🤖</p>
+                        <p class="text-xl font-semibold mt-4 text-gray-800">Guru dapat menyusun draft RPP inovatif dan
+                            rubrik penilaian adaptif dengan Copilot.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Slide 49: Apakah ini AI? (Kalkulator) -->
+            <div id="slide-49" class="slide bg-pattern">
+                <h2 class="text-5xl font-black text-gray-800 mb-8">Apakah ini AI?</h2>
+                <div
+                    class="bg-white p-12 rounded-3xl shadow-2xl border-2 border-gray-200 max-w-2xl text-center animate-card">
+                    <img src="https://cdn.pixabay.com/animation/2022/12/05/15/28/15-28-43-29_512.gif" alt="Kalkulator"
+                        class="rounded-lg mx-auto mb-6">
+                    <p class="text-3xl font-bold text-gray-700">Kalkulator biasa yang menghitung 3 + 7</p>
+                </div>
+            </div>
+
+            <!-- Slide 50: Apakah ini AI? (Google Maps) -->
+            <div id="slide-50" class="slide bg-pattern">
+                <h2 class="text-5xl font-black text-gray-800 mb-8">Apakah ini AI?</h2>
+                <div
+                    class="bg-white p-12 rounded-3xl shadow-2xl border-2 border-gray-200 max-w-2xl text-center animate-card">
+                    <img src="https://d34vm3j4h7f97z.cloudfront.net/original/3X/f/e/fe51a80c8815180aad8a88b84f8ef8aa79a7978d.gif"
+                        alt="Google Maps" class="rounded-lg mx-auto mb-6">
+                    <p class="text-3xl font-bold text-gray-700">Aplikasi Google Maps menyarankan rute tercepat.</p>
+                </div>
+            </div>
+
+            <!-- Slide 51: Definisi AI -->
+            <div id="slide-51" class="slide" style="background-color: var(--brand-dark); color: white;">
+                <div
+                    class="bg-white/10 backdrop-blur-md p-12 rounded-3xl shadow-2xl border-2 border-white/30 max-w-3xl text-center animate-card">
+                    <h2 class="text-5xl font-black text-[var(--brand-lime)] mb-6">AI atau Kecerdasan Buatan</h2>
+                    <p class="text-3xl font-semibold text-white">Teknologi yang membuat mesin dapat "berpikir", belajar
+                        dari data, dan mengambil keputusan layaknya manusia.</p>
+                </div>
+            </div>
+
+            <!-- Slide 52: Apakah ini AI? (ATM) -->
+            <div id="slide-52" class="slide bg-pattern">
+                <h2 class="text-5xl font-black text-gray-800 mb-8">Apakah ini AI?</h2>
+                <div
+                    class="bg-white p-12 rounded-3xl shadow-2xl border-2 border-gray-200 max-w-2xl text-center animate-card">
+                    <img src="https://i.pinimg.com/originals/5b/ad/f7/5badf72a895a0a9d6ff371ef364d56af.gif"
+                        alt="Mesin ATM" class="rounded-lg mx-auto mb-6">
+                    <p class="text-3xl font-bold text-gray-700">Mesin ATM membaca kartu & memberi uang.</p>
+                </div>
+            </div>
+
+            <!-- Slide 53: Apakah ini AI? (YouTube) -->
+            <div id="slide-53" class="slide bg-pattern">
+                <h2 class="text-5xl font-black text-gray-800 mb-8">Apakah ini AI?</h2>
+                <div
+                    class="bg-white p-12 rounded-3xl shadow-2xl border-2 border-gray-200 max-w-2xl text-center animate-card">
+                    <img src="https://media.sproutsocial.com/uploads/2022/08/YouTubeCards.gif" alt="YouTube"
+                        class="rounded-lg mx-auto mb-6">
+                    <p class="text-3xl font-bold text-gray-700">YouTube merekomendasikan video berdasarkan yang kamu
+                        tonton.</p>
+                </div>
+            </div>
+
+
+
+            <!-- Slide 56: Quick Polling Penggunaan AI -->
+            <div id="slide-56" class="slide bg-pattern">
+                <h2 class="text-5xl font-black text-gray-800 mb-8">Quick Polling</h2>
+                <div
+                    class="bg-white p-12 rounded-3xl shadow-2xl border-2 border-gray-200 max-w-3xl text-left animate-card">
+                    <p class="text-3xl font-bold text-gray-700 mb-8">Seberapa sering Bapak/Ibu saat ini menggunakan alat
+                        AI dalam pekerjaan pembelajaran atau pengajaran?</p>
+                    <ul class="list-decimal list-inside space-y-4 text-2xl text-gray-600">
+                        <li>Belum pernah mencoba</li>
+                        <li>Sesekali (sekitar sekali seminggu atau kurang)</li>
+                        <li>Cukup rutin (beberapa kali dalam seminggu)</li>
+                        <li>Setiap hari</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Slide 57: Prompt Engineering Intro -->
+            <div id="slide-57" class="slide bg-pattern">
+                <h2 class="text-5xl font-black text-gray-800 mb-8">What is Prompt Engineering?</h2>
+                <div class="bg-white p-12 rounded-3xl shadow-2xl border-2 border-gray-200 max-w-2xl animate-card">
+                    <div class="space-y-6">
+                        <div class="bg-teal-500 text-white p-4 rounded-xl text-3xl font-bold text-center">Human</div>
+                        <p class="text-5xl text-center font-black text-gray-400">⬇️</p>
+                        <div class="bg-teal-600 text-white p-4 rounded-xl text-3xl font-bold text-center">Prompt</div>
+                        <p class="text-5xl text-center font-black text-gray-400">⬇️</p>
+                        <div class="bg-teal-700 text-white p-4 rounded-xl text-3xl font-bold text-center">AI</div>
+                        <p class="text-5xl text-center font-black text-gray-400">⬇️</p>
+                        <div class="bg-teal-800 text-white p-4 rounded-xl text-3xl font-bold text-center">Output</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Slide 58: Anatomi Prompt -->
+            <div id="slide-58" class="slide bg-pattern">
+                <h2 class="text-5xl font-black text-gray-800 mb-8">Anatomi dari Prompt yang Baik</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 w-full max-w-6xl">
+                    <div
+                        class="bg-white p-8 rounded-2xl shadow-xl border-2 border-gray-100 animate-card animate-card-delay-1">
+                        <h3 class="text-3xl font-bold text-[var(--brand-blue)]">1. Context (Konteks)</h3>
+                        <p class="text-lg mt-4 text-gray-700">Informasi latar belakang apa yang perlu diketahui AI?
+                            (misalnya: jenjang siswa, mata pelajaran, atau topik pembelajaran)</p>
+                    </div>
+                    <div
+                        class="bg-white p-8 rounded-2xl shadow-xl border-2 border-gray-100 animate-card animate-card-delay-2">
+                        <h3 class="text-3xl font-bold text-[var(--brand-blue)]">2. Tugas (Task)</h3>
+                        <p class="text-lg mt-4 text-gray-700">Apa yang ingin Bapak/Ibu minta AI lakukan? (misalnya:
+                            membuat RPP, menyusun soal, menyiapkan ice breaking)</p>
+                    </div>
+                    <div
+                        class="bg-white p-8 rounded-2xl shadow-xl border-2 border-gray-100 animate-card animate-card-delay-3">
+                        <h3 class="text-3xl font-bold text-[var(--brand-blue)]">3. Persyaratan (Requirements)</h3>
+                        <p class="text-lg mt-4 text-gray-700">Batasan atau spesifikasi apa yang perlu dipenuhi?
+                            (misalnya: sesuai Kurikulum Merdeka, tingkat kesulitan tertentu, jumlah soal tertentu)</p>
+                    </div>
+                    <div
+                        class="bg-white p-8 rounded-2xl shadow-xl border-2 border-gray-100 animate-card animate-card-delay-3">
+                        <h3 class="text-3xl font-bold text-[var(--brand-blue)]">4. Format (Bentuk)</h3>
+                        <p class="text-lg mt-4 text-gray-700">Seperti apa bentuk hasil yang diinginkan? (misalnya:
+                            tabel, poin-poin ringkas, narasi lengkap, atau bahan presentasi)</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Slide 59: Kualitas Prompt -->
+            <div id="slide-59" class="slide bg-pattern">
+                <h2 class="text-5xl font-black text-gray-800 mb-8">Perbedaan Kualitas Prompt</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 w-full max-w-6xl">
+                    <div class="bg-white p-8 rounded-2xl border-4 border-red-400 shadow-xl animate-card">
+                        <h3 class="text-3xl font-bold text-red-600">Prompt Kurang Jelas ❌</h3>
+                        <p class="text-2xl mt-4 text-gray-700 font-mono">"Tolong buat soal Matematika."</p>
+                        <p class="text-lg mt-6 text-gray-600">→ Hasil generik & tidak sesuai kebutuhan.</p>
+                    </div>
+                    <div
+                        class="bg-white p-8 rounded-2xl border-4 border-green-400 shadow-xl animate-card animate-card-delay-1">
+                        <h3 class="text-3xl font-bold text-green-600">Prompt Baik ✅</h3>
+                        <p class="text-2xl mt-4 text-gray-700 font-mono">"Tolong buat 5 soal Matematika untuk siswa
+                            kelas 5 SD tentang pecahan sederhana. Sertakan kunci jawaban dan jelaskan langkah
+                            penyelesaiannya."</p>
+                        <p class="text-lg mt-6 text-gray-600">→ Hasil sesuai tujuan pembelajaran, siap digunakan di
+                            kelas.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Slide 60: Aktivitas Robot Guru -->
+            <div id="slide-60" class="slide" style="background-color: var(--brand-lime);">
+                <h2 class="text-5xl font-black text-gray-900 mb-8">Ayo Coba: "Robot Guru"</h2>
+                <div
+                    class="bg-white p-10 rounded-3xl shadow-2xl border-2 border-gray-200 max-w-3xl text-left animate-card">
+                    <h3 class="text-3xl font-bold text-[var(--brand-blue)]">Misi Anda:</h3>
+                    <p class="text-xl mt-4 text-gray-700">Tuliskan instruksi sederhana untuk "Robot Guru" (rekan Anda)
+                        agar dapat mengikuti perintah Anda. Gunakan benda/ATK yang ada di sekitar ruangan (pulpen, buku,
+                        botol minum, dll.).</p>
+                    <h3 class="text-3xl font-bold text-[var(--brand-blue)] mt-6">Aturan Main:</h3>
+                    <ul class="list-disc list-inside space-y-2 text-xl text-gray-700 mt-4">
+                        <li>Tuliskan instruksi menggunakan 4 struktur prompt (Konteks, Tugas, Syarat, Format).</li>
+                        <li>Perintah yang dibuat dapat memanfaatkan ATK di sekeliling.</li>
+                        <li>Buat secara runtut dan jelas!</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Slide 61: Canva for Education & Canva AI -->
+            <div id="slide-61" class="slide bg-pattern">
+                <h2 class="text-5xl font-black text-gray-800 mb-8">Canva for Education & Canva AI</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 w-full max-w-6xl">
+                    <div class="bg-white p-8 rounded-2xl shadow-xl border-2 border-gray-100 animate-card">
+                        <h3 class="text-3xl font-bold text-[var(--brand-blue)]">Apa itu Canva?</h3>
+                        <p class="text-lg mt-4 text-gray-700">Platform desain grafis untuk membuat media sosial,
+                            presentasi, poster, dan konten visual lainnya.</p>
+                        <p class="text-lg mt-4 text-gray-700">Akun <strong class="text-blue-600">belajar.id</strong>
+                            bisa dimanfaatkan untuk mendaftar <strong class="text-purple-600">Canva for Education
+                                (Gratis)</strong>.</p>
+                    </div>
+                    <div
+                        class="bg-white p-8 rounded-2xl shadow-xl border-2 border-gray-100 animate-card animate-card-delay-1">
+                        <h3 class="text-3xl font-bold text-[var(--brand-blue)]">Manfaat Canva AI</h3>
+                        <ul class="list-disc list-inside space-y-2 text-lg text-gray-700 mt-4">
+                            <li><strong>Meringankan Administrasi:</strong> Membuat absensi digital, jurnal mengajar,
+                                ringkasan otomatis (Magic Write & Magic Design).</li>
+                            <li><strong>Meningkatkan Kreativitas:</strong> Menyediakan template, desain visual, dan
+                                presentasi otomatis.</li>
+                            <li><strong>Kolaboratif & Mudah:</strong> Guru dan siswa bisa berkolaborasi.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Slide 62: Canva AI Tutorial Intro -->
+            <div id="slide-62" class="slide bg-pattern">
+                <h2 class="text-5xl font-black text-gray-800 mb-8">Tutorial Canva AI: Absensi Digital</h2>
+                <div
+                    class="bg-white p-12 rounded-3xl shadow-2xl border-2 border-gray-200 max-w-3xl text-center animate-card">
+                    <img src="https://images2.imgbox.com/c1/ba/P4Fkjofb_o.gif" alt="Demo Absensi Canva"
+                        class="rounded-lg mx-auto mb-6">
+                    <p class="text-3xl font-bold text-gray-700">Membuat absensi digital, jurnal mengajar, dan ringkasan
+                        otomatis dengan Magic Write & Magic Design.</p>
+                    <p class="text-2xl mt-4 text-gray-600">Pekerjaan administratif jadi cepat dan rapi!</p>
+                </div>
+            </div>
+
+            <!-- Slide 63: Canva AI Langkah 1 -->
+            <div id="slide-63" class="slide bg-pattern">
+                <h2 class="text-4xl font-black text-gray-800 mb-6">Absensi AI: Langkah 1 (Salin Template)</h2>
+                <div
+                    class="bg-white p-8 rounded-2xl shadow-xl border-2 border-gray-100 w-full max-w-4xl text-center animate-card">
+                    <img src="https://images2.imgbox.com/00/4a/2TllSI8t_o.png" alt="Template Absensi"
+                        class="rounded-lg mx-auto mb-6 border-2 border-gray-200">
+                    <p class="text-2xl font-bold text-gray-700">Masuk pada template absen spreadsheet:</p>
+                    <p class="text-xl font-mono bg-gray-100 p-2 rounded-lg mt-4 inline-block"><a
+                            href="https://docs.google.com/spreadsheets/d/1hAyFExIuKcK9bYh3CrUPhgNIIoL2shBs76Ph7vyBboA/edit?usp=sharing">Template
+                            Spreadsheet</a></p>
+                    <p class="text-xl mt-4 text-gray-600">Kamu dapat meng-copy template ini dengan membuat salinan.</p>
+                </div>
+            </div>
+
+            <!-- Slide 64: Canva AI Langkah 2 -->
+            <div id="slide-64" class="slide bg-pattern">
+                <h2 class="text-4xl font-black text-gray-800 mb-6">Absensi AI: Langkah 2 (Ubah Nama Siswa)</h2>
+                <div
+                    class="bg-white p-8 rounded-2xl shadow-xl border-2 border-gray-100 w-full max-w-4xl text-center animate-card">
+                    <img src="https://images2.imgbox.com/43/91/sMAuuNeM_o.png" alt="Ubah Nama Siswa"
+                        class="rounded-lg mx-auto mb-6 border-2 border-gray-200">
+                    <p class="text-2xl font-bold text-gray-700">Ubah Nama Siswa</p>
+                    <p class="text-xl mt-4 text-gray-600">Ubahlah nama siswa (di header kolom) sesuai dengan siswa yang
+                        ada di kelasmu.</p>
+                </div>
+            </div>
+
+            <!-- Slide 65: Canva AI Langkah 3 -->
+            <div id="slide-65" class="slide bg-pattern">
+                <h2 class="text-4xl font-black text-gray-800 mb-6">Absensi AI: Langkah 3 (Prompt Canva AI)</h2>
+                <div
+                    class="bg-white p-8 rounded-2xl shadow-xl border-2 border-gray-100 w-full max-w-4xl text-center animate-card">
+                    <img src="https://images2.imgbox.com/34/7d/aobksX3C_o.png" alt="Canva AI"
+                        class="rounded-lg mx-auto mb-6 border-2 border-gray-200">
+                    <p class="text-2xl font-bold text-gray-700">1. Masuk Canva dan pilih Canva AI.</p>
+                    <p class="text-xl mt-4 text-gray-600">2. Masukkan Prompt pada Canva AI sesuai dengan <a
+                            href="https://docs.google.com/document/d/1ZMFSfpj-QZlqow5p8MZ2yhO_aq8MAatPq07TKyZjCAo/edit?usp=sharing">
+                            Template Ini</a>.</p>
+                </div>
+            </div>
+
+            <!-- Slide 66: Canva AI Langkah 4 -->
+            <div id="slide-66" class="slide bg-pattern">
+                <h2 class="text-4xl font-black text-gray-800 mb-6">Absensi AI: Langkah 4 (Apps Script)</h2>
+                <div
+                    class="bg-white p-8 rounded-2xl shadow-xl border-2 border-gray-100 w-full max-w-4xl text-center animate-card">
+                    <img src="https://images2.imgbox.com/4d/2c/tzAdJ2rW_o.png" alt="Apps Script"
+                        class="rounded-lg mx-auto mb-6 border-2 border-gray-200">
+                    <p class="text-2xl font-bold text-gray-700">1. Kembali ke spreadsheet lalu pilih "Ekstensi".</p>
+                    <p class="text-xl mt-4 text-gray-600">2. Cari tools bertuliskan "Apps Script".</p>
+                </div>
+            </div>
+
+            <!-- Slide 67: Canva AI Langkah 5 -->
+            <div id="slide-67" class="slide bg-pattern">
+                <h2 class="text-4xl font-black text-gray-800 mb-6">Absensi AI: Langkah 5 (Ambil Kode)</h2>
+                <div
+                    class="bg-white p-8 rounded-2xl shadow-xl border-2 border-gray-100 w-full max-w-4xl text-center animate-card">
+                    <img src="https://images2.imgbox.com/6b/45/nysnTNB7_o.png" alt="Salin Kode"
+                        class="rounded-lg mx-auto mb-6 border-2 border-gray-200">
+                    <p class="text-2xl font-bold text-gray-700">Ambil hanya bagian Apps Script yang diperintahkan pada
+                        kolom teks Canva AI.</p>
+                </div>
+            </div>
+
+            <!-- Slide 68: Canva AI Langkah 6 -->
+            <div id="slide-68" class="slide bg-pattern">
+                <h2 class="text-4xl font-black text-gray-800 mb-6">Absensi AI: Langkah 6 (Tempel Kode)</h2>
+                <div
+                    class="bg-white p-8 rounded-2xl shadow-xl border-2 border-gray-100 w-full max-w-4xl text-center animate-card">
+                    <img src="https://images2.imgbox.com/a9/0a/5S4RlSF7_o.png" alt="Tempel Kode"
+                        class="rounded-lg mx-auto mb-6 border-2 border-gray-200">
+                    <p class="text-2xl font-bold text-gray-700">Hapus semua kode yang ada sebelumnya dan tempel (paste)
+                        kode baru dari Canva AI ke sini.</p>
+                    <p class="text-xl mt-4 text-gray-600">Jangan lupa klik "Simpan".</p>
+                </div>
+            </div>
+
+            <!-- Slide 69: Canva AI Langkah 7 -->
+            <div id="slide-69" class="slide bg-pattern">
+                <h2 class="text-4xl font-black text-gray-800 mb-6">Absensi AI: Langkah 7 (Deploy)</h2>
+                <div
+                    class="bg-white p-8 rounded-2xl shadow-xl border-2 border-gray-100 w-full max-w-4xl text-center animate-card">
+                    <img src="https://images2.imgbox.com/f7/52/YlUVopDj_o.png" alt="Deploy"
+                        class="rounded-lg mx-auto mb-6 border-2 border-gray-200">
+                    <p class="text-2xl font-bold text-gray-700">Klik pilihan "Terapkan" (Deploy) dan pilih kolom
+                        "Deployment Baru".</p>
+                </div>
+            </div>
+
+            <!-- Slide 70: Canva AI Langkah 8 -->
+            <div id="slide-70" class="slide bg-pattern">
+                <h2 class="text-4xl font-black text-gray-800 mb-6">Absensi AI: Langkah 8 (Ubah Akses)</h2>
+                <div
+                    class="bg-white p-8 rounded-2xl shadow-xl border-2 border-gray-100 w-full max-w-4xl text-center animate-card">
+                    <img src="https://images2.imgbox.com/c1/66/tiDxI6lH_o.png" alt="Ubah Akses"
+                        class="rounded-lg mx-auto mb-6 border-2 border-gray-200">
+                    <p class="text-2xl font-bold text-gray-700">Berikan akses "Yang memiliki akses" ke "Siapa saja".</p>
+                    <p class="text-xl mt-4 text-gray-600">Klik "Terapkan" dan "Izinkan Akses". Salin (Copy) URL Aplikasi
+                        Web yang muncul.</p>
+                </div>
+            </div>
+
+            <!-- Slide 71: Canva AI Langkah 9 -->
+            <div id="slide-71" class="slide bg-pattern">
+                <h2 class="text-4xl font-black text-gray-800 mb-6">Absensi AI: Langkah 9 (Beri Link ke AI)</h2>
+                <div
+                    class="bg-white p-8 rounded-2xl shadow-xl border-2 border-gray-100 w-full max-w-4xl text-center animate-card">
+                    <img src="https://images2.imgbox.com/51/ed/zIO5irvn_o.png" alt="Link Deploy"
+                        class="rounded-lg mx-auto mb-6 border-2 border-gray-200">
+                    <p class="text-2xl font-bold text-gray-700">Tuliskan (tempel) pada prompt Canva AI mu link
+                        deployment spreadsheet yang tadi kamu salin.</p>
+                </div>
+            </div>
+
+            <!-- Slide 72: Canva AI Hasil -->
+            <div id="slide-72" class="slide bg-pattern">
+                <h2 class="text-4xl font-black text-gray-800 mb-6">Absensi AI: Berhasil!</h2>
+                <div
+                    class="bg-white p-8 rounded-2xl shadow-xl border-2 border-gray-100 w-full max-w-4xl text-center animate-card">
+                    <img src="https://images2.imgbox.com/33/58/MnxVV26s_o.png" alt="Hasil Absensi"
+                        class="rounded-lg mx-auto mb-6 border-2 border-gray-200">
+                    <p class="text-2xl font-bold text-green-600">Berhasil!</p>
+                    <p class="text-xl mt-4 text-gray-600">1. Kamu akan mendapatkan link absen (aplikasi Canva) yang
+                        dapat terkoneksi langsung ke sumber data spreadsheet-mu.</p>
+                    <p class="text-xl mt-4 text-gray-600">2. Jika gagal terkoneksi, coba komunikasikan lagi ke Canva AI
+                        mu.</p>
+                </div>
+            </div>
+
+            <!-- Slide 73: Canva AI Tantangan -->
+            <div id="slide-73" class="slide" style="background-color: var(--brand-lime);">
+                <h2 class="text-5xl font-black text-gray-900 mb-8">Tantangan Absensi AI</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 w-full max-w-5xl">
+                    <div class="bg-white p-8 rounded-2xl shadow-lg animate-card">
+                        <h3 class="text-2xl font-bold text-[var(--brand-blue)]">Challenge 1</h3>
+                        <p class="mt-2 text-lg">Minta Canva AI mu untuk ubah template yang diberikan agar tidak monoton.
+                        </p>
+                    </div>
+                    <div class="bg-white p-8 rounded-2xl shadow-lg animate-card animate-card-delay-1">
+                        <h3 class="text-2xl font-bold text-[var(--brand-blue)]">Challenge 2</h3>
+                        <p class="mt-2 text-lg">Kreasikan tools tambahan pada Canva AI mu, jangan takut untuk
+                            eksplorasi!</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Slide 74: Canva AI Upload -->
+            <div id="slide-74" class="slide bg-pattern">
+                <h2 class="text-4xl font-black text-gray-800 mb-6">Absensi AI: Bagikan Karyamu!</h2>
+                <div
+                    class="bg-white p-8 rounded-2xl shadow-xl border-2 border-gray-100 w-full max-w-4xl text-center animate-card">
+                    <img src="https://images2.imgbox.com/0c/a2/mD9AWtmk_o.png" alt="Upload Karya"
+                        class="rounded-lg mx-auto mb-6 border-2 border-gray-200">
+                    <p class="text-2xl font-bold text-gray-700">Upload hasil karyamu ke website!</p>
+                    <p class="text-xl mt-4 text-gray-600">Kamu bisa membagikan link aplikasi Canva-mu agar bisa diakses
+                        oleh banyak orang (termasuk siswa).</p>
+                </div>
+            </div>
+
+            <!-- Slide 75: Copilot Intro -->
+            <div id="slide-75" class="slide bg-pattern">
+                <h2 class="text-5xl font-black text-gray-800 mb-8">Beralih ke Perencanaan: COPILOT AI</h2>
+                <div
+                    class="bg-white p-8 rounded-2xl shadow-xl border-2 border-gray-100 w-full max-w-5xl text-center animate-card">
+                    <img src="https://images2.imgbox.com/da/4d/OHUFD3Bu_o.png" alt="Copilot"
+                        class="rounded-lg mx-auto mb-6 border-2 border-gray-200">
+                    <p class="text-2xl font-bold text-gray-700">Gunakan Copilot AI (Microsoft Copilot atau AI serupa)
+                        untuk menyusun RPP (Rencana Pelaksanaan Pembelajaran) inovatif.</p>
+                    <p class="text-xl mt-4 text-gray-600">Jadikan sebagai asisten digital dari tahap perencanaan sampai
+                        penyempurnaan.</p>
+                </div>
+            </div>
+
+            <!-- Slide 76: Copilot Contoh 1 -->
+            <div id="slide-76" class="slide bg-pattern">
+                <h2 class="text-4xl font-black text-gray-800 mb-6">Copilot AI: Menentukan Tujuan Pembelajaran</h2>
+                <div class="bg-white p-8 rounded-2xl shadow-xl border-2 border-gray-100 w-full max-w-4xl animate-card">
+                    <p class="text-lg text-gray-500 mb-2 font-semibold">Masukkan perintah ke Copilot:</p>
+                    <p class="text-xl font-mono bg-gray-100 p-4 rounded-lg text-gray-800">"Buat tujuan pembelajaran
+                        untuk mata pelajaran Matematika kelas 8 dengan pendekatan berbasis proyek, tema pecahan dalam
+                        kehidupan sehari-hari."</p>
+                    <p class="text-lg mt-6 text-gray-600">Copilot akan menyusun draft learning objectives yang bisa
+                        langsung Bapak/Ibu sesuaikan.</p>
+                </div>
+            </div>
+
+            <!-- Slide 77: Copilot Contoh 2 -->
+            <div id="slide-77" class="slide bg-pattern">
+                <h2 class="text-4xl font-black text-gray-800 mb-6">Copilot AI: Membuat Struktur RPP</h2>
+                <div class="bg-white p-8 rounded-2xl shadow-xl border-2 border-gray-100 w-full max-w-4xl animate-card">
+                    <p class="text-lg text-gray-500 mb-2 font-semibold">Masukkan perintah ke Copilot:</p>
+                    <p class="text-xl font-mono bg-gray-100 p-4 rounded-lg text-gray-800">"Susun kerangka RPP 1
+                        pertemuan (2x40 menit) untuk pelajaran Bahasa Indonesia kelas 7 tentang teks deskripsi. Sertakan
+                        komponen: identitas, tujuan, materi, metode, langkah pembelajaran, asesmen, dan refleksi."</p>
+                    <p class="text-lg mt-6 text-gray-600">Copilot akan menghasilkan kerangka dasar sesuai format
+                        standar.</p>
+                </div>
+            </div>
+
+            <!-- Slide 78: Copilot Prompt RPP -->
+            <div id="slide-78" class="slide bg-pattern">
+                <h2 class="text-4xl font-black text-gray-800 mb-6">Bank Prompt: RPP Dasar</h2>
+                <div
+                    class="bg-white p-8 rounded-2xl shadow-xl border-2 border-gray-100 w-full max-w-4xl animate-card text-left">
+                    <p class="text-lg font-mono bg-gray-100 p-4 rounded-lg text-gray-800">
+                        Buatkan RPP inovatif untuk [Mata Pelajaran] kelas [Jenjang] dengan topik "[Topik]".
+                        Gunakan [Kurikulum Merdeka (dengan CP/TP)] atau [K13 (dengan KD/KI)].
+                        <br><br>
+                        Komponen wajib ada:
+                    <ul class="list-disc list-inside ml-4">
+                        <li>Identitas, tujuan pembelajaran (format ABC), materi pokok.</li>
+                        <li>Model/strategi pembelajaran (aktif, kolaboratif, PBL/IBL).</li>
+                        <li>Langkah pembelajaran (pendahuluan-inti-penutup) dengan estimasi waktu.</li>
+                        <li>Asesmen formatif dan sumatif.</li>
+                        <li>Rencana remedial, pengayaan, dan refleksi.</li>
+                    </ul>
+                    </p>
+                </div>
+            </div>
+
+            <!-- Slide 79: Copilot Prompt Diferensiasi -->
+            <div id="slide-79" class="slide bg-pattern">
+                <h2 class="text-4xl font-black text-gray-800 mb-6">Bank Prompt: Diferensiasi Pembelajaran</h2>
+                <div
+                    class="bg-white p-8 rounded-2xl shadow-xl border-2 border-gray-100 w-full max-w-4xl animate-card text-left">
+                    <p class="text-lg font-mono bg-gray-100 p-4 rounded-lg text-gray-800">
+                        Kembangkan diferensiasi pembelajaran untuk RPP di atas.
+                        <br><br>
+                        Buat 3 jalur kesiapan: Basic-Core-Advanced, dan satu opsi diferensiasi minat.
+                        <br><br>
+                        Tampilkan dalam tabel: Tujuan mikro, Kegiatan siswa, Peran guru, Materi/alat, Produk belajar,
+                        Evidensi/artefak, Estimasi waktu.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Slide 80: Copilot Prompt Rubrik -->
+            <div id="slide-80" class="slide bg-pattern">
+                <h2 class="text-4xl font-black text-gray-800 mb-6">Bank Prompt: Rubrik Penilaian</h2>
+                <div
+                    class="bg-white p-8 rounded-2xl shadow-xl border-2 border-gray-100 w-full max-w-4xl animate-card text-left">
+                    <p class="text-lg font-mono bg-gray-100 p-4 rounded-lg text-gray-800">
+                        Buat rubrik analitik skala 1-4 untuk menilai produk/proses pada RPP di atas.
+                        <br><br>
+                        Poros kurikulum: [Tuliskan CP/TP atau KD/KI di sini].
+                        <br><br>
+                        Kriteria minimal: Pengetahuan Konsep, Proses/Keterampilan, Kualitas Produk, Sikap/Profil Pelajar
+                        Pancasila.
+                        <br><br>
+                        Lengkapi deskriptor per level, bobot (%), dan contoh evidensi.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Slide 81: Copilot Tugas Eksplorasi -->
+            <div id="slide-81" class="slide" style="background-color: var(--brand-lime);">
+                <h2 class="text-5xl font-black text-gray-900 mb-8">Tugas Eksplorasi: RPP Copilot</h2>
+                <div
+                    class="bg-white p-10 rounded-3xl shadow-2xl border-2 border-gray-200 max-w-3xl text-left animate-card">
+                    <h3 class="text-3xl font-bold text-[var(--brand-blue)]">Waktunya Praktik! (30 Menit)</h3>
+                    <ol class="list-decimal list-inside space-y-2 text-xl text-gray-700 mt-4">
+                        <li>Tentukan jenjang, mapel, & topik (mis. IPA Kelas 7 - "Siklus Air").</li>
+                        <li>Pilih kerangka kurikulum (K13 atau Merdeka).</li>
+                        <li>Buka Copilot (atau AI tool lain).</li>
+                        <li>Tempel Prompt RPP Dasar (dari slide sebelumnya).</li>
+                        <li>Minta Copilot buat 2 versi: RPP ringkas 1 halaman dan RPP lengkap.</li>
+                        <li>Tambahkan rubrik penilaian pada RPP yang sudah dibuat (gunakan prompt rubrik).</li>
+                    </ol>
+                </div>
+            </div>
+
+            <!-- Slide 82: Tujuan Sesi AI (Day 2) -->
+            <div id="slide-82" class="slide bg-pattern">
+                <h2 class="text-4xl font-black text-gray-800 mb-8 text-center">Tujuan Sesi AI Lanjutan</h2>
+                <p class="text-2xl text-gray-600 mb-6 max-w-3xl text-center">Integrasi dan Eksperimen AI untuk
+                    Pembelajaran</p>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 w-full max-w-7xl">
+                    <div
+                        class="bg-white p-6 rounded-2xl text-center border-2 border-gray-200 shadow-xl animate-card animate-card-delay-1">
+                        <p class="text-7xl">📱</p>
+                        <p class="text-xl font-semibold mt-4 text-gray-800">Guru dapat membuat media belajar interaktif
+                            berbasis Canva dan Copilot AI, serta menambahkan QR Code terhubung ke materi ajar.</p>
+                    </div>
+                    <div
+                        class="bg-white p-6 rounded-2xl text-center border-2 border-gray-200 shadow-xl animate-card animate-card-delay-2">
+                        <p class="text-7xl">🌍</p>
+                        <p class="text-xl font-semibold mt-4 text-gray-800">Guru menghasilkan karya digital lintas mata
+                            pelajaran yang siap dipakai di kelas.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Slide 83: Ringkasan Peran AI -->
+            <div id="slide-83" class="slide bg-pattern">
+                <div
+                    class="bg-white p-12 rounded-3xl shadow-2xl border-2 border-gray-200 max-w-4xl text-center animate-card">
+                    <h2 class="text-4xl font-black text-gray-800">AI sebagai Sahabat Guru</h2>
+                    <p class="text-2xl mt-6 text-gray-600">...dari data, ke rencana, hingga pengalaman belajar yang
+                        berwarna.</p>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mt-8 text-left">
+                        <div class="bg-gray-100 p-6 rounded-xl border border-gray-200">
+                            <h3 class="text-2xl font-bold text-[var(--brand-blue)]">Canva AI</h3>
+                            <p class="text-lg mt-2 text-gray-700">Membantu guru di tahap administrasi (absensi & jurnal
+                                otomatis).</p>
+                        </div>
+                        <div class="bg-gray-100 p-6 rounded-xl border border-gray-200">
+                            <h3 class="text-2xl font-bold text-[var(--brand-blue)]">Copilot AI</h3>
+                            <p class="text-lg mt-2 text-gray-700">Mendukung guru di tahap perencanaan (RPP inovatif &
+                                adaptif).</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Slide 84: FGD Intro -->
+            <div id="slide-84" class="slide bg-pattern">
+                <div
+                    class="bg-white p-12 rounded-3xl shadow-2xl border-2 border-gray-200 max-w-2xl text-center animate-card">
+                    <h2 class="text-6xl font-black text-gray-800">FGD</h2>
+                    <p class="text-3xl font-bold text-[var(--brand-blue)] mt-6">Manual dan AI: Berkolaborasi untuk
+                        Inovasi</p>
+                </div>
+            </div>
+
+            <!-- Slide 85: FGD Diskusi -->
+            <div id="slide-85" class="slide" style="background-color: var(--brand-lime);">
+                <h2 class="text-5xl font-black text-gray-900 mb-8">Waktunya Diskusi! (20 Menit)</h2>
+                <div
+                    class="bg-white p-10 rounded-3xl shadow-2xl border-2 border-gray-200 max-w-3xl text-left animate-card">
+                    <h3 class="text-3xl font-bold text-[var(--brand-blue)]">Bagi menjadi 2 Kelompok:</h3>
+                    <p class="text-xl mt-4 text-gray-700">Kelompok 1: Pendekatan Tradisional (Manual)</p>
+                    <p class="text-xl mt-2 text-gray-700">Kelompok 2: Pendekatan AI</p>
+                    <h3 class="text-3xl font-bold text-[var(--brand-blue)] mt-6">Diskusikan:</h3>
+                    <ol class="list-decimal list-inside space-y-2 text-xl text-gray-700 mt-4">
+                        <li>Apa kelebihan pendekatan tradisional? (misalnya fleksibel, sesuai kebiasaan, tidak
+                            tergantung internet)</li>
+                        <li>Apa kelebihan pendekatan AI? (misalnya cepat, adaptif, kreatif)</li>
+                        <li>Tantangan apa yang muncul di masing-masing pendekatan?</li>
+                    </ol>
+                </div>
+            </div>
+
+            <!-- ========== AKHIR MATERI GABUNGAN ========== -->
+
+            <!-- Slide 88: (Asli Slide 47) Terima Kasih (FINAL) -->
+            <div id="slide-88" class="slide" style="background-color: var(--brand-blue); color: white;">
+                <svg class="starburst"
+                    style="top: 10%; left: 10%; width:120px; height:120px; color: var(--brand-lime); transform: rotate(20deg); opacity: 0.5;">
+                    <use xlink:href="#starburst-svg"></use>
+                </svg>
+                <svg class="starburst" style="bottom: 15%; right: 10%; transform: rotate(-15deg); color: white;">
+                    <use xlink:href="#starburst-svg"></use>
+                </svg>
                 <div class="text-center z-10">
                     <h1 class="text-8xl font-black">Luar Biasa!</h1>
                     <p class="text-2xl mt-4 opacity-80">Terima kasih atas semangat dan kreativitas Bapak/Ibu!</p>
                     <div class="mt-12 bg-white/20 p-4 rounded-xl text-center backdrop-blur-sm border border-white/30">
-                        <h3 class="text-xl font-bold">Selamat Melakukan Pengimbasan!</h3>
+                        <h3 class="text-xl font-bold">Selamat Mengajar & Berkreasi!</h3>
                         <p class="opacity-80 mt-1">Anda PASTI BISA!</p>
                     </div>
                 </div>
@@ -919,44 +1775,122 @@
 
         <!-- Navigation -->
         <div id="prev-slide" class="nav-arrow">
-             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M15 18l-6-6 6-6" />
+            </svg>
         </div>
         <div id="next-slide" class="nav-arrow">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M9 18l6-6-6-6" />
+            </svg>
         </div>
 
-        <!-- Indicators -->
-        <div id="slide-indicators"></div>
+        <!-- Navigation Dropdown -->
+        <div id="slide-navigator">
+            <div id="nav-dropdown">
+                <!-- Items will be injected via JS -->
+            </div>
+            <div id="nav-trigger">
+                Slide 1 / --
+            </div>
+        </div>
     </div>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             const slides = document.querySelectorAll('.slide');
             const nextBtn = document.getElementById('next-slide');
             const prevBtn = document.getElementById('prev-slide');
-            const indicatorsContainer = document.getElementById('slide-indicators');
+            const navTrigger = document.getElementById('nav-trigger');
+            const navDropdown = document.getElementById('nav-dropdown');
             let currentSlide = 0;
             const slideCount = slides.length;
             let isAnimating = false;
 
-            // Create indicator dots
-            indicatorsContainer.innerHTML = ''; // Kosongkan indikator lama
-            for (let i = 0; i < slideCount; i++) {
-                const dot = document.createElement('div');
-                dot.classList.add('indicator-dot');
-                dot.dataset.slide = i;
-                if (i === 0) dot.classList.add('active');
-                dot.addEventListener('click', () => goToSlide(parseInt(dot.dataset.slide, 10)));
-                indicatorsContainer.appendChild(dot);
-            }
-            const dots = document.querySelectorAll('.indicator-dot');
+            // --- Navigation Logic ---
+            function initNavigation() {
+                navDropdown.innerHTML = '';
+                slides.forEach((slide, index) => {
+                    // Try to find a title
+                    let title = `Slide ${index + 1}`;
+                    const h1 = slide.querySelector('h1');
+                    const h2 = slide.querySelector('h2');
+                    const h3 = slide.querySelector('h3');
 
-            function updateIndicators() {
-                dots.forEach(dot => dot.classList.remove('active'));
-                if (dots[currentSlide]) {
-                    dots[currentSlide].classList.add('active');
+                    if (h1) title = h1.textContent.trim();
+                    else if (h2) title = h2.textContent.trim();
+                    else if (h3) title = h3.textContent.trim();
+
+                    // Truncate if too long
+                    if (title.length > 40) title = title.substring(0, 40) + '...';
+
+                    const item = document.createElement('div');
+                    item.className = 'nav-item';
+                    if (index === 0) item.classList.add('active');
+
+                    item.innerHTML = `
+                        <span class="nav-item-number">${index + 1}</span>
+                        <span class="nav-item-text">${title}</span>
+                    `;
+
+                    item.addEventListener('click', () => {
+                        goToSlide(index);
+                        toggleDropdown(false);
+                    });
+
+                    navDropdown.appendChild(item);
+                });
+                updateNavText();
+            }
+
+            function updateNavText() {
+                navTrigger.childNodes[0].nodeValue = `Slide ${currentSlide + 1} / ${slideCount} `;
+            }
+
+            function updateActiveNavItem() {
+                const items = document.querySelectorAll('.nav-item');
+                items.forEach((item, index) => {
+                    if (index === currentSlide) {
+                        item.classList.add('active');
+                        // Scroll to active item
+                        item.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+                    } else {
+                        item.classList.remove('active');
+                    }
+                });
+            }
+
+            function toggleDropdown(forceState) {
+                const isOpen = navDropdown.classList.contains('open');
+                const shouldOpen = forceState !== undefined ? forceState : !isOpen;
+
+                if (shouldOpen) {
+                    navDropdown.classList.add('open');
+                    navTrigger.classList.add('open');
+                    // Scroll to current item when opening
+                    setTimeout(() => updateActiveNavItem(), 100);
+                } else {
+                    navDropdown.classList.remove('open');
+                    navTrigger.classList.remove('open');
                 }
             }
+
+            navTrigger.addEventListener('click', (e) => {
+                e.stopPropagation();
+                toggleDropdown();
+            });
+
+            // Close dropdown when clicking outside
+            document.addEventListener('click', (e) => {
+                if (!navTrigger.contains(e.target) && !navDropdown.contains(e.target)) {
+                    toggleDropdown(false);
+                }
+            });
+
+            // Initialize
+            initNavigation();
 
             function goToSlide(slideIndex, direction) {
                 if (isAnimating || slideIndex < 0 || slideIndex >= slideCount || slideIndex === currentSlide) return;
@@ -964,7 +1898,7 @@
 
                 const newSlide = slides[slideIndex];
                 const oldSlide = slides[currentSlide];
-                
+
                 // Atur ulang scroll slide lama sebelum animasi keluar
                 if (oldSlide) {
                     oldSlide.scrollTop = 0;
@@ -975,7 +1909,7 @@
                 }
 
                 const slideDirection = direction || (slideIndex > currentSlide ? 'next' : 'prev');
-                
+
                 // Set initial positions for animation
                 if (slideDirection === 'next') {
                     newSlide.classList.add('enter-right');
@@ -984,10 +1918,10 @@
                     newSlide.classList.add('enter-left');
                     oldSlide.classList.add('exit-right');
                 }
-                
+
                 // Make the new slide visible
                 newSlide.classList.add('active');
-                
+
                 // Force a reflow to apply the initial state before transitioning
                 requestAnimationFrame(() => {
                     requestAnimationFrame(() => {
@@ -996,8 +1930,9 @@
                 });
 
                 currentSlide = slideIndex;
-                updateIndicators();
-                
+                updateNavText();
+                updateActiveNavItem();
+
                 // Clean up classes after animation ends
                 setTimeout(() => {
                     oldSlide.classList.remove('active', 'exit-left', 'exit-right');
@@ -1014,22 +1949,22 @@
                 const prevSlideIndex = (currentSlide - 1 + slideCount) % slideCount;
                 goToSlide(prevSlideIndex, 'prev');
             });
-            
+
             document.addEventListener('keydown', (e) => {
-                if(e.key === 'ArrowRight') {
+                if (e.key === 'ArrowRight') {
                     nextBtn.click();
                 } else if (e.key === 'ArrowLeft') {
                     prevBtn.click();
                 }
             });
 
-            updateIndicators();
+            // updateIndicators();
 
             // --- LOGIKA TIMER PRE-TEST (DARI HARI 1) ---
             const timerDisplay = document.getElementById('timer-display');
             const startBtn = document.getElementById('start-timer-btn');
             const restartBtn = document.getElementById('restart-timer-btn');
-            
+
             let timerInterval = null;
             let timeLeft = 10 * 60; // 10 menit dalam detik
 
@@ -1075,9 +2010,9 @@
 
             if (startBtn) startBtn.addEventListener('click', startTimer);
             if (restartBtn) restartBtn.addEventListener('click', restartTimer);
-            
+
             // Panggil updateTimerDisplay sekali di awal untuk slide pre-test
-            if(timerDisplay) updateTimerDisplay();
+            if (timerDisplay) updateTimerDisplay();
             // --- AKHIR LOGIKA TIMER PRE-TEST ---
 
 
@@ -1085,7 +2020,7 @@
             const timerDisplayPost = document.getElementById('timer-display-post');
             const startBtnPost = document.getElementById('start-timer-btn-post');
             const restartBtnPost = document.getElementById('restart-timer-btn-post');
-            
+
             let timerIntervalPost = null;
             let timeLeftPost = 10 * 60; // 10 menit dalam detik
 
@@ -1131,11 +2066,12 @@
 
             if (startBtnPost) startBtnPost.addEventListener('click', startTimerPost);
             if (restartBtnPost) restartBtnPost.addEventListener('click', restartTimerPost);
-            
+
             // Panggil updateTimerDisplayPost sekali di awal untuk slide post-test
-            if(timerDisplayPost) updateTimerDisplayPost();
+            if (timerDisplayPost) updateTimerDisplayPost();
             // --- AKHIR LOGIKA TIMER POST-TEST ---
         });
     </script>
 </body>
+
 </html>
